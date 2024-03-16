@@ -1,15 +1,35 @@
+/* eslint-disable */
 import express from 'express';
+import { CONNECT_DB } from './config/mongodb';
+import { env } from './config/environment';
+import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware';
+import { APIs } from './routes';
 
-const app = express();
+const START_SERVER = () => {
+  const app = express();
 
-const hostname = 'localhost';
-const port = 8000;
+  app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1><hr>');
-});
+  app.use('/api', APIs);
 
-app.listen(port, hostname, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Hello World, I am running at http://${hostname}:${port}/`);
-});
+  app.get('/', (req, res) => {
+    res.send('<h1>Hello World</h1>');
+  });
+
+  app.use(errorHandlingMiddleware);
+
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
+    console.log(`Server is running at http://${env.APP_HOST}:${env.APP_PORT}/`);
+  });
+};
+
+(async () => {
+  try {
+    await CONNECT_DB();
+    console.log('Connect to MongoDB Atlas successfully');
+    START_SERVER();
+  } catch (error) {
+    console.log(error);
+    process.exit(0);
+  }
+})();
