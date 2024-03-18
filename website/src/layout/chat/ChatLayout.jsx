@@ -10,8 +10,9 @@ import { useResponsive } from '~/config/reponsiveConfig';
 import Header from './header';
 import NavChat from './nav';
 import NewChatButton from './common/NewChatButton';
+import { NAV_WIDTH } from './layoutConfig';
 
-const drawerWidth = 240;
+const drawerWidth = NAV_WIDTH;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({

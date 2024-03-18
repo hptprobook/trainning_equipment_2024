@@ -41,7 +41,7 @@ const NavChat = () => {
         >
           <ListItemButton
             sx={{
-              borderRadius: '24px',
+              borderRadius: '12px',
             }}
           >
             <ItemIconCus

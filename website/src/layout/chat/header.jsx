@@ -8,8 +8,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 import PropTypes from 'prop-types';
 import { IconButton, Toolbar, Typography } from '@mui/material';
+import { NAV_WIDTH } from './layoutConfig';
 
-const drawerWidth = 240;
+const drawerWidth = NAV_WIDTH;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
