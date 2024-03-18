@@ -6,6 +6,7 @@ import CompilerPage from '~/pages/Compiler/CompilerPage';
 import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
 import ChatIndexPage from '~/pages/Chat';
 import NotFoundPage from '~/pages/Error/NotFoundPage';
+import LoginPage from '~/pages/Login/LoginPage';
 
 
 const MainRoute = () => {
@@ -36,6 +37,10 @@ const MainRoute = () => {
           element: <CompilerPage />,
         },
       ],
+    },
+    {
+      path: 'login',
+      element: <LoginPage />,
     },
     {
       path: '*',

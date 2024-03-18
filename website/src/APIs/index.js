@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_ROOT } from '../../utils/constants';
+import { API_ROOT } from '../utils/constants';
 
 export const runOnlineCompiler = async (data) => {
   const response = await axios.post(`${API_ROOT}/compile/run`, { ...data, contentType: 'application/json' });
