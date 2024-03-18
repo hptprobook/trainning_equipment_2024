@@ -1,7 +1,18 @@
-import React from 'react'
+import Box from '@mui/material/Box';
+import { useState } from 'react';
+import { runOnlineCompiler } from '~/APIs';
+import PropTypes from 'prop-types';
 
-export const CompilerLayout = () => {
+export const CompilerLayout = ({ children }) => {
+
+
   return (
-    <div>CompilerLayout</div>
-  )
-}
+    <Box>
+      {children}
+    </Box>
+  );
+};
+
+CompilerLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};

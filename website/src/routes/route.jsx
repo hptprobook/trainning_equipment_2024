@@ -1,23 +1,48 @@
-import * as React from "react";
-import { Outlet, useRoutes } from "react-router-dom";
-import  ChatLayout  from "../layout/chat/ChatLayout";
-import { ChatIndex } from "../pages/ChatIndex";
+
+import * as React from 'react';
+import { Outlet, useRoutes } from 'react-router-dom';
+import ChatLayout from '../layout/chat/ChatLayout';
+import CompilerPage from '~/pages/Compiler/CompilerPage';
+import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
+import ChatIndexPage from '~/pages/Chat';
+import NotFoundPage from '~/pages/Error/NotFoundPage';
+
 
 const MainRoute = () => {
-    let element = useRoutes([
+  let element = useRoutes([
+    {
+      element: (
+        <ChatLayout>
+          <React.Suspense>
+            <Outlet />
+          </React.Suspense>
+        </ChatLayout>
+      ),
+      children: [
+        { element: <ChatIndexPage />, path: '/chat' },
+      ],
+    },
+    {
+      element: (
+        <CompilerLayout>
+          <React.Suspense>
+            <Outlet />
+          </React.Suspense>
+        </CompilerLayout>
+      ),
+      children: [
         {
-            element:
-                <ChatLayout>
-                    <React.Suspense>
-                        <Outlet />
-                    </React.Suspense>
-                </ChatLayout>,
-            children: [
-                { element: <ChatIndex />, index: true }
-            ],
+          path: 'compiler',
+          element: <CompilerPage />,
         },
-    ]);
+      ],
+    },
+    {
+      path: '*',
+      element: <NotFoundPage />,
+    }
+  ]);
 
-    return element;
-}
+  return element;
+};
 export default MainRoute;

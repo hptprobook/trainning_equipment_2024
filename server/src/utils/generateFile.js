@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { v4 as uuid } from 'uuid';
 
-const dirCodes = path.join(__dirname, 'codes');
+const dirCodes = path.join(__dirname, '../executedFiles');
 
 const generateFile = async (format, content) => {
   try {
