@@ -1,8 +1,7 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
-import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
 
-const  CompilerPage = () => {
+const CompilerPage = () => {
   const [sourceCode, setSourceCode] = useState('');
 
   const handleRunCode = () => {
@@ -15,6 +14,6 @@ const  CompilerPage = () => {
       <button onClick={handleRunCode}>Compile</button>
     </Box>
   );
-}
+};
 
 export default CompilerPage;

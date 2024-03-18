@@ -2,9 +2,10 @@
 import * as React from 'react';
 import { Outlet, useRoutes } from 'react-router-dom';
 import ChatLayout from '../layout/chat/ChatLayout';
-import { ChatIndex } from '../pages/ChatIndex';
 import CompilerPage from '~/pages/Compiler/CompilerPage';
 import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
+import ChatIndexPage from '~/pages/Chat';
+import NotFoundPage from '~/pages/Error/NotFoundPage';
 
 
 const MainRoute = () => {
@@ -18,36 +19,28 @@ const MainRoute = () => {
         </ChatLayout>
       ),
       children: [
-        { element: <ChatIndex />, index: true },
+        { element: <ChatIndexPage />, path: '/chat' },
       ],
     },
     {
       element: (
-        <ChatLayout>
+        <CompilerLayout>
           <React.Suspense>
             <Outlet />
           </React.Suspense>
-        </ChatLayout>
+        </CompilerLayout>
       ),
       children: [
-        { element: <ChatIndex />, index: true },
         {
-          element: (
-            <CompilerLayout>
-              <React.Suspense>
-                <Outlet />
-              </React.Suspense>
-            </CompilerLayout>
-          ),
-          children: [
-            {
-              path: 'compiler',
-              element: <CompilerPage />,
-            },
-          ],
+          path: 'compiler',
+          element: <CompilerPage />,
         },
       ],
     },
+    {
+      path: '*',
+      element: <NotFoundPage />,
+    }
   ]);
 
   return element;
