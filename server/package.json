@@ -20,7 +20,8 @@
     "http-status-codes": "^2.3.0",
     "joi": "^17.12.2",
     "lodash": "^4.17.21",
-    "mongodb": "^6.5.0"
+    "mongodb": "^6.5.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
