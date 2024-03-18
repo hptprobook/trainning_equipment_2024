@@ -9,11 +9,13 @@ import { PropTypes } from 'prop-types';
 import { useResponsive } from '~/config/reponsiveConfig';
 import Header from './header';
 import NavChat from './nav';
+import NewChatButton from './common/NewChatButton';
 
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
+    backgroundColor: theme.palette.background.paper,
     flexGrow: 1,
     marginTop: '64px',
     padding: theme.spacing(3),
@@ -79,6 +81,7 @@ export default function ChatLayout({ children }) {
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
+        <NewChatButton/>
         <NavChat/>
       </Drawer>
       <Main open={open} >

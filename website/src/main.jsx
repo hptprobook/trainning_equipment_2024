@@ -4,18 +4,17 @@ import App from './App.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import CssBaseLine from '@mui/material/CssBaseline';
-import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
-import theme from './theme/theme.js';
+import ThemeProvider from './theme/index.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HelmetProvider>
-    <CssVarsProvider theme={theme}>
-      <CssBaseLine />
-      <BrowserRouter>
-        <Suspense>
+    <CssBaseLine />
+    <BrowserRouter>
+      <Suspense>
+        <ThemeProvider>
           <App />
-        </Suspense>
-      </BrowserRouter>
-    </CssVarsProvider>
+        </ThemeProvider>
+      </Suspense>
+    </BrowserRouter>
   </HelmetProvider>
 );

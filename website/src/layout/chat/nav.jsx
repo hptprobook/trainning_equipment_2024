@@ -1,10 +1,16 @@
-import { List, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import { List, ListItem, ListItemButton, ListItemIcon, styled, useTheme } from '@mui/material';
 // import React from 'react';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ListItemText from '@mui/material/ListItemText';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
+const ItemIconCus = styled(ListItemIcon)(({ theme }) => ({
+  minWidth: 'auto',
+  marginRight: '8px'
+}));
 const NavChat = () => {
+  const theme = useTheme();
   const nav = [
     {
       name: 'Inbox',
@@ -26,12 +32,26 @@ const NavChat = () => {
   return (
     <List>
       {nav.map((item, index) => (
-        <ListItem key={item.name} disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
+        <ListItem
+          key={item.name}
+          disablePadding
+          sx={{
+            padding: theme.palette.padding.list,
+          }}
+        >
+          <ListItemButton
+            sx={{
+              borderRadius: '24px',
+            }}
+          >
+            <ItemIconCus
+            >
               {item.icon}
-            </ListItemIcon>
+            </ItemIconCus>
             <ListItemText primary={item.name} />
+            <ItemIconCus>
+              <MoreVertIcon />
+            </ItemIconCus>
           </ListItemButton>
         </ListItem>
       ))}

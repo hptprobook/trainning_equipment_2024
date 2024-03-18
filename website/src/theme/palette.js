@@ -109,11 +109,20 @@ export function palette() {
       primary: grey[800],
       secondary: grey[600],
       disabled: grey[500],
+      normal: '#0000',
     },
     background: {
       paper: '#FFFFFF',
       default: grey[100],
+      secondary: '#F0F4F9',
       neutral: grey[200],
+      subBackground: '#F0F4F9',
+      active: '#D3E3FD',
+      hoverActive: '#DFE2E5',
+      hover: '#DDE3EA',
+    },
+    padding: {
+      list: '0 24px'
     },
     action: {
       ...base.action,
