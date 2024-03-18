@@ -4,11 +4,15 @@ import { CONNECT_DB, GET_DB } from './config/mongodb';
 import { env } from './config/environment';
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware';
 import { APIs } from './routes';
+import cors from 'cors';
+import { corsOptions } from './config/cors';
 
 const START_SERVER = () => {
   const app = express();
 
   app.use(express.json());
+
+  app.use(cors(corsOptions));
 
   app.use('/api', APIs);
 
