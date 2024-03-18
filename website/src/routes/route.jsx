@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Outlet, useRoutes } from "react-router-dom";
-import  ChatLayout  from "../layout/chat/ChatLayout";
 import { ChatIndex } from "../pages/ChatIndex";
+import ChatLayout from "../layout/chat/ChatLayout";
 
 const MainRoute = () => {
     let element = useRoutes([
