@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import MuiAppBar from '@mui/material/AppBar';
 
@@ -7,7 +7,7 @@ import { useTheme } from '@emotion/react';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import PropTypes from 'prop-types';
-import { IconButton, Toolbar, Typography } from '@mui/material';
+import { IconButton, Toolbar } from '@mui/material';
 import { NAV_WIDTH } from './layoutConfig';
 
 const drawerWidth = NAV_WIDTH;
@@ -29,10 +29,10 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Header = ({ open, handleDrawerOpen }) => {
+const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
   const theme = useTheme();
   return (
-    <AppBar position="fixed" open={open}
+    <AppBar position="fixed" open={open} ref={ref}
       sx={{
         boxShadow: 'none'
       }}>
@@ -54,15 +54,15 @@ const Header = ({ open, handleDrawerOpen }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography
+        {/* <Typography
           color={theme.palette.text.primary}
           variant="h6" noWrap component="div">
                     Persistent drawer
-        </Typography>
+        </Typography> */}
       </Toolbar>
     </AppBar>
   );
-};
+});
 Header.propTypes = {
   open: PropTypes.bool,
   handleDrawerOpen: PropTypes.func
