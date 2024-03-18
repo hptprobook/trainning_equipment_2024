@@ -6,6 +6,7 @@ export const CompilerLayout = () => {
   const [sourceCode, setSourceCode] = useState('');
 
   const handleRunCode = () => {
+    /* eslint-disable-next-line */
     runOnlineCompiler({ language: 'js', code: sourceCode }).then((res) => console.log('Code is runned: ', res));
   };
 
