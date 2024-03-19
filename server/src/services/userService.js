@@ -1,7 +1,7 @@
 import { userModal } from '~/models/userModal';
 
-const addUser = async (dataUser) => {
-  return await userModal.addUser(dataUser);
+const addUserFromGit = async (dataUser) => {
+  return await userModal.addUserFromGit(dataUser);
 };
 const onceUser = async (idGit) => {
   return await userModal.onceIdGit(idGit);
@@ -9,5 +9,7 @@ const onceUser = async (idGit) => {
 const updateToken = async (idGit, token) => {
   return await userModal.updateToken(idGit, token);
 };
-
-export const userService = { addUser, onceUser, updateToken };
+const getUser = async (idGit) => {
+  return await userModal.getUser(idGit);
+};
+export const userService = { addUserFromGit, onceUser, updateToken, getUser };
