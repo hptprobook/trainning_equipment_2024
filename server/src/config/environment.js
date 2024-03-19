@@ -9,4 +9,5 @@ export const env = {
   CLIENT_SECRETS: process.env.CLIENT_SECRETS,
   URL_APP: process.env.URL_APP,
   GITHUB_APP_TOKEN: process.env.GITHUB_APP_TOKEN,
+  TOKEN_SECRET: process.env.TOKEN_SECRET,
 };

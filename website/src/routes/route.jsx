@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { Outlet, useRoutes } from 'react-router-dom';
 import ChatLayout from '../layout/chat/ChatLayout';
@@ -7,7 +6,7 @@ import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
 import ChatIndexPage from '~/pages/Chat';
 import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
-
+import LoginGit from '~/test/test';
 
 const MainRoute = () => {
   let element = useRoutes([
@@ -19,9 +18,7 @@ const MainRoute = () => {
           </React.Suspense>
         </ChatLayout>
       ),
-      children: [
-        { element: <ChatIndexPage />, path: '/chat' },
-      ],
+      children: [{ element: <ChatIndexPage />, path: '/chat' }],
     },
     {
       element: (
@@ -45,7 +42,11 @@ const MainRoute = () => {
     {
       path: '*',
       element: <NotFoundPage />,
-    }
+    },
+    {
+      path: 'test',
+      element: <LoginGit />,
+    },
   ]);
 
   return element;
