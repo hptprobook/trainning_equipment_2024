@@ -114,15 +114,15 @@ export function palette() {
     background: {
       paper: '#FFFFFF',
       default: grey[100],
-      secondary: '#F0F4F9',
+      secondary: '#f9f9f9',
       neutral: grey[200],
-      subBackground: '#F0F4F9',
+      subBackground: '#f9f9f9',
       active: '#D3E3FD',
       hoverActive: '#DFE2E5',
       hover: '#DDE3EA',
     },
     padding: {
-      list: '0 24px'
+      list: '0 12px'
     },
     action: {
       ...base.action,
