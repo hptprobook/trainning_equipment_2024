@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const LoginGit = () => {
   const CLIENT_ID = '8edcd9a10c24432f67cb';
-  const BASE_URL = 'http://localhost:8017/api/account';
+  const BASE_URL = 'http://localhost:8000/api/account';
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,13 +24,12 @@ const LoginGit = () => {
               }
             );
             if (dataUser) {
-              const response = await axios.post(`${BASE_URL}/addUser`, {
+              const response = await axios.post(`${BASE_URL}/addUserFromGit`, {
                 name: dataUser.name,
                 avatar: dataUser.avatar_url,
                 idGit: dataUser.id,
-                token: token,
               });
-              console.log(response);
+              console.log(response.data);
             }
           }
         }
@@ -41,25 +40,29 @@ const LoginGit = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   const run = async () => {
+  //     const tokenUser =
+  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidHVodjUiLCJpZEdpdCI6MTI2NDk1ODcwLCJpYXQiOjE3MTA4NTAwMDYsImV4cCI6MTcxMzQ0MjAwNn0.DmoZbw86a24eKONVfR8Y4HKFOfz3jNZnW7M59IaHCVc';
+  //     const dataUser = await axios.get(`${BASE_URL}/getUser`, {
+  //       headers: {
+  //         'auth-token': tokenUser,
+  //       },
+  //     });
+  //     console.log(dataUser);
+  //   };
+  //   run();
+  // }, []);
+
   const handleLoginGit = (e) => {
     e.preventDefault();
     window.location.assign(
       `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`
     );
   };
-
-  const handleLoOutGit = async (e) => {
-    e.preventDefault();
-    const accessToken = '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';
-    const result = await axios.delete(`${BASE_URL}/logout`, {
-      data: { access_token: accessToken },
-    });
-    console.log(result);
-  };
   return (
     <div>
       <button onClick={handleLoginGit}>Login with GitHub</button>
-      <button onClick={handleLoOutGit}>Logout</button>
     </div>
   );
 };

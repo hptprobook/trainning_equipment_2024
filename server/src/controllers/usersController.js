@@ -2,37 +2,51 @@ import { userService } from '~/services/userService';
 import { StatusCodes } from 'http-status-codes';
 import axios from 'axios';
 import { env } from '~/config/environment';
+import jwt from 'jsonwebtoken';
 
-const addUser = async (req, res, next) => {
+const getUser = async (req, res) => {
+  const idGitUser = req.verifiedData.idGit;
+  const dataUser = await userService.getUser(idGitUser);
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    data: dataUser,
+  });
+};
+
+const addUserFromGit = async (req, res) => {
   try {
-    const { name, avatar, idGit, token } = req.body;
+    const { name, avatar, idGit } = req.body;
     if (!name.trim() || !avatar.trim() || !idGit) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         mgs: 'Không được bỏ trống',
       });
     }
+    const tokenUser = jwt.sign({ name, idGit }, env.TOKEN_SECRET, {
+      expiresIn: 60 * 60 * 24 * 30,
+    });
     const once = await userService.onceUser(idGit);
     if (once) {
-      await userService.updateToken(once.idGit, token);
+      await userService.updateToken(once.idGit, tokenUser);
       return res.status(StatusCodes.OK).json({
         success: true,
         mgs: '!register',
-        data: token,
+        tokenUser: tokenUser,
       });
     }
     const dataUser = {
       name,
       avatar,
       idGit: Number(idGit),
-      curentToken: token,
+      curentToken: tokenUser,
+      role: Number(idGit) == 126495870 ? 'admin' : 'user',
       createdAt: new Date(),
     };
-    await userService.addUser(dataUser);
+    await userService.addUserFromGit(dataUser);
     return res.status(StatusCodes.CREATED).json({
       success: true,
       mgs: 'Login + register',
-      u: dataUser,
+      tokenUser: tokenUser,
     });
   } catch (error) {
     return res
@@ -41,7 +55,7 @@ const addUser = async (req, res, next) => {
   }
 };
 
-const getUserGit = async (req, res, next) => {
+const getUserGit = async (req, res) => {
   try {
     const token = req.get('Authorization'); // Lấy Baerer token từ header
     const options = { headers: { Authorization: token } };
@@ -58,7 +72,7 @@ const getUserGit = async (req, res, next) => {
   }
 };
 
-const getAccessTokenGit = async (req, res, next) => {
+const getAccessTokenGit = async (req, res) => {
   try {
     const code = req.query.code;
     if (code) {
@@ -82,51 +96,9 @@ const getAccessTokenGit = async (req, res, next) => {
   }
 };
 
-// const logOut = async (req, res, next) => {
-//   try {
-//     const client_id = env.CLIENT_ID;
-//     const GITHUB_APP_TOKEN = env.GITHUB_APP_TOKEN;
-//     const { access_token } = req.body;
-//     const response = await axios.delete(
-//       `https://api.github.com/applications/${client_id}/tokens/${access_token}`,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${GITHUB_APP_TOKEN}`,
-//           Accept: 'application/vnd.github.v3+json',
-//         },
-//       }
-//     );
-//     res.status(200).json(response);
-//   } catch (error) {
-//     console.error('Error revoking token:', error.response.data);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
-const logOut = async (req, res, next) => {
-  try {
-    const client_id = process.env.CLIENT_ID;
-    const { access_token } = req.body;
-    // const response = await axios.delete(
-    //   `https://api.github.com/applications/${client_id}/token`,
-    //   {
-    //     headers: {
-    //       Accept: 'application/vnd.github+json',
-    //     },
-    //   },
-    //   {
-    //     access_token: access_token,
-    //   }
-    // );
-    res.status(200).json({ message: client_id });
-  } catch (error) {
-    console.error('Error revoking token:', error.response.data);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
 export const userController = {
-  addUser,
+  addUserFromGit,
   getUserGit,
   getAccessTokenGit,
-  logOut,
+  getUser,
 };
