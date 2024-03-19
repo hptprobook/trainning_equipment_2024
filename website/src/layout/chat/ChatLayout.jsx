@@ -6,6 +6,7 @@ import { useResponsive } from '~/config/reponsiveConfig';
 import Header from './header';
 import NavChat from './nav';
 import { NAV_WIDTH } from './layoutConfig';
+import { Container } from '@mui/material';
 
 const drawerWidth = NAV_WIDTH;
 
@@ -56,7 +57,12 @@ export default function ChatLayout({ children }) {
       <Main open={open} headerheight={headerHeight}>
         <Box
           sx={{
+            maxWidth: '100%',
             padding: 3,
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            margin: 0,
           }}
         >
           {children}
