@@ -12,14 +12,11 @@ const client = new MongoClient(env.MONGODB_URI, {
     deprecationErrors: true,
   },
 });
-
 // Kết nối tới database
 export const CONNECT_DB = async () => {
   await client.connect();
-
   dbInstance = client.db(env.DATABASE_NAME);
 };
-
 export const GET_DB = () => {
   if (!dbInstance) throw new Error('Must connect to Database first');
   return dbInstance;
