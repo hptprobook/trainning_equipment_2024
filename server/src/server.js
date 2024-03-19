@@ -7,13 +7,14 @@ import { APIs } from './routes';
 import { APILogins } from './routes/login';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { corsOptions } from './config/cors';
+
 const START_SERVER = () => {
   const app = express();
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(express.json());
   app.use(cors());
-  // ----- api -------
   app.use('/api', APIs);
   app.use('/api/account', APILogins);
 

@@ -1,7 +1,6 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import { env } from '~/config/environment';
 
-/* Khởi tạo một đối tượng ban đầu là null */
 let dbInstance = null;
 
 // Khởi tạo một đối tượng client để connect tới mongoDB

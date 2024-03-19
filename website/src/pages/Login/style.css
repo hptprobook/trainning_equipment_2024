@@ -1,0 +1,98 @@
+.login-container {
+    display: flex;
+}
+
+.login-container .logo {
+    position: fixed;
+    color: aliceblue;
+    margin: 0;
+    top: 24px;
+    left: 24px;
+}
+
+.content {
+    width: 60%;
+    height: 100vh;
+    background-color: #8a00ff;
+}
+
+.f-col {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.ml {
+    color: #000000;
+    line-height: auto;
+    margin: 0 84px;
+}
+
+.content .title {
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.content .context {
+    font-size: 28px;
+}
+
+.login {
+    width: 40%;
+    height: 100vh;
+    margin: auto;
+    padding: 20px;
+    background-color: #000000;
+    position: relative;
+}
+
+.login .title {
+    margin: 8px 0;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    font-weight: 600;
+    font-size: 32px;
+}
+
+.login .button {
+    width: 100%;
+    text-align: center;
+}
+
+.login .footer {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.login .footer a {
+    color: rgb(255, 255, 255);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1rem;
+    padding: 12px;
+    position: relative;
+}
+
+.login .footer a:first-child::after {
+    content: "";
+    display: block;
+    width: 2px;
+    height: 20px;
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+@media screen and (max-width: 768px) {
+    .content {
+        display: none;
+    }
+
+    .login {
+        width: 100%;
+    }
+}
