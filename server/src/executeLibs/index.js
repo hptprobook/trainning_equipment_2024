@@ -1,13 +1,18 @@
 import { exec } from 'child_process';
 import fs from 'fs';
+import path from 'path';
+import { escapeRegExp } from '~/utils/formatters';
 
-const executeCommand = (command, filePath) => {
+const executeCommand = async (command, filePath) => {
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
+      const directoryPath = escapeRegExp(path.dirname(filePath));
       if (error) {
-        reject(new Error(`Execution error: ${error.message}\n${stderr}`));
+        const cleanedMessage = error.message.replace(new RegExp(directoryPath, 'g'), 'executedFiles');
+        reject(new Error(cleanedMessage));
       } else if (stderr) {
-        reject(new Error(`Runtime error: ${stderr}`));
+        const cleanedStderr = stderr.replace(path.dirname(filePath), '');
+        reject(new Error(cleanedStderr));
       } else {
         resolve(stdout);
       }
