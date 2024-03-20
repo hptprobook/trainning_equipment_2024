@@ -5,6 +5,7 @@ import { env } from './config/environment';
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware';
 import { APIs } from './routes';
 import { APILogins } from './routes/login';
+import { APIConversations } from './routes/conversationRouter';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { corsOptions } from './config/cors';
@@ -19,6 +20,8 @@ const START_SERVER = () => {
   app.use('/api', APIs);
   app.use('/api/account', APILogins);
   app.use('/api', chatgpt);
+  app.use('/api/conversations', APIConversations);
+
 
   // -----------------
 
