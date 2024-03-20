@@ -12,4 +12,13 @@ const updateToken = async (idGit, token) => {
 const getUser = async (idGit) => {
   return await userModal.getUser(idGit);
 };
-export const userService = { addUserFromGit, onceUser, updateToken, getUser };
+const getUserById = async (id) => {
+  return await userModal.getUserById(id);
+};
+export const userService = {
+  addUserFromGit,
+  onceUser,
+  updateToken,
+  getUser,
+  getUserById,
+};

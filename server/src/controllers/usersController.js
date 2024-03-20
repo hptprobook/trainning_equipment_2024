@@ -12,7 +12,6 @@ const getUser = async (req, res) => {
     data: dataUser,
   });
 };
-
 const addUserFromGit = async (req, res) => {
   try {
     const { name, avatar, idGit } = req.body;
