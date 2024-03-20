@@ -30,8 +30,7 @@ const MainRoute = () => {
       ),
       children: [
         {
-          path: 'compiler',
-          element: <CompilerPage />,
+          element: <CompilerPage />, index: true,
         },
       ],
     },
