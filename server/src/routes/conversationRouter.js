@@ -3,7 +3,7 @@ import { conversationsController } from '../controllers/conversationsController'
 import verifyToken from '../middlewares/verifyToken';
 const Router = express.Router();
 
-Router.get('/add', verifyToken, (req, res) =>
+Router.post('/add', verifyToken, (req, res) =>
   conversationsController.addConversations(req, res)
 );
 Router.delete('/delete', verifyToken, (req, res) =>
