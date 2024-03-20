@@ -1,5 +1,5 @@
 import { GET_DB } from '~/config/mongodb';
-const addUser = async (dataUser) => {
+const addUserFromGit = async (dataUser) => {
   try {
     const db = await GET_DB();
     const collection = db.collection('users');
@@ -39,4 +39,16 @@ const onceIdGit = async (idGit) => {
     throw new Error(error);
   }
 };
-export const userModal = { addUser, onceIdGit, updateToken };
+
+const getUser = async (idGit) => {
+  try {
+    const db = await GET_DB();
+    const collection = db.collection('users');
+    const dataUser = await collection.findOne({ idGit: idGit });
+    return dataUser;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const userModal = { addUserFromGit, onceIdGit, updateToken, getUser };

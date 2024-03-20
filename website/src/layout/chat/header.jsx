@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import MuiAppBar from '@mui/material/AppBar';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import { useTheme } from '@emotion/react';
 // import { MenuIcon } from '@mui/icons-material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import PropTypes from 'prop-types';
-import { IconButton, Toolbar } from '@mui/material';
+import { Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { NAV_WIDTH } from './layoutConfig';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = NAV_WIDTH;
 
@@ -54,13 +56,34 @@ const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
         >
           <MenuIcon />
         </IconButton>
-        {/* <Typography
-          color={theme.palette.text.primary}
-          variant="h6" noWrap component="div">
-                    Persistent drawer
-        </Typography> */}
+        <Button
+          sx={{
+            color: theme.palette.text.primary,
+            position: 'absolute',
+            right: '20px',
+          }}
+          size="medium">
+          <Link
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              textDecoration: 'none',
+              color: theme.palette.text.primary,
+            }}
+            to='/compiler'>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                lineHeight: 1.5,
+                marginTop: '3px',
+              }}>
+              Run Compiler
+            </Typography>
+            <ChevronRightIcon />
+          </Link>
+        </Button>
       </Toolbar>
-    </AppBar>
+    </AppBar >
   );
 });
 Header.propTypes = {
