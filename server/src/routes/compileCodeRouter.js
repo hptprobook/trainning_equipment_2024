@@ -8,7 +8,9 @@ Router.get('/codesSaved', verifyToken, compilerController.listCodeSaved)
   .post('/run', compilerController.compilerCode)
   .post('/save', verifyToken, compilerController.saveCode);
 
-Router.route('/:id').get(verifyToken, compilerController.getDetails);
+Router.route('/:id').get(verifyToken, compilerController.getDetails).put(verifyToken, compilerController.updateCode);
+
 Router.route('/share/:id').put(verifyToken, compilerController.shareCode);
+Router.route('/share/public/:id').get(verifyToken, compilerController.codePublicDetail);
 
 export const compileCodeRoute = Router;
