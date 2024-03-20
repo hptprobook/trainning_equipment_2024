@@ -25,6 +25,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.2",
+    "openai": "^4.29.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
