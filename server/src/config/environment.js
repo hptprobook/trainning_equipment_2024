@@ -10,4 +10,5 @@ export const env = {
   URL_APP: process.env.URL_APP,
   GITHUB_APP_TOKEN: process.env.GITHUB_APP_TOKEN,
   TOKEN_SECRET: process.env.TOKEN_SECRET,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 };
