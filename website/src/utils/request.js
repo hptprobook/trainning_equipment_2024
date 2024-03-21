@@ -9,6 +9,7 @@ const request = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${getAccessToken()}`, // Initial value
+    'auth-token': getAccessToken(),
   },
 });
 
@@ -34,6 +35,5 @@ export const patch = async (path, options = {}) => {
   const response = await request.patch(path, options);
   return response.data;
 };
-
 
 export default request;
