@@ -70,7 +70,7 @@ const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
               textDecoration: 'none',
               color: theme.palette.text.primary,
             }}
-            to='/compiler'>
+            to='/'>
             <Typography
               sx={{
                 fontWeight: 600,

@@ -1,4 +1,4 @@
-import request from "../utils/request";
+import request from '../utils/request';
 
 async function handleRequest(method, url, data) {
   try {

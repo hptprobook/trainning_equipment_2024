@@ -3,10 +3,12 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_ROOT;
 // Function to get the access token from local storage
 const getAccessToken = () => localStorage.getItem('token');
+const getGitToken = () => localStorage.getItem('git_token');
 
 const request = axios.create({
   baseURL,
   headers: {
+    'auth-token': getAccessToken(), // Initial value
     'Content-Type': 'application/json',
     Authorization: `Bearer ${getAccessToken()}`, // Initial value
   },
@@ -15,6 +17,7 @@ const request = axios.create({
 // Intercept requests and update the Authorization header
 request.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${getAccessToken()}`;
+  config.headers['auth-token'] = getGitToken();
   return config;
 });
 
