@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import Slider from '@mui/material/Slider';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { saveCode } from '~/redux/slices/compilerSlice';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -18,12 +20,14 @@ const CompilerPage = () => {
   const monaco = useMonaco();
   const editorRef = useRef(null); // Ref cho trình soạn thảo
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [sourceCode, setSourceCode] = useState(defaultCode.javascript);
   const [selectedLanguage, setSelectedLanguage] = useState('javascript');
   const [isCompiling, setIsCompiling] = useState(false);
   const [compileOutput, setCompileOutput] = useState('');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
+  const { data, status, error } = useSelector((state) => state.compiler);
 
   const handleCheckAI = () => {
     navigate('/chat', { state: { sourceCode } });
@@ -83,6 +87,21 @@ const CompilerPage = () => {
       alert('Clipboard API not available.');
     }
   };
+
+  const handleSaveCode = () => {
+    const languageForServer = convertLanguage(selectedLanguage);
+    dispatch(saveCode({ language: languageForServer, code: sourceCode }))
+      .then(() => {
+        toast.success('Code saved successfully', { autoClose: 1000 });
+      })
+      .catch(() => {
+        toast.error('Error saving code', { autoClose: 1000 });
+      });
+  };
+
+  console.log(status);
+  console.log(error);
+  console.log(data);
 
   return (
     <Box
@@ -257,7 +276,7 @@ const CompilerPage = () => {
                 <Button onClick={handleCopyCode} variant="contained" size="small">
                   Copy
                 </Button>
-                <Button variant="contained" size="small">
+                <Button onClick={handleSaveCode} variant="contained" size="small">
                   Save
                 </Button>
                 <Button variant="contained" size="small" onClick={handleRunCode} disabled={isCompiling}>
