@@ -11,13 +11,15 @@ const LoginGit = () => {
           'code'
         );
         if (codeParams) {
+          // get token user
           const dataToken = await axios.get(
             `${BASE_URL}/getTokenUser?code=${codeParams}`
           );
           if (dataToken) {
-            // get token user
             if (dataToken.data.success) {
+              // token
               const token = dataToken.data.addUser.tokenUser;
+              console.log(token);
               // get data user from db
               const user = await getUser(token);
               console.log(user);
