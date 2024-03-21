@@ -72,4 +72,24 @@ const shareCode = async (req, res, next) => {
   }
 };
 
-export const compilerController = { compilerCode, saveCode, listCodeSaved, getDetails, shareCode };
+const codePublicDetail = async (req, res, next) => {
+  try {
+    const code = await compilerService.codePublicDetail(req.params.id);
+
+    res.status(StatusCodes.OK).json(code);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateCode = async (req, res, next) => {
+  try {
+    await compilerService.updateCode(req.params.id, req.body);
+
+    res.status(StatusCodes.OK).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const compilerController = { compilerCode, saveCode, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode };

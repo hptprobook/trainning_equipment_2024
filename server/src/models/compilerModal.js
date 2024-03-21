@@ -17,6 +17,8 @@ const validateBeforeCreate = async (data) => {
   return await SAVE_CODE_SCHEMA.validateAsync(data, { abortEarly: false });
 };
 
+const INVALID_UPDATE_FIELDS = ['_id', 'createdAt'];
+
 const saveCode = async (data) => {
   try {
     const validData = await validateBeforeCreate(data);
@@ -75,4 +77,58 @@ const shareCode = async (codeId) => {
   }
 };
 
-export const compilerModal = { saveCode, findOneById, listCodeSaved, getDetails, shareCode };
+const codePublicDetail = async (codeId) => {
+  try {
+    const result = await GET_DB()
+      .collection('codeSnippets')
+      .findOne({ _id: new ObjectId(codeId), isPublic: true });
+
+    if (!result) {
+      const isExist = await GET_DB()
+        .collection('codeSnippets')
+        .findOne({ _id: new ObjectId(codeId) });
+
+      if (!isExist) {
+        throw new Error('Code snippet not found');
+      } else {
+        throw new Error('Code snippet has not been published');
+      }
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const updateCode = async (codeId, updateData) => {
+  try {
+    Object.keys(updateData).forEach((fieldName) => {
+      if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
+        delete updateData[fieldName];
+      }
+    });
+
+    const existingSnippet = await GET_DB()
+      .collection('codeSnippets')
+      .findOne({ _id: new ObjectId(codeId) });
+
+    if (!existingSnippet) {
+      throw new Error('Code snippet not found');
+    }
+
+    const updateResult = await GET_DB()
+      .collection('codeSnippets')
+      .findOneAndUpdate({ _id: new ObjectId(codeId) }, { $set: updateData }, { returnDocument: 'after' });
+
+    if (!updateResult) {
+      throw new Error('Failed to update code snippet');
+    }
+
+    return updateResult;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const compilerModal = { saveCode, findOneById, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode };
