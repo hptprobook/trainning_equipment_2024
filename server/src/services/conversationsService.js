@@ -6,11 +6,8 @@ const addConversations = async (dataConversations) => {
 const delConversations = async (idConver) => {
   return await conversationsModal.delConversations(idConver);
 };
-const conversationsIsArchive = async (idConver) => {
-  return await conversationsModal.conversationsIsArchive(idConver);
-};
-const conversationsIsNotArchive = async (idConver) => {
-  return await conversationsModal.conversationsIsNotArchive(idConver);
+const conversationsIsArchive = async (idConver, archive) => {
+  return await conversationsModal.conversationsIsArchive(idConver, archive);
 };
 const converUpdateTitle = async (idConver, title) => {
   return await conversationsModal.converUpdateTitle(idConver, title);
@@ -28,7 +25,7 @@ export const conversationsService = {
   addConversations,
   delConversations,
   conversationsIsArchive,
-  conversationsIsNotArchive,
+  // conversationsIsNotArchive,
   converUpdateTitle,
   converGetAll,
   converGetAllIsArchive,

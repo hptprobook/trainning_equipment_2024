@@ -7,7 +7,10 @@ import { compilerService } from '~/services/compilerService';
 const compilerCode = async (req, res) => {
   const { language = 'js', code } = req.body;
 
-  if (!code) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Code must be Empty' });
+  if (!code)
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: 'Code must be Empty' });
 
   try {
     const filePath = await generateFile(language, code);
@@ -15,7 +18,8 @@ const compilerCode = async (req, res) => {
     let output;
 
     if (language === 'js') output = await executeFile.executeJs(filePath);
-    else if (language === 'php') output = await executeFile.executePhp(filePath);
+    else if (language === 'php')
+      output = await executeFile.executePhp(filePath);
     else if (language === 'py') output = await executeFile.executePy(filePath);
 
     res.status(StatusCodes.OK).json({ success: true, output: output });
@@ -28,9 +32,15 @@ const saveCode = async (req, res, next) => {
   try {
     const currentUser = await userService.getUser(req.verifiedData.idGit);
 
-    if (!currentUser) return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found!' });
+    if (!currentUser)
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'User not found!' });
 
-    const savedCode = await compilerService.saveCode(currentUser._id.toString(), req.body);
+    const savedCode = await compilerService.saveCode(
+      currentUser._id.toString(),
+      req.body
+    );
 
     res.status(StatusCodes.OK).json(savedCode);
   } catch (error) {
@@ -42,7 +52,10 @@ const listCodeSaved = async (req, res, next) => {
   try {
     const currentUser = await userService.getUser(req.verifiedData.idGit);
 
-    if (!currentUser) return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found!' });
+    if (!currentUser)
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'User not found!' });
 
     const listCodeSaved = await compilerService.listCodeSaved(currentUser._id);
 
@@ -92,4 +105,12 @@ const updateCode = async (req, res, next) => {
   }
 };
 
-export const compilerController = { compilerCode, saveCode, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode };
+export const compilerController = {
+  compilerCode,
+  saveCode,
+  listCodeSaved,
+  getDetails,
+  shareCode,
+  codePublicDetail,
+  updateCode,
+};
