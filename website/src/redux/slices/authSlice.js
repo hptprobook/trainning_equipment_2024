@@ -9,21 +9,17 @@ async function handleRequest(request, arg, thunkAPI) {
     return thunkAPI.rejectWithValue(err.response.data);
   }
 }
-export const handleGetAccessTokenGit = createAsyncThunk(
-  'auth/getAccessTokenGit',
-  (code, thunkAPI) => handleRequest(AuthService.getAccessTokenGit, code, thunkAPI)
-);
 export const handleGetUserGit = createAsyncThunk(
   'auth/getUserGit',
-  (_, thunkAPI) => handleRequest(AuthService.getUserGit, null, thunkAPI)
+  (code, thunkAPI) => handleRequest(AuthService.getUserGit, code, thunkAPI)
 );
-export const handleAddUserFromGit = createAsyncThunk(
-  'auth/addUserFromGit',
-  (data, thunkAPI) => handleRequest(AuthService.addUserFromGit, data, thunkAPI)
+export const handleGetUser = createAsyncThunk(
+  'auth/handleGetUser',
+  (_, thunkAPI) => handleRequest(AuthService.handleGetUser, null, thunkAPI)
 );
 
 export const resetState = createAction('auth/resetState');
-
+export const resetStatus = createAction('auth/resetStatus');
 const authSlice = createSlice({
   name: 'auth',
   initialState: { user: null, status: 'idle', error: null },
@@ -32,45 +28,39 @@ const authSlice = createSlice({
       state.error = null;
       state.status = 'idle';
       state.tokenGit = null;
+      state.userGit = null;
     },
+    resetStatus: (state) => {
+      state.status = null;
+    }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(handleGetAccessTokenGit.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(handleGetAccessTokenGit.fulfilled, (state, action) => {
-        state.status = 'success';
-        state.tokenGit = action.payload;
-      })
-      .addCase(handleGetAccessTokenGit.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload.message;
-      })
       .addCase(handleGetUserGit.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(handleGetUserGit.fulfilled, (state, action) => {
         state.status = 'success';
-        state.userGit = action.payload;
+        state.tokenGit = action.payload;
       })
       .addCase(handleGetUserGit.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload.message;
+        state.error = action.payload.mgs;
       })
-      .addCase(handleAddUserFromGit.pending, (state) => {
+      .addCase(handleGetUser.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(handleAddUserFromGit.fulfilled, (state, action) => {
+      .addCase(handleGetUser.fulfilled, (state, action) => {
         state.status = 'success';
         state.userGit = action.payload;
       })
-      .addCase(handleAddUserFromGit.rejected, (state, action) => {
+      .addCase(handleGetUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload.message;
+        state.error = action.payload;
       });
   },
 });
 
 export const { resetState: resetStateAction } = authSlice.actions;
+export const { resetStatus: resetStatusAction } = authSlice.actions;
 export default authSlice.reducer;

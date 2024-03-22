@@ -18,6 +18,12 @@ Router.route('/test')
   .post(expController.addDocument);
 
 /* Compile Code APIs */
-Router.use('/compile', compileCodeRoute);
+Router.use('/compiler', compileCodeRoute);
+
+/* Chat APIs */
+
+/* Auth APIs */
+
+/* User APIs */
 
 export const APIs = Router;

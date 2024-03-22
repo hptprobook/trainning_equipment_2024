@@ -10,7 +10,11 @@ import { NAV, NAV_WIDTH } from './layoutConfig';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import LogoutIcon from '@mui/icons-material/Logout';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleGetUser, resetStateAction } from '~/redux/slices/authSlice';
+import { handleToast } from '~/config/toast';
+import { useNavigate } from 'react-router-dom';
 const drawerWidth = NAV_WIDTH;
 const nav = NAV;
 const ItemIconCus = styled(ListItemIcon)(({ theme }) => ({
@@ -31,15 +35,41 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const NavChat = ({ open, handleDrawerClose }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const [data, setData] = React.useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const user = useSelector((state) => state.auth.userGit);
+  const error = useSelector((state) => state.auth.error);
+  useEffect(() => {
+    if (user) {
+      setData(user.dataUser);
+    }
+    else {
+      dispatch(handleGetUser());
+    }
+  }, [user, dispatch]);
+  useEffect(() => {
+    if (error) {
+      dispatch(resetStateAction());
+      handleToast('error', error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('git_token');
+      navigate('/login');
+    }
+  }, [error, navigate, dispatch]);
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('git_token');
+    handleToast('success', 'Đăng xuất thành công!');
+    dispatch(resetStateAction());
+    navigate('/');
+  };
   const openAvatar = Boolean(anchorEl);
   const id = openAvatar ? 'simple-popover' : undefined;
   return (
@@ -160,11 +190,10 @@ const NavChat = ({ open, handleDrawerClose }) => {
                 aria-describedby={id}
                 onClick={handleClick}
               >
-                <ListItemText primary={'User'} />
+                <ListItemText primary={data?.name} />
                 <ItemIconCus>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                  <Avatar alt="Remy Sharp" src={data?.avatar} />
                 </ItemIconCus>
-
               </ListItemButton>
               <Popover
                 id={id}
@@ -223,6 +252,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                           display: 'flex'
                         },
                       }}
+                      onClick={() => handleLogout()}
                     >
                       <ListItemText primary={'Logout'} />
                       <ItemIconCus>

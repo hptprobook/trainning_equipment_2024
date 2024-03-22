@@ -20,7 +20,7 @@ module.exports = {
         patterns: ['@mui/*/*/*'],
       },
     ],
-
+    'no-useless-catch': 0,
     'no-console': 1,
     'no-lonely-if': 1,
     'no-unused-vars': 1,
