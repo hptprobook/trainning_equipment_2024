@@ -5,6 +5,7 @@ import InputChat from '~/component/ChatComponent/InputChat';
 import React from 'react';
 import { useResponsive } from '~/config/reponsiveConfig';
 import NewChat from '~/component/ChatComponent/NewChat';
+import InputChatWithPrompt from '~/component/ChatComponent/InputChatWithPrompt';
 export const ChatIndex = () => {
   const heightRef = React.useRef(null);
   const [mainHeight, setMainHeight] = React.useState(0);
@@ -14,7 +15,15 @@ export const ChatIndex = () => {
     }
   }, [heightRef]);
   const mdReponsive = useResponsive('down', 'md');
-
+  const [addPrompt, setAddPrompt] = React.useState(false);
+  const [promt, setPromt] = React.useState({ title: '', content: '' });
+  const handleAddPrompt = (content) => {
+    setPromt(content);
+    setAddPrompt(true);
+  };
+  const handleCancel = () => {
+    setAddPrompt(false);
+  }
   return (
     <Grid
       container
@@ -37,10 +46,11 @@ export const ChatIndex = () => {
 
         }}
       >
-        <NewChat />
+        <NewChat handleAddPrompt={handleAddPrompt} />
       </Grid>
-      <Grid ref={heightRef} item xs={12}>
+      <Grid ref={heightRef} item xs={12} >
         <InputChat />
+        {addPrompt ? <InputChatWithPrompt promt={promt} handleGetChat={() => { }} handleCancel={handleCancel} /> : null}
       </Grid>
     </Grid>
   );

@@ -14,4 +14,15 @@
     line-height: 16px;
     font-size: 16px;
     outline: none;
+    background-color: inherit;
+
+}
+.container-chat-with-prompt{
+    z-index: 100;
+    background-color: #f9f9f9;
+    padding: 16px;
+    position: absolute;
+    border-radius: 16px;
+    bottom: 0;
+    width: 100%;
 }
