@@ -19,7 +19,6 @@ Router.route('/test')
   })
   .post(expController.addDocument);
 
-/* Compile Code APIs */
 Router.use('/compile', compileCodeRoute);
 // api login user
 Router.use('/account', APILogins);

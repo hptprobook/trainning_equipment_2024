@@ -2,81 +2,58 @@ import { Button, Card } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import './style.css';
 import { useEffect } from 'react';
-import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleGetAccessTokenGit, handleGetUserGit } from '~/redux/slices/authSlice';
+import { handleGetUser, handleGetUserGit } from '~/redux/slices/authSlice';
+import { handleToast } from '../../config/toast';
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const LoginView = () => {
-  const CLIENT_ID = '8edcd9a10c24432f67cb';
-  const BASE_URL = 'http://localhost:8000/api/account';
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get('code');
+  const gitError = queryParams.get('error');
   const tokenGit = useSelector((state) => state.auth.tokenGit);
   const userGit = useSelector((state) => state.auth.userGit);
+  const error = useSelector((state) => state.auth.error);
+  const status = useSelector((state) => state.auth.status);
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
-    dispatch(handleGetAccessTokenGit(code));
-  }, [code, dispatch]);
-  useEffect(() => {
-    if (tokenGit) {
-      localStorage.setItem('token', tokenGit.token);
-      dispatch(handleGetUserGit());
+    if (token !== null) {
+      navigate('/chat');
     }
-  }, [tokenGit]);
+  }, [token, navigate]);
   useEffect(() => {
-    console.log(userGit);
-  }, [userGit]);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const codeParams = new URLSearchParams(window.location.search).get(
-  //         'code'
-  //       );
-  //       if (codeParams) {
-  //         const {
-  //           data: { token },
-  //         } = await axios.get(
-  //           `${BASE_URL}/getAccessTokenGit?code=${codeParams}`
-  //         );
-  //         if (token) {
-  //           const { data: dataUser } = await axios.get(
-  //             `${BASE_URL}/getUserGit`,
-  //             {
-  //               headers: { Authorization: `Bearer ${token}` },
-  //             }
-  //           );
-  //           if (dataUser) {
-  //             const response = await axios.post(`${BASE_URL}/addUserFromGit`, {
-  //               name: dataUser.name,
-  //               avatar: dataUser.avatar_url,
-  //               idGit: dataUser.id,
-  //             });
-  //             console.log(response.data);
-  //           }
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const run = async () => {
-  //     const tokenUser =
-  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidHVodjUiLCJpZEdpdCI6MTI2NDk1ODcwLCJpYXQiOjE3MTA4NTAwMDYsImV4cCI6MTcxMzQ0MjAwNn0.DmoZbw86a24eKONVfR8Y4HKFOfz3jNZnW7M59IaHCVc';
-  //     const dataUser = await axios.get(`${BASE_URL}/getUser`, {
-  //       headers: {
-  //         'auth-token': tokenUser,
-  //       },
-  //     });
-  //     console.log(dataUser);
-  //   };
-  //   run();
-  // }, []);
-
+    if (code) {
+      dispatch(handleGetUserGit(code));
+    }
+    if (gitError) {
+      handleToast('error', 'Đăng nhập thất bại!');
+    }
+  }, [code, gitError, dispatch]);
+  useEffect(() => {
+    if (tokenGit && status === 'success') {
+      localStorage.setItem('git_token', tokenGit.addUser.tokenUser);
+      // dispatch(resetState());
+      setTimeout(() => {
+        dispatch(handleGetUser());
+      }, 1000);
+    }
+  }, [tokenGit, status, dispatch]);
+  useEffect(() => {
+    if (userGit) {
+      handleToast('success', 'Đăng nhập thành công!');
+      localStorage.setItem('token', userGit.dataUser.curentToken);
+      navigate('/chat');
+    }
+  }, [userGit, navigate]);
+  useEffect(() => {
+    if (error) {
+      handleToast('error', error);
+    }
+  }, [error]);
   const handleLoginGit = (e) => {
     e.preventDefault();
     window.location.assign(
