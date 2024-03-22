@@ -7,7 +7,7 @@ import ChatIndexPage from '~/pages/Chat';
 import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
 import LoginGit from '~/test/test';
-
+import Chat from '~/test/chat';
 const MainRoute = () => {
   let element = useRoutes([
     {
@@ -30,8 +30,7 @@ const MainRoute = () => {
       ),
       children: [
         {
-          path: 'compiler',
-          element: <CompilerPage />,
+          element: <CompilerPage />, index: true,
         },
       ],
     },
@@ -42,6 +41,10 @@ const MainRoute = () => {
     {
       path: '*',
       element: <NotFoundPage />,
+    },
+    {
+      path: 'chatgpt',
+      element: <Chat />,
     },
     {
       path: 'test',

@@ -9,66 +9,51 @@ const getUser = async (req, res) => {
   const dataUser = await userService.getUser(idGitUser);
   return res.status(StatusCodes.OK).json({
     success: true,
-    data: dataUser,
+    dataUser,
   });
 };
 
-const addUserFromGit = async (req, res) => {
-  try {
-    const { name, avatar, idGit } = req.body;
-    if (!name.trim() || !avatar.trim() || !idGit) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        mgs: 'Không được bỏ trống',
-      });
-    }
-    const tokenUser = jwt.sign({ name, idGit }, env.TOKEN_SECRET, {
-      expiresIn: 60 * 60 * 24 * 30,
-    });
-    const once = await userService.onceUser(idGit);
-    if (once) {
-      await userService.updateToken(once.idGit, tokenUser);
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        mgs: '!register',
-        tokenUser: tokenUser,
-      });
-    }
-    const dataUser = {
-      name,
-      avatar,
-      idGit: Number(idGit),
-      curentToken: tokenUser,
-      role: Number(idGit) == 126495870 ? 'admin' : 'user',
-      createdAt: new Date(),
+const addUserFromGit = async (avatar, idGit, name) => {
+  if (!name || !avatar || !idGit) {
+    return {
+      success: false,
+      mgs: 'Không được bỏ trống',
     };
-    await userService.addUserFromGit(dataUser);
-    return res.status(StatusCodes.CREATED).json({
-      success: true,
-      mgs: 'Login + register',
-      tokenUser: tokenUser,
-    });
-  } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message });
   }
+  const tokenUser = jwt.sign({ name, idGit }, env.TOKEN_SECRET, {
+    expiresIn: 60 * 60 * 24 * 30,
+  });
+  const once = await userService.onceUser(idGit);
+  if (once) {
+    await userService.updateToken(once.idGit, tokenUser);
+    return {
+      success: true,
+      mgs: '!register',
+      tokenUser,
+    };
+  }
+  const dataUser = {
+    name,
+    avatar,
+    idGit: Number(idGit),
+    curentToken: tokenUser,
+    role: Number(idGit) == 126495870 ? 'admin' : 'user',
+    createdAt: new Date(),
+  };
+  await userService.addUserFromGit(dataUser);
+  return {
+    success: true,
+    mgs: 'Login + register',
+    tokenUser,
+  };
 };
 
-const getUserGit = async (req, res) => {
-  try {
-    const token = req.get('Authorization'); // Lấy Baerer token từ header
-    const options = { headers: { Authorization: token } };
-    const response = await axios.get('https://api.github.com/user', options);
-    const userData = response.data;
-    if (userData) {
-      const { avatar_url, id, name } = userData;
-      res.status(StatusCodes.OK).json({ avatar_url, id, name });
-    }
-  } catch (error) {
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message });
+const getUserGit = async (token) => {
+  const options = { headers: { Authorization: `Bearer ${token}` } };
+  const response = await axios.get('https://api.github.com/user', options);
+  const userDataFromGit = response.data;
+  if (userDataFromGit) {
+    return userDataFromGit;
   }
 };
 
@@ -85,20 +70,28 @@ const getAccessTokenGit = async (req, res) => {
       axios
         .post('https://github.com/login/oauth/access_token', body, otps)
         .then((_res) => _res.data.access_token)
-        .then((token) => {
-          res.status(StatusCodes.OK).json({ token: token });
+        .then(async (token) => {
+          if (token) {
+            const userData = await getUserGit(token);
+            const { avatar_url, id, name } = userData;
+            const addUser = await addUserFromGit(avatar_url, id, name);
+            res.status(StatusCodes.OK).json({ success: true, addUser });
+          } else {
+            res.status(StatusCodes.BAD_REQUEST).json({
+              success: false,
+              mgs: 'Lỗi code hoặc code đã sử dụng',
+            });
+          }
         });
     }
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message });
+      .json({ error: error.message, success: false });
   }
 };
 
 export const userController = {
-  addUserFromGit,
-  getUserGit,
   getAccessTokenGit,
   getUser,
 };

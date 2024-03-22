@@ -11,25 +11,18 @@ const LoginGit = () => {
           'code'
         );
         if (codeParams) {
-          const {
-            data: { token },
-          } = await axios.get(
-            `${BASE_URL}/getAccessTokenGit?code=${codeParams}`
+          // get token user
+          const dataToken = await axios.get(
+            `${BASE_URL}/getTokenUser?code=${codeParams}`
           );
-          if (token) {
-            const { data: dataUser } = await axios.get(
-              `${BASE_URL}/getUserGit`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-            if (dataUser) {
-              const response = await axios.post(`${BASE_URL}/addUserFromGit`, {
-                name: dataUser.name,
-                avatar: dataUser.avatar_url,
-                idGit: dataUser.id,
-              });
-              console.log(response.data);
+          if (dataToken) {
+            if (dataToken.data.success) {
+              // token
+              const token = dataToken.data.addUser.tokenUser;
+              console.log(token);
+              // get data user from db
+              const user = await getUser(token);
+              console.log(user);
             }
           }
         }
@@ -40,19 +33,14 @@ const LoginGit = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const run = async () => {
-  //     const tokenUser =
-  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidHVodjUiLCJpZEdpdCI6MTI2NDk1ODcwLCJpYXQiOjE3MTA4NTAwMDYsImV4cCI6MTcxMzQ0MjAwNn0.DmoZbw86a24eKONVfR8Y4HKFOfz3jNZnW7M59IaHCVc';
-  //     const dataUser = await axios.get(`${BASE_URL}/getUser`, {
-  //       headers: {
-  //         'auth-token': tokenUser,
-  //       },
-  //     });
-  //     console.log(dataUser);
-  //   };
-  //   run();
-  // }, []);
+  const getUser = async (tokenUser) => {
+    const dataUser = await axios.get(`${BASE_URL}/getUser`, {
+      headers: {
+        'auth-token': tokenUser,
+      },
+    });
+    return dataUser;
+  };
 
   const handleLoginGit = (e) => {
     e.preventDefault();
