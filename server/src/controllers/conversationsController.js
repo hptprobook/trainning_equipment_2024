@@ -63,17 +63,27 @@ const delConversations = async (req, res) => {
 
 const converUpdateIsArchive = async (req, res) => {
   try {
-    const { idConver } = req.body;
+    const { idConver, archive = false } = req.body;
+
     if (!idConver) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         mgs: 'Không bỏ trống',
       });
     }
-    const data = await conversationsService.conversationsIsArchive(idConver);
+    if (typeof archive != 'boolean') {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        mgs: 'data archive is not boolean',
+      });
+    }
+    const data = await conversationsService.conversationsIsArchive(
+      idConver,
+      archive
+    );
     return res.status(StatusCodes.OK).json({
       success: true,
-      mgs: 'is Archive',
+      mgs: 'Update archive success',
       data: data,
     });
   } catch (error) {
@@ -82,29 +92,6 @@ const converUpdateIsArchive = async (req, res) => {
       .json({ error: error.message, success: false });
   }
 };
-
-const converUpdateIsNotArchive = async (req, res) => {
-  try {
-    const { idConver } = req.body;
-    if (!idConver) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        mgs: 'Không bỏ trống',
-      });
-    }
-    const data = await conversationsService.conversationsIsNotArchive(idConver);
-    return res.status(StatusCodes.OK).json({
-      success: true,
-      mgs: 'is not Archive',
-      data: data,
-    });
-  } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message, success: false });
-  }
-};
-
 const converUpdateTitle = async (req, res) => {
   try {
     const { idConver, title } = req.body;
@@ -202,7 +189,7 @@ export const conversationsController = {
   addConversations,
   delConversations,
   converUpdateIsArchive,
-  converUpdateIsNotArchive,
+  // converUpdateIsNotArchive,
   converUpdateTitle,
   converGetAll,
   converGetAllIsArchive,
