@@ -2,7 +2,9 @@ import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { expController } from '~/controllers/expController';
 import { compileCodeRoute } from './compileCodeRouter';
-
+import { APILogins } from './login';
+import { APIConversations } from './conversationRouter';
+import { APIMessages } from './messageRouter';
 const Router = express.Router();
 
 Router.get('/status', async (req, res) => {
@@ -19,5 +21,11 @@ Router.route('/test')
 
 /* Compile Code APIs */
 Router.use('/compile', compileCodeRoute);
+// api login user
+Router.use('/account', APILogins);
+// api conversations
+Router.use('/conversations', APIConversations);
+// api messages
+Router.use('/messages', APIMessages);
 
 export const APIs = Router;

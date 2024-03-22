@@ -9,11 +9,8 @@ Router.post('/add', verifyToken, (req, res) =>
 Router.delete('/delete', verifyToken, (req, res) =>
   conversationsController.delConversations(req, res)
 );
-Router.patch('/isArchive', verifyToken, (req, res) =>
+Router.patch('/updateArchive', verifyToken, (req, res) =>
   conversationsController.converUpdateIsArchive(req, res)
-);
-Router.patch('/isNotArchive', verifyToken, (req, res) =>
-  conversationsController.converUpdateIsNotArchive(req, res)
 );
 Router.patch('/converUpdateTitle', verifyToken, (req, res) =>
   conversationsController.converUpdateTitle(req, res)
