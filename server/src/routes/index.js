@@ -19,7 +19,7 @@ Router.route('/test')
   })
   .post(expController.addDocument);
 
-Router.use('/compile', compileCodeRoute);
+Router.use('/compiler', compileCodeRoute);
 // api login user
 Router.use('/account', APILogins);
 // api conversations
