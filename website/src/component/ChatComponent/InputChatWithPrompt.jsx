@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import React from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import './style.css';
@@ -36,33 +36,32 @@ const styleWriting = [
   }
 ];
 
-const InputChat = () => {
+const InputChatWithPrompt = ({ promt, handleGetChat, handleCancel }) => {
   const handleValue = (value) => {
     console.log(value);
   };
 
   return (
     <Box
-      className='container-chat-input'
+      className='container-chat-with-prompt'
     >
-      <Stack
-        spacing={2}
-        direction="row"
-        sx={{
-          padding: '12px',
-        }}
-      >
-        <OptionSelect label={'Language'} option={languageOption} handle={handleValue} />
-        <OptionSelect label={'Style Writing'} option={styleWriting} handle={handleValue} />
-      </Stack>
+      <Typography sx={{ fontSize: 17 }} color="text.secondary" padding={2} gutterBottom>
+        {promt.title}
+      </Typography>
+      <Typography variant="body2" padding={2}>
+        {promt.content}
+      </Typography>
       <div className='chat-input'>
-        <input placeholder='Type your question' type="text" className='input' />
+        <input placeholder='Type your content' type="text" className='input' />
         <IconButton aria-label="send">
           <ArrowUpwardIcon />
         </IconButton>
       </div>
+      <Button sx={{ margin: 2 }} onClick={handleCancel}>
+        Cancel
+      </Button>
     </Box>
   );
 };
 
-export default InputChat;
+export default InputChatWithPrompt;

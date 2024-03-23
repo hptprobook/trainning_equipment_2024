@@ -51,13 +51,16 @@ const NavChat = ({ open, handleDrawerClose }) => {
       dispatch(handleGetUser());
     }
   }, [user, dispatch]);
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
   useEffect(() => {
     if (error) {
       dispatch(resetStateAction());
       handleToast('error', error);
       localStorage.removeItem('token');
       localStorage.removeItem('git_token');
-      navigate('/login');
+      handleNavigate('/login')
     }
   }, [error, navigate, dispatch]);
   const handleClose = () => {
@@ -155,6 +158,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     display: 'flex'
                   },
                 }}
+                onClick={() => handleNavigate('/chat')}
               >
                 <ListItemText primary={'New Chat'} />
                 <ItemIconCus>
