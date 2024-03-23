@@ -7,13 +7,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useNavigate } from 'react-router-dom';
 
-export default function DialogSimple({ title, description, isOpen = false }) {
-  const [open, setOpen] = React.useState(isOpen);
+export default function DialogSimple({ title, description, open = false, setOpen }) {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    setOpen(isOpen);
-  }, [isOpen]);
+    setOpen(open);
+  }, [open, setOpen]);
 
   const handleClose = () => {
     setOpen(false);
