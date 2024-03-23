@@ -8,6 +8,7 @@ import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
 import LoginGit from '~/test/test';
 import Chat from '~/test/chat';
+import Excel from '~/test/excel';
 const MainRoute = () => {
   let element = useRoutes([
     {
@@ -45,6 +46,10 @@ const MainRoute = () => {
     {
       path: 'chatgpt',
       element: <Chat />,
+    },
+    {
+      path: 'excel',
+      element: <Excel />,
     },
     {
       path: 'test',
