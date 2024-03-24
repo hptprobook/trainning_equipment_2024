@@ -4,10 +4,8 @@ import { ObjectId } from 'mongodb';
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators';
 
 const SAVE_CODE_SCHEMA = Joi.object({
-  userId: Joi.string()
-    .required()
-    .pattern(OBJECT_ID_RULE)
-    .message(OBJECT_ID_RULE_MESSAGE),
+  userId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+  title: Joi.string().required().max(256),
   code: Joi.string().required().max(2500),
   language: Joi.string().required().valid('py', 'cpp', 'php', 'js'),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
@@ -48,10 +46,7 @@ const findOneById = async (id) => {
 
 const listCodeSaved = async (userId) => {
   try {
-    const result = await GET_DB()
-      .collection('codeSnippets')
-      .find({ userId: userId, _destroy: false })
-      .toArray();
+    const result = await GET_DB().collection('codeSnippets').find({ userId: userId, _destroy: false }).toArray();
 
     return result;
   } catch (error) {
@@ -75,11 +70,7 @@ const shareCode = async (codeId) => {
   try {
     const updateResult = await GET_DB()
       .collection('codeSnippets')
-      .findOneAndUpdate(
-        { _id: new ObjectId(codeId) },
-        { $set: { isPublic: true } },
-        { returnDocument: 'after' }
-      );
+      .findOneAndUpdate({ _id: new ObjectId(codeId) }, { $set: { isPublic: true } }, { returnDocument: 'after' });
 
     return updateResult || null;
   } catch (error) {
@@ -129,11 +120,7 @@ const updateCode = async (codeId, updateData) => {
 
     const updateResult = await GET_DB()
       .collection('codeSnippets')
-      .findOneAndUpdate(
-        { _id: new ObjectId(codeId) },
-        { $set: updateData },
-        { returnDocument: 'after' }
-      );
+      .findOneAndUpdate({ _id: new ObjectId(codeId) }, { $set: updateData }, { returnDocument: 'after' });
 
     if (!updateResult) {
       throw new Error('Failed to update code snippet');
@@ -145,7 +132,7 @@ const updateCode = async (codeId, updateData) => {
   }
 };
 
-export const compilerModal = {
+export const compilerModel = {
   saveCode,
   findOneById,
   listCodeSaved,
