@@ -54,4 +54,10 @@ const updateCode = async (codeId, reqBody) => {
   return updatedCode;
 };
 
-export const compilerService = { saveCode, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode };
+const deleteCodeSaved = async (codeId) => {
+  await compilerModel.deleteOneById(codeId);
+
+  return { deleteResult: 'Deleted successfully!' };
+};
+
+export const compilerService = { saveCode, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode, deleteCodeSaved };

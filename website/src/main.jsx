@@ -9,18 +9,19 @@ import ThemeProvider from './theme/index.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from 'react-redux';
 import store from './redux/store.js';
+import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HelmetProvider>
     <CssBaseLine />
     <BrowserRouter>
       <Suspense>
-      <Provider store={store}>
-        <ThemeProvider>
-          <ToastContainer theme="colored" hideProgressBar position="bottom-left" autoClose={3000} closeOnClick />
-          <App />
-        </ThemeProvider>
-      </Provider>
+        <Provider store={store}>
+          <ThemeProvider>
+            <ToastContainer theme="colored" hideProgressBar position="bottom-left" autoClose={3000} closeOnClick />
+            <App />
+          </ThemeProvider>
+        </Provider>
       </Suspense>
     </BrowserRouter>
   </HelmetProvider>

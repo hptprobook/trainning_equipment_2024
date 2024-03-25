@@ -9,23 +9,47 @@ import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 
-export default function ListCodeDrawer({ open = false, toggleDrawer }) {
+export default function ListCodeDrawer({ open = false, toggleDrawer, codesSavedData }) {
+  if (!codesSavedData) return <Box>Loading ...</Box>;
+
   const DrawerList = (
     <Box sx={{ width: 350 }} role="presentation">
       <Typography variant="h6" textAlign={'center'} pt={2} color="initial">
         Saved code snippets
       </Typography>
       <List>
-        <Link to={'/'}>
-          <ListItem>
-            <ListItemText primary={'Hello World'} />
+        {codesSavedData?.map((data) => (
+          <ListItem
+            key={data?._id}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Link
+              style={{
+                width: '100%',
+                textDecoration: 'none',
+                color: '#333',
+              }}
+              to={`/compiler/${data?._id}`}
+            >
+              <ListItemText
+                sx={{
+                  ':hover': {
+                    color: 'green',
+                  },
+                }}
+                primary={data?.title}
+              />
+            </Link>
             <Tooltip title="Delete">
               <IconButton onClick={() => alert('Delete')} edge="start" aria-label="delete">
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
           </ListItem>
-        </Link>
+        ))}
       </List>
     </Box>
   );

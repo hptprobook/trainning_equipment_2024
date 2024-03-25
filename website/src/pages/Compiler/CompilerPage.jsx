@@ -7,14 +7,13 @@ import { runOnlineCompiler } from '~/APIs';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { saveCode } from '~/redux/slices/compilerSlice';
+import { codesSaved, saveCode } from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
 import DialogSimple from '~/component/Dialog/DialogSimple';
 import ResponsiveBox from '~/component/ResponsiveBox/ResponsiveBox';
 import CompilerOutput from '~/layout/compiler/CompilerOutput';
 import CompilerHeader from '~/layout/compiler/CompilerHeader';
 import EditorAction from '~/layout/compiler/EditorAction';
-import FormDialog from '~/component/Dialog/DialogWithForm';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -40,8 +39,13 @@ const CompilerPage = () => {
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
   // const { data, status, error } = useSelector((state) => state.compiler);
+  const codesSavedData = useSelector((state) => state.compiler.codesSavedData);
   const [openDialogNotAuth, setOpenDialogNotAuth] = useState(false);
   const isAuth = useAuth();
+
+  useEffect(() => {
+    dispatch(codesSaved());
+  }, [dispatch]);
 
   const handleCheckAI = () => {
     navigate('/chat', { state: { sourceCode } });
@@ -226,6 +230,7 @@ const CompilerPage = () => {
                 setCompileOutput={setCompileOutput}
                 theme={theme}
                 isAuth={isAuth}
+                codesSavedData={codesSavedData}
               />
             </Grid>
           </Grid>
