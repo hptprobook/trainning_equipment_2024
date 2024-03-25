@@ -8,7 +8,11 @@ import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
 import LoginGit from '~/test/test';
 import Chat from '~/test/chat';
+import ChatDetailPage from '~/pages/Chat/ChatDetailPage';
 import Excel from '~/test/excel';
+import CompilerDetailPage from '~/pages/Compiler/_id';
+import CompilerPublicDetailPage from '~/pages/Compiler/public/_id';
+
 const MainRoute = () => {
   let element = useRoutes([
     {
@@ -19,7 +23,10 @@ const MainRoute = () => {
           </React.Suspense>
         </ChatLayout>
       ),
-      children: [{ element: <ChatIndexPage />, path: '/chat' }],
+      children: [
+        { element: <ChatIndexPage />, path: '/chat' },
+        { element: <ChatDetailPage />, path: '/chat/:id' },
+      ],
     },
     {
       element: (
@@ -31,7 +38,16 @@ const MainRoute = () => {
       ),
       children: [
         {
-          element: <CompilerPage />, index: true,
+          element: <CompilerPage />,
+          index: true,
+        },
+        {
+          path: '/compiler/:id',
+          element: <CompilerDetailPage />,
+        },
+        {
+          path: '/compiler/public/:id',
+          element: <CompilerPublicDetailPage />,
         },
       ],
     },

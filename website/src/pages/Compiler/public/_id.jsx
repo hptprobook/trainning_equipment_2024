@@ -8,7 +8,7 @@ import { runOnlineCompiler } from '~/APIs';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { codesSaved, getDetails, updateCode } from '~/redux/slices/compilerSlice';
+import { publicCode, updateCode } from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
 import DialogSimple from '~/component/Dialog/DialogSimple';
 import ResponsiveBox from '~/component/ResponsiveBox/ResponsiveBox';
@@ -26,22 +26,22 @@ import Button from '@mui/material/Button';
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
 
-export default function CompilerDetailPage() {
+export default function CompilerPublicDetailPage() {
   const { id } = useParams();
-  const details = useSelector((state) => state.compiler.details);
+  const publicDetails = useSelector((state) => state.compiler.publicDetails);
   const monaco = useMonaco();
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [sourceCode, setSourceCode] = useState('');
-  const [title, setTitle] = useState(details ? details.title : '');
+  const [title, setTitle] = useState(publicDetails ? publicDetails.title : '');
   const [openCodeTitleForm, setOpenCodeTitleForm] = useState(false);
   const [isCompiling, setIsCompiling] = useState(false);
   const [compileOutput, setCompileOutput] = useState('');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
   // const { data, status, error } = useSelector((state) => state.compiler);
-  const selectedLanguage = details ? convertShortLangToMonacoLang(details.language) : 'javascript';
+  const selectedLanguage = publicDetails ? convertShortLangToMonacoLang(publicDetails.language) : 'javascript';
   const codesSavedData = useSelector((state) => state.compiler.codesSavedData);
   const [openDialogNotAuth, setOpenDialogNotAuth] = useState(false);
   const isAuth = useAuth();
@@ -55,20 +55,19 @@ export default function CompilerDetailPage() {
   };
 
   useEffect(() => {
-    dispatch(codesSaved());
-    setTitle(details?.title);
-    setSourceCode(details?.sourceCode);
-  }, [dispatch, details]);
+    setTitle(publicDetails?.title);
+    setSourceCode(publicDetails?.sourceCode);
+  }, [dispatch, publicDetails]);
 
   useEffect(() => {
-    if (editorRef.current && details) {
+    if (editorRef.current && publicDetails) {
       const editor = editorRef.current;
 
       const position = editor.getPosition();
       const range = editor.getSelection();
 
-      monaco.editor.setModelLanguage(editorRef.current.getModel(), convertShortLangToMonacoLang(details.language));
-      editorRef.current.setValue(details.code);
+      monaco.editor.setModelLanguage(editorRef.current.getModel(), convertShortLangToMonacoLang(publicDetails.language));
+      editorRef.current.setValue(publicDetails.code);
 
       editor.setPosition(position);
       editor.setSelection(range);
@@ -76,7 +75,7 @@ export default function CompilerDetailPage() {
       editor.getAction('editor.action.formatDocument').run();
       monaco.editor.setTheme(theme === 'light' ? 'vs' : 'vs-dark');
     }
-  }, [selectedLanguage, monaco, theme, details]);
+  }, [selectedLanguage, monaco, theme, publicDetails]);
 
   const handleRunCode = () => {
     const languageForServer = convertLanguage(selectedLanguage);
@@ -137,7 +136,7 @@ export default function CompilerDetailPage() {
   };
 
   useEffect(() => {
-    dispatch(getDetails({ id }));
+    dispatch(publicCode(id));
   }, [id, dispatch]);
 
   return (
@@ -232,12 +231,12 @@ export default function CompilerDetailPage() {
                 // setSelectedLanguage={setSelectedLanguage}
                 setTheme={setTheme}
                 theme={theme}
-                title={details?.title}
+                title={publicDetails?.title}
               />
               <Editor
                 height={`calc(100vh - ${HEADER_HEIGHT} - ${HEADER_HEIGHT} )`}
                 defaultLanguage={selectedLanguage}
-                defaultValue={details?.code}
+                defaultValue={publicDetails?.code}
                 onChange={handleEditorChange}
                 onMount={(editor) => (editorRef.current = editor)}
                 options={{
@@ -261,7 +260,8 @@ export default function CompilerDetailPage() {
                 codesSavedData={codesSavedData}
                 isDetails={true}
                 id={id}
-                isPublic={details?.isPublic}
+                isPublic={publicDetails?.isPublic}
+                isPublicPage={true}
               />
             </Grid>
           </Grid>
