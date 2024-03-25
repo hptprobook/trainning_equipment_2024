@@ -132,6 +132,18 @@ const updateCode = async (codeId, updateData) => {
   }
 };
 
+const deleteOneById = async (id) => {
+  try {
+    const result = await GET_DB()
+      .collection('codeSnippets')
+      .deleteOne({ _id: new ObjectId(id) });
+    if (!result) throw new Error('Not found');
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const compilerModel = {
   saveCode,
   findOneById,
@@ -140,4 +152,5 @@ export const compilerModel = {
   shareCode,
   codePublicDetail,
   updateCode,
+  deleteOneById,
 };

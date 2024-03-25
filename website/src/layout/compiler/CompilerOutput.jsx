@@ -3,16 +3,39 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ListCodeDrawer from '~/component/Drawer/Drawer';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { shareCode } from '~/redux/slices/compilerSlice';
+import { toast } from 'react-toastify';
 
-const CompilerOutput = ({ height, theme, setCompileOutput, handleCheckAI, isCompiling, compileOutput, isAuth }) => {
+const CompilerOutput = ({
+  height,
+  theme,
+  setCompileOutput,
+  handleCheckAI,
+  isCompiling,
+  compileOutput,
+  isAuth,
+  codesSavedData,
+  isDetails,
+  id,
+  isPublic,
+}) => {
+  const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [isDissabled, setDissabled] = useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen);
+  };
+  const handlePublicCode = () => {
+    setDissabled(true);
+    dispatch(shareCode(id)).then(() => {
+      toast.success('Code is published!', { autoClose: 1000 });
+    });
   };
 
   return (
     <>
-      <ListCodeDrawer setOpen={setOpenDrawer} open={openDrawer} toggleDrawer={toggleDrawer} />
+      <ListCodeDrawer setOpen={setOpenDrawer} open={openDrawer} toggleDrawer={toggleDrawer} codesSavedData={codesSavedData} />
       <Box
         sx={{
           width: '100%',
@@ -42,6 +65,11 @@ const CompilerOutput = ({ height, theme, setCompileOutput, handleCheckAI, isComp
           {isAuth && (
             <Button onClick={toggleDrawer(true)} size="small" variant="contained">
               List
+            </Button>
+          )}
+          {isDetails && !isPublic && (
+            <Button onClick={handlePublicCode} disabled={isDissabled} size="small" variant="contained">
+              Public
             </Button>
           )}
         </Box>

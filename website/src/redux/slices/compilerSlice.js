@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import CompilerServices from '~/services/compiler.service';
 
 // Async thunks
-export const codeSaved = createAsyncThunk('compiler/codeSaved', async (_, { rejectWithValue }) => {
+export const codesSaved = createAsyncThunk('compiler/codesSaved', async (_, { rejectWithValue }) => {
   try {
-    return await CompilerServices.codeSaved();
+    return await CompilerServices.codesSaved();
   } catch (err) {
     return rejectWithValue(err.response?.data);
   }
@@ -26,9 +26,9 @@ export const runCode = createAsyncThunk('compiler/run', async (data, { rejectWit
   }
 });
 
-export const getDetails = createAsyncThunk('compiler/getDetails', async ({ id, data }, { rejectWithValue }) => {
+export const getDetails = createAsyncThunk('compiler/getDetails', async ({ id }, { rejectWithValue }) => {
   try {
-    return await CompilerServices.getDetails(id, data);
+    return await CompilerServices.getDetails(id);
   } catch (err) {
     return rejectWithValue(err.response?.data);
   }
@@ -50,10 +50,36 @@ export const publicCode = createAsyncThunk('compiler/publicCode', async (id, { r
   }
 });
 
+export const updateCode = createAsyncThunk('compiler/updateCode', async ({ id, data }, { rejectWithValue }) => {
+  try {
+    return await CompilerServices.updateCode(id, data);
+  } catch (err) {
+    return rejectWithValue(err.response?.data);
+  }
+});
+
+export const deleteCode = createAsyncThunk('compiler/deleteCode', async (id, { rejectWithValue }) => {
+  try {
+    return await CompilerServices.handleRequest('delete', `compiler/${id}`);
+  } catch (err) {
+    return rejectWithValue(err.response?.data);
+  }
+});
+
 // Compiler slice
 const compilerSlice = createSlice({
   name: 'compiler',
-  initialState: { data: null, status: 'idle', error: null },
+  initialState: {
+    data: null,
+    codesSavedData: null,
+    details: null,
+    updatedCode: null,
+    codeDeleted: false,
+    isPublishing: false,
+    isPublished: false,
+    status: 'idle',
+    error: null,
+  },
   reducers: {
     resetCompilerState: (state) => {
       state.data = null;
@@ -64,14 +90,14 @@ const compilerSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // codeSaved async thunk
-      .addCase(codeSaved.pending, (state) => {
+      .addCase(codesSaved.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(codeSaved.fulfilled, (state, action) => {
+      .addCase(codesSaved.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.data = action.payload;
+        state.codesSavedData = action.payload;
       })
-      .addCase(codeSaved.rejected, (state, action) => {
+      .addCase(codesSaved.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
@@ -105,7 +131,7 @@ const compilerSlice = createSlice({
       })
       .addCase(getDetails.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.data = action.payload;
+        state.details = action.payload;
       })
       .addCase(getDetails.rejected, (state, action) => {
         state.status = 'failed';
@@ -126,12 +152,38 @@ const compilerSlice = createSlice({
       // publicCode async thunk
       .addCase(publicCode.pending, (state) => {
         state.status = 'loading';
+        state.isPublishing = true;
       })
       .addCase(publicCode.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload;
+        state.isPublishing = false;
+        state.isPublished = true;
       })
       .addCase(publicCode.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+        state.isPublishing = false;
+      })
+      .addCase(updateCode.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateCode.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.updatedCode = action.payload;
+      })
+      .addCase(updateCode.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(deleteCode.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(deleteCode.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.codeDeleted = true;
+      })
+      .addCase(deleteCode.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });
