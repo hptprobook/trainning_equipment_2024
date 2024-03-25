@@ -11,6 +11,7 @@ import Chat from '~/test/chat';
 import ChatDetailPage from '~/pages/Chat/ChatDetailPage';
 import Excel from '~/test/excel';
 import CompilerDetailPage from '~/pages/Compiler/_id';
+import CompilerPublicDetailPage from '~/pages/Compiler/public/_id';
 
 const MainRoute = () => {
   let element = useRoutes([
@@ -40,24 +41,13 @@ const MainRoute = () => {
           element: <CompilerPage />,
           index: true,
         },
-      ],
-    },
-    {
-      element: (
-        <CompilerLayout>
-          <React.Suspense>
-            <Outlet />
-          </React.Suspense>
-        </CompilerLayout>
-      ),
-      children: [
-        {
-          element: <CompilerPage />,
-          index: true,
-        },
         {
           path: '/compiler/:id',
           element: <CompilerDetailPage />,
+        },
+        {
+          path: '/compiler/public/:id',
+          element: <CompilerPublicDetailPage />,
         },
       ],
     },

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { shareCode } from '~/redux/slices/compilerSlice';
 import { toast } from 'react-toastify';
+import { CLIENT_ROOT } from '~/utils/constants';
 
 const CompilerOutput = ({
   height,
@@ -19,6 +20,7 @@ const CompilerOutput = ({
   isDetails,
   id,
   isPublic,
+  isPublicPage = false,
 }) => {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -26,16 +28,30 @@ const CompilerOutput = ({
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen);
   };
+
   const handlePublicCode = () => {
     setDissabled(true);
     dispatch(shareCode(id)).then(() => {
       toast.success('Code is published!', { autoClose: 1000 });
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${CLIENT_ROOT}/compiler/public/${id}`).then(() => {
+          toast.info('Public URL has been copied!', {
+            autoClose: 3000,
+          });
+        });
+      } else {
+        alert('Clipboard API not available.');
+      }
     });
   };
 
   return (
     <>
-      <ListCodeDrawer setOpen={setOpenDrawer} open={openDrawer} toggleDrawer={toggleDrawer} codesSavedData={codesSavedData} />
+      {!isPublicPage ? (
+        <ListCodeDrawer setOpen={setOpenDrawer} open={openDrawer} toggleDrawer={toggleDrawer} codesSavedData={codesSavedData} />
+      ) : (
+        ''
+      )}
       <Box
         sx={{
           width: '100%',

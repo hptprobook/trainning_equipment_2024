@@ -73,10 +73,9 @@ const compilerSlice = createSlice({
     data: null,
     codesSavedData: null,
     details: null,
+    publicDetails: null,
     updatedCode: null,
     codeDeleted: false,
-    isPublishing: false,
-    isPublished: false,
     status: 'idle',
     error: null,
   },
@@ -152,18 +151,14 @@ const compilerSlice = createSlice({
       // publicCode async thunk
       .addCase(publicCode.pending, (state) => {
         state.status = 'loading';
-        state.isPublishing = true;
       })
       .addCase(publicCode.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.data = action.payload;
-        state.isPublishing = false;
-        state.isPublished = true;
+        state.publicDetails = action.payload;
       })
       .addCase(publicCode.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-        state.isPublishing = false;
       })
       .addCase(updateCode.pending, (state) => {
         state.status = 'loading';
