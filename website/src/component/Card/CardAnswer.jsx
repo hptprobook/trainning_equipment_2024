@@ -3,7 +3,6 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { useResponsive } from '~/config/reponsiveConfig';
-
 const CardAnswer = ({ name, avatar, answer }) => {
   const mdReponsive = useResponsive('down', 'sm');
   return (
@@ -11,6 +10,7 @@ const CardAnswer = ({ name, avatar, answer }) => {
       style={{
         display: 'flex',
         flexDirection: 'row',
+        width: mdReponsive ? 'calc(100% - 32px)' : 'calc(800px - 16px)',
       }}
     >
       <Avatar
@@ -20,9 +20,8 @@ const CardAnswer = ({ name, avatar, answer }) => {
       />
       <Box
         sx={{
-          letterSpacing: 0.5,
-          width: mdReponsive ? '100%' : 'calc(800px - 32px)',
-
+          width: mdReponsive ? 'calc(100% - 32px)' : 'calc(800px - 48px)',
+          marginLeft: 1,
         }}
       >
         <Typography
@@ -32,29 +31,18 @@ const CardAnswer = ({ name, avatar, answer }) => {
         >
           {name}
         </Typography>
-        {/* <Box
-          sx={{
-            wordWrap: 'break-word',
-            whiteSpace: 'pre-wrap',
-            overflowWrap: 'break-word',
-            fontSize: 14,
-            letterSpacing: 0.5,
-            width: mdReponsive ? '100%' : 'calc(800px - 32px)',
+        <div
+          style={{
+            width: '100%',
+            overflowY: 'hidden',
+            overflowX: 'auto',
+            '&::WebkitScrollbarTrackPiece:end': {
+              width: 0,
+              display: 'none'
+            }
           }}
         >
           {answer}
-        </Box> */}
-        <div
-        style={{
-            wordWrap: 'break-word',
-            whiteSpace: 'pre-wrap',
-            overflowWrap: 'break-word',
-            fontSize: 14,
-            letterSpacing: 0.5,
-            width: mdReponsive ? 'calc(100% - 32px)' : 'calc(800px - 32px)',
-        }}
-        >
-            {answer}
         </div>
       </Box>
     </div>

@@ -37,30 +37,46 @@ const styleWriting = [
 ];
 
 const InputChat = () => {
+  const [dissable, setDissable] = React.useState(true);
   const handleValue = (value) => {
     console.log(value);
   };
-
+  const handleInput = (e) => {
+    if (e.target.value === '') {
+      setDissable(true);
+    }
+    else {
+      setDissable(false);
+    }
+  }
+  const handleForm = (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    const value = Object.fromEntries(data.entries());
+    console.log(value);
+  }
   return (
     <Box
       className='container-chat-input'
     >
-      <Stack
-        spacing={2}
-        direction="row"
-        sx={{
-          padding: '12px',
-        }}
-      >
-        <OptionSelect label={'Language'} option={languageOption} handle={handleValue} />
-        <OptionSelect label={'Style Writing'} option={styleWriting} handle={handleValue} />
-      </Stack>
-      <div className='chat-input'>
-        <input placeholder='Type your question' type="text" className='input' />
-        <IconButton aria-label="send">
-          <ArrowUpwardIcon />
-        </IconButton>
-      </div>
+      <form onSubmit={handleForm}>
+        <Stack
+          spacing={2}
+          direction="row"
+          sx={{
+            padding: '12px',
+          }}
+        >
+          <OptionSelect label={'Language'} option={languageOption} handle={handleValue} name={'language'} />
+          <OptionSelect label={'Style Writing'} option={styleWriting} handle={handleValue} name={'style'} />
+        </Stack>
+        <div className='chat-input'>
+          <input onChange={handleInput} name='input' placeholder='Type your question' type="text" className='input' />
+          <IconButton aria-label="send" disabled={dissable} type='submit'>
+            <ArrowUpwardIcon />
+          </IconButton>
+        </div>
+      </form>
     </Box>
   );
 };
