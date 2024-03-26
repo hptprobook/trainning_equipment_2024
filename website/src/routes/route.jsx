@@ -12,6 +12,7 @@ import ChatDetailPage from '~/pages/Chat/ChatDetailPage';
 import Excel from '~/test/excel';
 import CompilerDetailPage from '~/pages/Compiler/_id';
 import CompilerPublicDetailPage from '~/pages/Compiler/public/_id';
+import Prompts from '~/test/prompts';
 
 const MainRoute = () => {
   let element = useRoutes([
@@ -66,6 +67,10 @@ const MainRoute = () => {
     {
       path: 'excel',
       element: <Excel />,
+    },
+    {
+      path: 'getPrompts',
+      element: <Prompts />,
     },
     {
       path: 'test',
