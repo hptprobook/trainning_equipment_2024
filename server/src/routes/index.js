@@ -5,6 +5,7 @@ import { compileCodeRoute } from './compileCodeRouter';
 import { APILogins } from './login';
 import { APIConversations } from './conversationRouter';
 import { APIMessages } from './messageRouter';
+import { APIGemini } from './gemini';
 const Router = express.Router();
 
 Router.get('/status', async (req, res) => {
@@ -26,5 +27,5 @@ Router.use('/account', APILogins);
 Router.use('/conversations', APIConversations);
 // api messages
 Router.use('/messages', APIMessages);
-
+Router.use('/gemini', APIGemini);
 export const APIs = Router;
