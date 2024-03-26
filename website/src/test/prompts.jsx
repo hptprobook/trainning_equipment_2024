@@ -44,8 +44,8 @@ const GetPrompts = () => {
             <TableRow>
               <TableCell>Category</TableCell>
               <TableCell>Prompt template</TableCell>
-              <TableCell>Prompt template</TableCell>
               <TableCell>Prompt title</TableCell>
+              <TableCell>Use case </TableCell>
               <TableCell>Variable </TableCell>
               <TableCell>Variable type </TableCell>
 
