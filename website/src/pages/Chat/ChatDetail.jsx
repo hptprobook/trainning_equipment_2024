@@ -14,6 +14,7 @@ const ChatDetail = () => {
     }
   }, [heightRef]);
   const mdReponsive = useResponsive('down', 'md');
+  const mess = 'The CSS you\'ve provided targets the end track piece of the horizontal scrollbar to hide it. However, the CSS pseudo-elements for scrollbar customization are not directly supported as inline styles in React. You need to apply these styles in a CSS file or within a style block in your React component.';
 
   return (
     <Grid
@@ -33,22 +34,30 @@ const ChatDetail = () => {
       <Grid item xs={12}
         sx={{
           height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
-          overflow: 'auto',
-
+          overflowY: 'scroll',
+          scrollbarWidth: 'none', /* For Firefox */
+          msOverflowStyle: 'none',
+          '&::-webkit-scrollbar': {
+            width: 'auto', /* For horizontal scrollbar */
+            height: '0px', /* For vertical scrollbar */
+          }
         }}
       >
-        <Stack spacing={2} direction="column">
-          <CardAnswer
-            name={'TIn'}
-            avatar={'https://mui.com/static/images/avatar/1.jpg'}
-            answer={'Hello'}
-          />
-               <CardAnswer
-            name={'Tin'}
-            avatar={'https://mui.com/static/images/avatar/1.jpg'}
-            answer={'HelHelloHelloHelHelHelloHelloHelloHelloHelloHelloloHelHelloHelloHelloHelloHelloHelloloHelHelloHelloHelloHelloHelloHelloloHelHelloHelloHelloHelloHelloHellololoHelloHelloHellolo'}
-          />
-        </Stack>
+        <CardAnswer
+          name={'TIn'}
+          avatar={'https://mui.com/static/images/avatar/1.jpg'}
+          answer={'Hello'}
+        />
+        <CardAnswer
+          name={'Tin'}
+          avatar={'https://mui.com/static/images/avatar/1.jpg'}
+          answer={mess}
+        />
+             <CardAnswer
+          name={'Tin'}
+          avatar={'https://mui.com/static/images/avatar/1.jpg'}
+          answer={'answeransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweransweranswer'}
+        />
 
       </Grid>
       <Grid ref={heightRef} item xs={12} >
