@@ -3,7 +3,7 @@ import { Outlet, useRoutes } from 'react-router-dom';
 import ChatLayout from '../layout/chat/ChatLayout';
 import CompilerPage from '~/pages/Compiler/CompilerPage';
 import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
-import ChatIndexPage from '~/pages/Chat';
+import ChatIndexPage from '~/pages/Chat/ChatIndexPage';
 import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
 import LoginGit from '~/test/test';

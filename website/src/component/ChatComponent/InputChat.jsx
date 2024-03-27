@@ -35,12 +35,19 @@ const styleWriting = [
     value: 'critical'
   }
 ];
+const modeOption = [
+  {
+    name: 'Gemini',
+    value: 'gemini'
+  },
+  {
+    name: 'Chat GPT',
+    value:'gpt'
+  }
+];
 
-const InputChat = () => {
+const InputChat = ({ handleGetContent }) => {
   const [dissable, setDissable] = React.useState(true);
-  const handleValue = (value) => {
-    console.log(value);
-  };
   const handleInput = (e) => {
     if (e.target.value === '') {
       setDissable(true);
@@ -53,7 +60,7 @@ const InputChat = () => {
     e.preventDefault();
     const data = new FormData(e.target);
     const value = Object.fromEntries(data.entries());
-    console.log(value);
+    handleGetContent(value);
   }
   return (
     <Box
@@ -67,8 +74,10 @@ const InputChat = () => {
             padding: '12px',
           }}
         >
-          <OptionSelect label={'Language'} option={languageOption} handle={handleValue} name={'language'} />
-          <OptionSelect label={'Style Writing'} option={styleWriting} handle={handleValue} name={'style'} />
+          <OptionSelect label={'Language'} option={languageOption} name={'language'} />
+          <OptionSelect label={'Style Writing'} option={styleWriting} name={'style'} />
+          <OptionSelect noneValue={false} label={'Model'} option={modeOption} name={'model'} />
+
         </Stack>
         <div className='chat-input'>
           <input onChange={handleInput} name='input' placeholder='Type your question' type="text" className='input' />
