@@ -5,7 +5,6 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TablePa
 const GetPrompts = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0); // Initialize page state variable
-  const [pageSize, setPageSize] = useState(12);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,6 +23,15 @@ const GetPrompts = () => {
     fetchData();
   }, [page]); // Add page as a dependency
 
+  const addPrompt = async () => {
+    try {
+      await axios.post('http://localhost:8000/api/prompt/addPrompt', data);
+      alert('Prompt added successfully');
+    } catch (error) {
+      console.error('Error adding prompt: ', error);
+      alert('Error from react: ',error);
+    }
+  };
 
   const handleNextPage = () => {
     setPage(prevPage => prevPage + 1); // Increase page by 1
@@ -32,9 +40,12 @@ const GetPrompts = () => {
     setPage(prevPage => prevPage - 1); // Increase page by 1
   };
 
+  
 
   return (
     <>
+    
+    <Button variant="contained" color="primary" onClick={addPrompt}>Add Prompt</Button>
       <TableContainer style={{
         maxHeight: '500px',
         overflow: 'auto',
@@ -63,9 +74,9 @@ const GetPrompts = () => {
                     {
                       prompt.variables.map((variable, variableIndex) => (
                         <ul key={variableIndex}>
-                          <li>Name: {variable.name}</li>
-                          <li>Hint: {variable.hint}</li>
-                          <li>Type: {variable.type}</li>
+                          <li><b>Name:</b> {variable.name}</li>
+                          <li><b>Hint:</b> {variable.hint}</li>
+                          <li><b>Type:</b> {variable.type}</li>
                         </ul>
                       ))
                     }
@@ -85,7 +96,7 @@ const GetPrompts = () => {
         </Table>
       </TableContainer>
       <Button variant="contained" color="primary" onClick={handlePreviousPage}>Previous Page</Button>
-      <Button variant="contained" color="primary" onClick={handleNextPage}>Next Page</Button>
+      <Button variant="contained" color="secondary" onClick={handleNextPage}>Next Page</Button>
 
     </>
   );
