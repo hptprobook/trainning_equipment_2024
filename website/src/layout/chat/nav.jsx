@@ -6,7 +6,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
-import { NAV, NAV_WIDTH } from './layoutConfig';
+import { NAV_WIDTH } from './layoutConfig';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -15,8 +15,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleGetUser, resetStateAction } from '~/redux/slices/authSlice';
 import { handleToast } from '~/config/toast';
 import { useNavigate } from 'react-router-dom';
+import { handleGetAllConversations } from '~/redux/slices/conversationsSlice';
 const drawerWidth = NAV_WIDTH;
-const nav = NAV;
 const ItemIconCus = styled(ListItemIcon)(({ theme }) => ({
   minWidth: 'auto',
   marginRight: '8px',
@@ -36,8 +36,21 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [data, setData] = React.useState(null);
+  const [nav, setNav] = React.useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dataConversations = useSelector((state) => state.conversations.all);
+  const statusAdd = useSelector((state) => state.conversations.status);
+  useEffect(() => {
+    if(dataConversations) {
+      setNav(dataConversations.data);
+    }
+  }, [dataConversations]);
+  useEffect(() => {
+    if(statusAdd === 'success') {
+      dispatch(handleGetAllConversations());
+    }
+  },[statusAdd]);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -46,6 +59,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   useEffect(() => {
     if (user) {
       setData(user.dataUser);
+      dispatch(handleGetAllConversations());
     }
     else {
       dispatch(handleGetUser());
@@ -54,13 +68,14 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const handleNavigate = (path) => {
     navigate(path);
   };
+
   useEffect(() => {
     if (error) {
       dispatch(resetStateAction());
       handleToast('error', error);
       localStorage.removeItem('token');
       localStorage.removeItem('git_token');
-      handleNavigate('/login')
+      handleNavigate('/login');
     }
   }, [error, navigate, dispatch]);
   const handleClose = () => {
@@ -114,7 +129,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
       <List>
         {nav.map((item, index) => (
           <ListItem
-            key={item.name}
+            key={index}
             disablePadding
             sx={{
               padding: theme.palette.padding.list,
@@ -128,8 +143,9 @@ const NavChat = ({ open, handleDrawerClose }) => {
                   display: 'flex'
                 },
               }}
+              onClick={() => handleNavigate(`/chat/${item._id}`)}
             >
-              <ListItemText primary={item.name} />
+              <ListItemText primary={item.title} />
               <ItemIconCus>
                 <MoreVertIcon />
               </ItemIconCus>

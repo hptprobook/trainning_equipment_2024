@@ -4,8 +4,8 @@ async function handleRequest(method, url, data) {
   return request[method](url, data).then(res => res.data);
 }
 
-const ChatService = {
-  gemini: (data) => handleRequest('post', '/gemini/chat', data),
+const MessagesService = {
+  getByID: (id) => handleRequest('get', `messages/getByIdConver/${id}`),
 };
 
-export default ChatService;
+export default MessagesService;

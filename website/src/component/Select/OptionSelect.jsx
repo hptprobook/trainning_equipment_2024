@@ -5,12 +5,11 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import PropTypes from 'prop-types';
 
-export default function OptionSelect({ handle, option, label, name }) {
+export default function OptionSelect({  option, label, name, noneValue = true }) {
   const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
     setAge(event.target.value);
-    handle(event.target.value);
   };
 
   return (
@@ -24,9 +23,9 @@ export default function OptionSelect({ handle, option, label, name }) {
         label={label}
         onChange={handleChange}
       >
-        <MenuItem value="">
+        {noneValue ? <MenuItem value="">
           <em>None</em>
-        </MenuItem>
+        </MenuItem> : null}
         {option.map((item, index) => {
           return (
             <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -37,8 +36,8 @@ export default function OptionSelect({ handle, option, label, name }) {
   );
 }
 OptionSelect.protoType = {
-  handle: PropTypes.func.isRequired,
   option: PropTypes.array.isRequired,
   label: PropTypes.string.isRequired,
   name: PropTypes.string,
+  noneValue: PropTypes.bool,
 };
