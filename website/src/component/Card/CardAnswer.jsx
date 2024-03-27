@@ -11,10 +11,12 @@ const CardAnswer = ({ name, avatar, answer }) => {
         display: 'flex',
         flexDirection: 'row',
         width: mdReponsive ? 'calc(100% - 32px)' : 'calc(800px - 16px)',
+        marginTop: '36px',
+
       }}
     >
       <Avatar
-        alt="Remy Sharp"
+        alt={name}
         src={avatar}
         sx={{ width: 24, height: 24 }}
       />

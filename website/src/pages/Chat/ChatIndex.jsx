@@ -8,9 +8,10 @@ import NewChat from '~/component/ChatComponent/NewChat';
 import InputChatWithPrompt from '~/component/ChatComponent/InputChatWithPrompt';
 import { handleToast } from '~/config/toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { chatWithGemini } from '~/redux/slices/chatSlice';
+import { chatWithGemini, resetState } from '~/redux/slices/chatSlice';
 import { handleAddConversation, resetStateAction } from '~/redux/slices/conversationsSlice';
 import LoadingNewChat from '~/component/ChatComponent/LoadingNewChat';
+import { useNavigate } from 'react-router-dom';
 export const ChatIndex = () => {
   const heightRef = React.useRef(null);
   const [mainHeight, setMainHeight] = React.useState(0);
@@ -21,25 +22,35 @@ export const ChatIndex = () => {
       setMainHeight(heightRef.current.clientHeight);
     }
   }, [heightRef]);
+  const navigate = useNavigate();
   const mdReponsive = useResponsive('down', 'md');
   const [addPrompt, setAddPrompt] = React.useState(false);
   const [promt, setPromt] = React.useState({ title: '', content: '' });
+  const [content, setContent] = React.useState({});
   const data = useSelector((state) => state.chat.data);
   const dataUser = useSelector((state) => state.auth.userGit);
   const dataConversations = useSelector((state) => state.conversations.data);
   const status = useSelector((state) => state.conversations.status);
   const statusChat = useSelector((state) => state.chat.status);
+
   useEffect(() => {
     if (status === 'success') {
-      handleToast('success', 'Add conversation success');
       dispatch(resetStateAction());
+      if (content.model == 'gpt') {
+        handleToast('info', 'Comingsoon');
+      }
+      else {
+        dispatch(chatWithGemini({ data: { content: content.input, conversationId: dataConversations.conversationId } }));
+      }
     }
-  }, [status,dispatch]);
+  }, [status, dispatch, content, dataConversations]);
   useEffect(() => {
-    if (data) {
-      handleToast('success', data.model);
+    if (data != undefined && dataConversations.conversationId != undefined && statusChat === 'success') {
+      // na
+      dispatch(resetState());
+      navigate(`/chat/${dataConversations.conversationId}`);
     }
-  }, [data]);
+  }, [data, navigate, dataConversations]);
   const handleAddPrompt = (content) => {
     setPromt(content);
     setAddPrompt(true);
@@ -52,12 +63,7 @@ export const ChatIndex = () => {
     const titleArr = content.input.split(' ');
     const title = titleArr.slice(0, 50).join(' ');
     dispatch(handleAddConversation({ data: { title: title, idGit: dataUser.dataUser._id } }));
-    if (content.model == 'gpt') {
-      handleToast('info', 'Comingsoon');
-    }
-    else {
-      dispatch(chatWithGemini({ data: { content: content.input } }));
-    }
+    setContent(content);
   };
   return (
     <Grid
@@ -83,7 +89,7 @@ export const ChatIndex = () => {
         {statusChat === 'loading' ? <LoadingNewChat name={dataUser.dataUser.name} avatar={dataUser.dataUser.avatar} answer={userInput} /> : <NewChat handleAddPrompt={handleAddPrompt} />}
       </Grid>
       <Grid ref={heightRef} item xs={12} >
-        <InputChat handleGetContent={handleGetContent}/>
+        <InputChat handleGetContent={handleGetContent} />
         {addPrompt ? <InputChatWithPrompt promt={promt} handleGetContent={handleGetContent} handleCancel={handleCancel} /> : null}
       </Grid>
     </Grid>

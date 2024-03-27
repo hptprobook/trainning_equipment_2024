@@ -1,11 +1,26 @@
 import { GET_DB } from '~/config/mongodb';
 import { ObjectId } from 'mongodb';
 import { messagesService } from '~/services/messagesService';
+import Joi from 'joi';
+const SAVE_CODE_SCHEMA = Joi.object({
+  userId: Joi.string().required(),
+  title: Joi.string().required(),
+  isArchive: Joi.boolean().default(false),
+  createdAt: Joi.date().timestamp('javascript').default(Date.now),
+});
+const validateBeforeCreate = async (data) => {
+  return await SAVE_CODE_SCHEMA.validateAsync(data, { abortEarly: false });
+};
 const addConversations = async (dataConversations) => {
   try {
+    const validData = await validateBeforeCreate(dataConversations);
+
     const db = await GET_DB();
     const collection = db.collection('conversations');
-    const result = await collection.insertOne(dataConversations);
+    const result = await collection.insertOne({
+      ...validData,
+      conversationId: new ObjectId(validData.userId),
+    });
     return result;
   } catch (error) {
     throw new Error(error);
