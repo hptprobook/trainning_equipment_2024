@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
 import { StatusCodes } from 'http-status-codes';
 import { messagesService } from '~/services/messagesService';
+import { isArray } from 'lodash';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 const safetySettings = [
@@ -50,28 +51,26 @@ const gemini = async (req, res) => {
           return await chat.sendMessage(prompt);
         }
         else {
-          return await model.generateContent(prompt, safetySettings);
+          return await model.generateContent(prompt);
         }
       };
       const response = (await result()).response;
-      // let dataModel = {
-      //   conversationId: data.conversationId,
-      //   isUserMessage: false
-      // };
-      // if (response['candidates'] && response['candidates'].length > 0) {
-      //   dataModel.content = response.text();
-      // }
-      // else {
-      //   dataModel.content = 'Sorry, I can\'t continue this conversation.';
-      // }
+      let dataModel = {
+        conversationId: data.conversationId,
+        isUserMessage: false
+      };
+      try {
+        dataModel.content = response.text();
+      }
+      catch (error) {
+        dataModel.content = 'Sorry, I can\'t anwser this question.';
+
+      }
       await messagesService.addMessages(dataUser);
-      // await messagesService.addMessages(dataModel);
+      await messagesService.addMessages(dataModel);
 
       res.status(StatusCodes.CREATED).json({
         success: true,
-        // dataModel,
-        response
-        // response: response.finishReason()
       });
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
