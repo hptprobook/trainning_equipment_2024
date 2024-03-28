@@ -3,6 +3,8 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { useResponsive } from '~/config/reponsiveConfig';
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 const CardAnswer = ({ name, avatar, answer }) => {
   const mdReponsive = useResponsive('down', 'sm');
   return (
@@ -11,10 +13,12 @@ const CardAnswer = ({ name, avatar, answer }) => {
         display: 'flex',
         flexDirection: 'row',
         width: mdReponsive ? 'calc(100% - 32px)' : 'calc(800px - 16px)',
+        marginTop: '36px',
+
       }}
     >
       <Avatar
-        alt="Remy Sharp"
+        alt={name}
         src={avatar}
         sx={{ width: 24, height: 24 }}
       />
@@ -42,7 +46,8 @@ const CardAnswer = ({ name, avatar, answer }) => {
             }
           }}
         >
-          {answer}
+          <Markdown remarkPlugins={[remarkGfm]}>{answer}</Markdown>
+          {/* {answer} */}
         </div>
       </Box>
     </div>

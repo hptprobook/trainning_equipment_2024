@@ -18,15 +18,14 @@ const addConversations = async (req, res) => {
         userId,
         title,
         isArchive: false,
-        createdAt: new Date(),
       };
       const data = await conversationsService.addConversations(
         dataConversations
       );
       return res.status(StatusCodes.CREATED).json({
         success: true,
-        mgs: 'add conversations success',
-        conversations: data,
+        mgs: title,
+        conversationId: data.insertedId,
       });
     }
     return res.status(StatusCodes.BAD_REQUEST).json({
