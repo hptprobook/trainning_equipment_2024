@@ -40,8 +40,6 @@ const GetPrompts = () => {
     setPage(prevPage => prevPage - 1); // Increase page by 1
   };
 
-  
-
   return (
     <>
     
