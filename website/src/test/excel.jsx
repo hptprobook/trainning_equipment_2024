@@ -49,8 +49,6 @@ const Excel = () => {
       console.error(err);
     }
   };
-
-  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
