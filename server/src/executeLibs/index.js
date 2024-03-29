@@ -35,4 +35,10 @@ const executePhp = (filePath) => {
   return executeCommand(`php "${filePath}"`, filePath);
 };
 
-export const executeFile = { executePy, executeJs, executePhp };
+const executeCpp = async (filePath) => {
+  const executablePath = filePath.replace('.cpp', '');
+  await executeCommand(`g++ "${filePath}" -o "${executablePath}"`, filePath, null); // Compile
+  return executeCommand(`"${executablePath}"`, executablePath, () => fs.unlink(executablePath, () => {})); // Execute
+};
+
+export const executeFile = { executePy, executeJs, executePhp, executeCpp };

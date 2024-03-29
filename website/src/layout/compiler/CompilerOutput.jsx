@@ -7,6 +7,11 @@ import { useDispatch } from 'react-redux';
 import { shareCode } from '~/redux/slices/compilerSlice';
 import { toast } from 'react-toastify';
 import { CLIENT_ROOT } from '~/utils/constants';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/Dialog';
 
 const CompilerOutput = ({
   height,
@@ -27,6 +32,29 @@ const CompilerOutput = ({
   const [isDissabled, setDissabled] = useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen);
+  };
+  const [openURLDialog, setOpenURLDialog] = useState(false);
+  const publicURL = `${CLIENT_ROOT}/compiler/public/${id}`;
+
+  const handleOpenURLDialog = () => {
+    setOpenURLDialog(true);
+  };
+
+  const handleCloseURLDialog = () => {
+    setOpenURLDialog(false);
+  };
+
+  const handleCopyURL = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(publicURL).then(() => {
+        toast.info('URL copied to clipboard!', {
+          autoClose: 3000,
+        });
+        handleCloseURLDialog();
+      });
+    } else {
+      alert('Clipboard API not available.');
+    }
   };
 
   const handlePublicCode = () => {
@@ -79,7 +107,7 @@ const CompilerOutput = ({
             Check AI
           </Button>
           {isAuth && (
-            <Button onClick={toggleDrawer(true)} size="small" variant="contained">
+            <Button onClick={toggleDrawer(true)} disabled={isPublicPage} size="small" variant="contained">
               List
             </Button>
           )}
@@ -88,6 +116,21 @@ const CompilerOutput = ({
               Public
             </Button>
           )}
+          {isPublic && (
+            <Button onClick={handleOpenURLDialog} size="small" variant="contained">
+              URL
+            </Button>
+          )}
+          <Dialog open={openURLDialog} onClose={handleCloseURLDialog}>
+            <DialogTitle>Code URL</DialogTitle>
+            <DialogContent>
+              <DialogContentText>{publicURL}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCopyURL}>Copy</Button>
+              <Button onClick={handleCloseURLDialog}>Close</Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </Box>
       <Box

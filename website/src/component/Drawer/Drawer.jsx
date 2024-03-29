@@ -8,9 +8,31 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
+import { truncateString } from '~/utils/formatters';
+import { useDispatch } from 'react-redux';
+import { useConfirm } from 'material-ui-confirm';
+import { toast } from 'react-toastify';
+import { codesSaved, deleteCode } from '~/redux/slices/compilerSlice';
 
 export default function ListCodeDrawer({ open = false, toggleDrawer, codesSavedData }) {
-  if (!codesSavedData) return <Box>Loading ...</Box>;
+  const dispatch = useDispatch();
+  const confirm = useConfirm();
+
+  const handleDelete = (id) => {
+    confirm({ title: 'Are you sure you want to delete?', description: 'This action will permanently delete your save. Are you sure?' })
+      .then(() => {
+        try {
+          dispatch(deleteCode(id));
+          dispatch(codesSaved());
+          toast.success('Code deleted successfully');
+        } catch (error) {
+          toast.error('Error deleting code');
+        }
+      })
+      .catch(() => {
+        //
+      });
+  };
 
   const DrawerList = (
     <Box sx={{ width: 350 }} role="presentation">
@@ -33,6 +55,7 @@ export default function ListCodeDrawer({ open = false, toggleDrawer, codesSavedD
                 color: '#333',
               }}
               to={`/compiler/${data?._id}`}
+              onClick={toggleDrawer(false)}
             >
               <ListItemText
                 sx={{
@@ -40,11 +63,11 @@ export default function ListCodeDrawer({ open = false, toggleDrawer, codesSavedD
                     color: 'green',
                   },
                 }}
-                primary={data?.title}
+                primary={truncateString(data?.title, 30)}
               />
             </Link>
             <Tooltip title="Delete">
-              <IconButton onClick={() => alert('Delete')} edge="start" aria-label="delete">
+              <IconButton onClick={() => handleDelete(data._id)} edge="start" aria-label="delete">
                 <DeleteIcon />
               </IconButton>
             </Tooltip>

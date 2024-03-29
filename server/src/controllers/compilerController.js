@@ -20,7 +20,7 @@ const compilerCode = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ success: true, output: output });
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
+    res.status(StatusCodes.OK).json({ error: error.message });
   }
 };
 

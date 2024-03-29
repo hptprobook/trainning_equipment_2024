@@ -60,7 +60,7 @@ export const updateCode = createAsyncThunk('compiler/updateCode', async ({ id, d
 
 export const deleteCode = createAsyncThunk('compiler/deleteCode', async (id, { rejectWithValue }) => {
   try {
-    return await CompilerServices.handleRequest('delete', `compiler/${id}`);
+    return await CompilerServices.deleteCode(id);
   } catch (err) {
     return rejectWithValue(err.response?.data);
   }
