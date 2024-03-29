@@ -10,10 +10,12 @@ Router.get('/codesSaved', verifyToken, compilerController.listCodeSaved)
 
 Router.route('/:id')
   .get(verifyToken, compilerController.getDetails)
-  .put(verifyToken, compilerController.updateCode)
-  .delete(verifyToken, compilerController.deleteCodeSaved);
+  .put(verifyToken, compilerController.updateCode);
 
 Router.route('/share/:id').get(verifyToken, compilerController.shareCode);
-Router.route('/share/public/:id').get(compilerController.codePublicDetail);
+Router.route('/share/public/:id').get(
+  verifyToken,
+  compilerController.codePublicDetail
+);
 
 export const compileCodeRoute = Router;
