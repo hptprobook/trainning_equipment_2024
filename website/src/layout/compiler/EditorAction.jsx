@@ -1,12 +1,11 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Slider from '@mui/material/Slider';
+import { truncateString } from '~/utils/formatters';
 
 export default function EditorAction({
   height,
   setSelectedLanguage,
   selectedLanguage,
-  setEditorFontSize,
   setTheme,
   theme,
   handleCopyCode,
@@ -74,7 +73,7 @@ export default function EditorAction({
               src={'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png'}
             />
           </Box>
-          <Box
+          {/* <Box
             sx={{
               cursor: 'pointer',
               '&:hover': {
@@ -92,7 +91,7 @@ export default function EditorAction({
               alt="C++"
               src={'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/1200px-ISO_C%2B%2B_Logo.svg.png'}
             />
-          </Box>
+          </Box> */}
           <Box
             sx={{
               cursor: 'pointer',
@@ -119,21 +118,9 @@ export default function EditorAction({
             color: theme === 'light' ? '#333' : '#fff',
           }}
         >
-          {title}
+          {truncateString(title, 20)}
         </Box>
       )}
-      <Box sx={{ width: 150 }}>
-        <Slider
-          defaultValue={15}
-          onChange={(e) => setEditorFontSize(e.target.value)}
-          valueLabelDisplay="auto"
-          shiftStep={3}
-          step={1}
-          marks
-          min={13}
-          max={25}
-        />
-      </Box>
       <Box
         sx={{
           display: 'flex',

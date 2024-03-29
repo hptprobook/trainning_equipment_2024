@@ -19,6 +19,7 @@
     "axios": "^1.6.8",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
+    "material-ui-confirm": "^3.0.11",
     "monaco-editor": "^0.47.0",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
