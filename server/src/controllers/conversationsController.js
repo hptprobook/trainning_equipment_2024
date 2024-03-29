@@ -40,18 +40,17 @@ const addConversations = async (req, res) => {
 };
 const delConversations = async (req, res) => {
   try {
-    const { idConver } = req.body;
-    if (!idConver) {
+    const id = req.params;
+    if (!id) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         mgs: 'Không bỏ trống',
       });
     }
-    const data = await conversationsService.delConversations(idConver);
+    await conversationsService.delConversations(id);
     return res.status(StatusCodes.OK).json({
-      success: true,
       mgs: 'Xóa thành công',
-      data: data,
+      id
     });
   } catch (error) {
     return res

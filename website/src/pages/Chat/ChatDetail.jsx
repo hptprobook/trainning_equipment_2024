@@ -5,9 +5,9 @@ import React, { useEffect } from 'react';
 import { useResponsive } from '~/config/reponsiveConfig';
 import CardAnswer from '~/component/Card/CardAnswer';
 import { handleToast } from '~/config/toast';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleGetMessageByID } from '~/redux/slices/messagesSlice';
+import { handleGetMessageByID, resetMessages } from '~/redux/slices/messagesSlice';
 import { chatWithGemini, resetState } from '~/redux/slices/chatSlice';
 import AnswerLoading from '~/component/Loading/AnswerLoading';
 const ChatDetail = () => {
@@ -15,6 +15,7 @@ const ChatDetail = () => {
   const [listMessage, setListMessage] = React.useState([]);
   const [historyChat, setHistoryChat] = React.useState({});
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const heightRef = React.useRef(null);
   const [mainHeight, setMainHeight] = React.useState(0);
   React.useEffect(() => {
@@ -38,12 +39,21 @@ const ChatDetail = () => {
         user: dataMessage.dataMess[dataMessage.dataMess.length - 2].content,
         model: dataMessage.dataMess[dataMessage.dataMess.length - 1].content
       });
+    } else if (status === 'failed') {
+      dispatch(resetMessages());
+      handleToast('error', 'Message not found');
+      navigate('/chat');
     }
-  }, [dataMessage, status]);
+  }, [dataMessage, status, navigate, dispatch]);
   useEffect(() => {
     if (statusChat === 'success') {
       dispatch(handleGetMessageByID({ id }));
       dispatch(resetState());
+    }
+    else if (statusChat === 'failed') {
+      handleToast('error', 'Failed to call the API');
+      dispatch(resetState());
+      navigate('/chat');
     }
   }, [statusChat, dispatch, id]);
   const mdReponsive = useResponsive('down', 'md');
