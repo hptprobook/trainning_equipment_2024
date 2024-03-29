@@ -15,9 +15,11 @@ export default function CompilerHeader({ height, theme }) {
         bgcolor: theme === 'light' ? '#eeeeee' : '#424242',
       }}
     >
-      <Typography variant="body1" color={theme === 'light' ? 'inherit' : '#fff'}>
-        SLIF Online Compiler
-      </Typography>
+      <Link to={'/'}>
+        <Typography variant="body1" color={theme === 'light' ? 'inherit' : '#fff'}>
+          SLIF Online Compiler
+        </Typography>
+      </Link>
       <Link
         to={'/chat'}
         style={{

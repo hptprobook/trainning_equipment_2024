@@ -1,5 +1,4 @@
-import { Grid, Stack } from '@mui/material';
-import React from 'react';
+import { Stack } from '@mui/material';
 import CardAnswer from '../Card/CardAnswer';
 import AnswerLoading from '../Loading/AnswerLoading';
 

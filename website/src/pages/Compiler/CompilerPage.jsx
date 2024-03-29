@@ -3,11 +3,10 @@ import Grid from '@mui/material/Grid';
 import { useState, useEffect, useRef } from 'react';
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { convertLanguage, defaultCode } from '~/utils/formatters';
-import { runOnlineCompiler } from '~/APIs';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { codesSaved, saveCode } from '~/redux/slices/compilerSlice';
+import { codesSaved, runCode, saveCode } from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
 import DialogSimple from '~/component/Dialog/DialogSimple';
 import ResponsiveBox from '~/component/ResponsiveBox/ResponsiveBox';
@@ -21,6 +20,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -38,7 +38,6 @@ const CompilerPage = () => {
   const [compileOutput, setCompileOutput] = useState('');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
-  // const { data, status, error } = useSelector((state) => state.compiler);
   const codesSavedData = useSelector((state) => state.compiler.codesSavedData);
   const [openDialogNotAuth, setOpenDialogNotAuth] = useState(false);
   const isAuth = useAuth();
@@ -74,17 +73,24 @@ const CompilerPage = () => {
     }
   }, [selectedLanguage, monaco, theme]);
 
-  const handleRunCode = () => {
+  const handleRunCode = async () => {
     const languageForServer = convertLanguage(selectedLanguage);
     setIsCompiling(true);
-    runOnlineCompiler({ language: languageForServer, code: sourceCode })
-      .then((res) => {
-        setCompileOutput(res.output);
-      })
-      .catch((error) => {
-        setCompileOutput('Error running code: ' + error.response.data.error);
-      })
-      .finally(() => setIsCompiling(false));
+    setCompileOutput('');
+
+    try {
+      const resultAction = await dispatch(runCode({ language: languageForServer, code: sourceCode })).unwrap();
+
+      if (resultAction.success) {
+        setCompileOutput(resultAction.output);
+      } else {
+        setCompileOutput(resultAction.error || 'An unknown error occurred');
+      }
+    } catch (err) {
+      toast.error('Compilation failed. Please try again.', { autoClose: 1000 });
+    } finally {
+      setIsCompiling(false);
+    }
   };
 
   const handleCopyCode = () => {
@@ -96,8 +102,8 @@ const CompilerPage = () => {
             autoClose: 500,
           });
         })
-        .catch((err) => {
-          alert('Failed to copy code: ', err);
+        .catch(() => {
+          toast.error('Failed to copy code!');
         });
     } else {
       alert('Clipboard API not available.');
@@ -118,6 +124,7 @@ const CompilerPage = () => {
     dispatch(saveCode({ language: languageForServer, code: sourceCode, title }))
       .then(() => {
         toast.success('Code saved successfully', { autoClose: 1000 });
+        dispatch(codesSaved());
       })
       .catch(() => {
         toast.error('Error saving code', { autoClose: 1000 });
@@ -222,6 +229,11 @@ const CompilerPage = () => {
               />
             </Grid>
             <Grid item xs={12} md={12} lg={5}>
+              {isCompiling && (
+                <Box sx={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  <CircularProgress />
+                </Box>
+              )}
               <CompilerOutput
                 compileOutput={compileOutput}
                 handleCheckAI={handleCheckAI}
