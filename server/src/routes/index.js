@@ -6,6 +6,7 @@ import { APILogins } from './login';
 import { APIConversations } from './conversationRouter';
 import { APIMessages } from './messageRouter';
 import { APIGemini } from './gemini';
+import { APIGpt } from './gptRouter';
 const Router = express.Router();
 
 Router.get('/status', async (req, res) => {
@@ -28,4 +29,6 @@ Router.use('/conversations', APIConversations);
 // api messages
 Router.use('/messages', APIMessages);
 Router.use('/gemini', APIGemini);
+
+Router.use('/gpt', APIGpt);
 export const APIs = Router;
