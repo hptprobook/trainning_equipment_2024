@@ -4,11 +4,10 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { convertLanguage, convertShortLangToMonacoLang } from '~/utils/formatters';
-import { runOnlineCompiler } from '~/APIs';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { codesSaved, getDetails, updateCode } from '~/redux/slices/compilerSlice';
+import { codesSaved, getDetails, runCode, updateCode } from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
 import DialogSimple from '~/component/Dialog/DialogSimple';
 import ResponsiveBox from '~/component/ResponsiveBox/ResponsiveBox';
@@ -22,6 +21,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import CircularLoading from '~/component/Loading/CircularLoading';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -37,10 +37,10 @@ export default function CompilerDetailPage() {
   const [title, setTitle] = useState(details ? details.title : '');
   const [openCodeTitleForm, setOpenCodeTitleForm] = useState(false);
   const [isCompiling, setIsCompiling] = useState(false);
-  const [compileOutput, setCompileOutput] = useState('');
+  const { data } = useSelector((state) => state.compiler);
+  const [compileOutput, setCompileOutput] = useState(data ? data.output : '');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
-  // const { data, status, error } = useSelector((state) => state.compiler);
   const selectedLanguage = details ? convertShortLangToMonacoLang(details.language) : 'javascript';
   const codesSavedData = useSelector((state) => state.compiler.codesSavedData);
   const [openDialogNotAuth, setOpenDialogNotAuth] = useState(false);
@@ -78,17 +78,24 @@ export default function CompilerDetailPage() {
     }
   }, [selectedLanguage, monaco, theme, details]);
 
-  const handleRunCode = () => {
+  const handleRunCode = async () => {
     const languageForServer = convertLanguage(selectedLanguage);
     setIsCompiling(true);
-    runOnlineCompiler({ language: languageForServer, code: sourceCode })
-      .then((res) => {
-        setCompileOutput(res.output);
-      })
-      .catch((error) => {
-        setCompileOutput('Error running code: ' + error.response.data.error);
-      })
-      .finally(() => setIsCompiling(false));
+    setCompileOutput('');
+
+    try {
+      const resultAction = await dispatch(runCode({ language: languageForServer, code: sourceCode })).unwrap();
+
+      if (resultAction.success) {
+        setCompileOutput(resultAction.output);
+      } else {
+        setCompileOutput(resultAction.error || 'An unknown error occurred');
+      }
+    } catch (err) {
+      toast.error('Compilation failed. Please try again.', { autoClose: 1000 });
+    } finally {
+      setIsCompiling(false);
+    }
   };
 
   const handleCopyCode = () => {
@@ -129,6 +136,7 @@ export default function CompilerDetailPage() {
     )
       .then(() => {
         toast.success('Code updated successfully', { autoClose: 1000 });
+        dispatch(codesSaved());
       })
       .catch(() => {
         toast.error('Error saving code', { autoClose: 1000 });
@@ -139,6 +147,8 @@ export default function CompilerDetailPage() {
   useEffect(() => {
     dispatch(getDetails({ id }));
   }, [id, dispatch]);
+
+  if (!details) return <CircularLoading />;
 
   return (
     <>

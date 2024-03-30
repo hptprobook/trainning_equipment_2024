@@ -2,6 +2,8 @@ import { conversationsService } from '~/services/conversationsService';
 import { StatusCodes } from 'http-status-codes';
 import { userService } from '~/services/userService';
 const addConversations = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'List conversation'
   try {
     const dataU = req.verifiedData;
     const dataUser = await userService.getUser(dataU.idGit);
@@ -18,15 +20,14 @@ const addConversations = async (req, res) => {
         userId,
         title,
         isArchive: false,
-        createdAt: new Date(),
       };
       const data = await conversationsService.addConversations(
         dataConversations
       );
       return res.status(StatusCodes.CREATED).json({
         success: true,
-        mgs: 'add conversations success',
-        conversations: data,
+        mgs: title,
+        conversationId: data.insertedId,
       });
     }
     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -40,19 +41,20 @@ const addConversations = async (req, res) => {
   }
 };
 const delConversations = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'del conversation'
   try {
-    const { idConver } = req.body;
-    if (!idConver) {
+    const id = req.params;
+    if (!id) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         mgs: 'Không bỏ trống',
       });
     }
-    const data = await conversationsService.delConversations(idConver);
+    await conversationsService.delConversations(id);
     return res.status(StatusCodes.OK).json({
-      success: true,
       mgs: 'Xóa thành công',
-      data: data,
+      id
     });
   } catch (error) {
     return res
@@ -62,6 +64,8 @@ const delConversations = async (req, res) => {
 };
 
 const converUpdateIsArchive = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'update is archive conversation'
   try {
     const { idConver, archive = false } = req.body;
 
@@ -93,6 +97,8 @@ const converUpdateIsArchive = async (req, res) => {
   }
 };
 const converUpdateTitle = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'update title'
   try {
     const { idConver, title } = req.body;
     if (!idConver || !title) {
@@ -115,6 +121,8 @@ const converUpdateTitle = async (req, res) => {
 };
 
 const converGetAll = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'get all conversation not archive'
   try {
     const dataU = req.verifiedData;
     const dataUser = await userService.getUser(dataU.idGit);
@@ -139,6 +147,8 @@ const converGetAll = async (req, res) => {
 };
 
 const converGetAllIsArchive = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'get all conversation archive'
   try {
     const dataU = req.verifiedData;
     const dataUser = await userService.getUser(dataU.idGit);
@@ -163,6 +173,8 @@ const converGetAllIsArchive = async (req, res) => {
 };
 
 const converDelAll = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'Del all'
   try {
     const data = req.verifiedData;
     const dataUser = await userService.getUser(data.idGit);

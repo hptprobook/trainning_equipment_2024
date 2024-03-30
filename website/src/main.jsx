@@ -9,6 +9,7 @@ import ThemeProvider from './theme/index.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from 'react-redux';
 import store from './redux/store.js';
+import { ConfirmProvider } from 'material-ui-confirm';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -16,12 +17,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <CssBaseLine />
     <BrowserRouter>
       <Suspense>
-        <Provider store={store}>
-          <ThemeProvider>
-            <ToastContainer theme="colored" hideProgressBar position="bottom-left" autoClose={3000} closeOnClick />
-            <App />
-          </ThemeProvider>
-        </Provider>
+        <ConfirmProvider>
+          <Provider store={store}>
+            <ThemeProvider>
+              <ToastContainer theme="colored" hideProgressBar position="bottom-left" autoClose={3000} closeOnClick />
+              <App />
+            </ThemeProvider>
+          </Provider>
+        </ConfirmProvider>
       </Suspense>
     </BrowserRouter>
   </HelmetProvider>

@@ -10,10 +10,12 @@
     "build-babel": "babel ./src -d ./build/src",
     "build": "npm run clean && npm run build-babel",
     "production": "npm run build && node ./build/src/server.js",
-    "dev": "nodemon --exec babel-node ./src/server.js"
+    "dev": "nodemon --exec babel-node ./src/server.js",
+    "swagger": "node --experimental-modules ./src/swagger.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.24.0",
+    "@google/generative-ai": "^0.3.1",
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -27,8 +29,9 @@
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.2",
     "multer": "^1.4.5-lts.1",
-    "openai": "^4.29.2",
+    "openai": "^4.30.0",
     "papaparse": "^5.4.1",
+    "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -41,6 +44,7 @@
     "babel-plugin-module-resolver": "^5.0.0",
     "eslint": "^8.57.0",
     "http-status-code": "^2.1.0",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "swagger-autogen": "^2.23.7"
   }
 }
