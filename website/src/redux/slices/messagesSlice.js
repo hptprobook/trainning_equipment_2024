@@ -43,5 +43,5 @@ const messagesSlice = createSlice({
       });
   },
 });
-export const { resetState: resetStateAction } = messagesSlice.actions;
+export const { resetState: resetMessages } = messagesSlice.actions;
 export default messagesSlice.reducer;

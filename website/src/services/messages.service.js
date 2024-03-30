@@ -5,7 +5,7 @@ async function handleRequest(method, url, data) {
 }
 
 const MessagesService = {
-  getByID: (id) => handleRequest('get', `messages/getByIdConver/${id}`),
+  getByID: (id) => handleRequest('get', `messages/${id}`),
 };
 
 export default MessagesService;
