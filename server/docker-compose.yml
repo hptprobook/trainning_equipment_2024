@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    image: sli2024/python
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    image: sli2024/php
+
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    image: sli2024/node
+
+  dotnet:
+    build:
+      context: .
+      dockerfile: Dockerfile.dotnet
+    image: sli2024/dotnet
