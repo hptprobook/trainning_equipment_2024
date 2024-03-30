@@ -24,7 +24,14 @@ export const handleDeleteConversation = createAsyncThunk(
   'conversations/delete',
   ({ id }, thunkAPI) => handleAsyncThunk(ConversationsService.delete, [id], thunkAPI)
 );
-
+export const handleArchiveConversations = createAsyncThunk(
+  'conversations/archive',
+  (data, thunkAPI) => handleAsyncThunk(ConversationsService.archive, [data], thunkAPI)
+);
+export const handleDeleteAllConversations = createAsyncThunk(
+  'conversations/deleteAll',
+  (_, thunkAPI) => handleAsyncThunk(ConversationsService.deleteAll, [], thunkAPI)
+);
 const conversationsSlice = createSlice({
   name: 'conversations',
   initialState: {
@@ -64,6 +71,17 @@ const conversationsSlice = createSlice({
       })
       .addCase(handleDeleteConversation.rejected, (state, { payload }) => {
         state.statusDelete = 'failed';
+        state.error = payload;
+      })
+      .addCase(handleArchiveConversations.fulfilled, (state, { payload }) => {
+        state.statusArchive = 'success';
+        state.data = payload;
+      })
+      .addCase(handleArchiveConversations.pending, (state) => {
+        state.statusArchive = 'loading';
+      })
+      .addCase(handleArchiveConversations.rejected, (state, { payload }) => {
+        state.statusArchive = 'failed';
         state.error = payload;
       })
       .addCase(handleGetAllConversations.fulfilled, (state, { payload }) => {

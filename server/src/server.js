@@ -4,14 +4,11 @@ import { CONNECT_DB } from './config/mongodb';
 import { env } from './config/environment';
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware';
 import { APIs } from './routes';
-import { APILogins } from './routes/login';
-import { APIConversations } from './routes/conversationRouter';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import chatgpt from './routes/chatgpt';
-import excelRouter from './routes/excelRouter';
-import promptRouter from './routes/promptRouter';
-// import { corsOptions } from './config/cors';
+// import chatgpt from './routes/chatgpt';
+// import excelRouter from './routes/excelRouter';
+// import promptRouter from './routes/promptRouter';
 
 const START_SERVER = () => {
   const app = express();
@@ -21,9 +18,9 @@ const START_SERVER = () => {
   app.use(cors());
   app.use('/api', APIs);
 
-  app.use('/api', chatgpt);
-  app.use('/api/excel', excelRouter);
-  app.use('/api/prompt', promptRouter);
+  // app.use('/api', chatgpt);
+  // app.use('/api/excel', excelRouter);
+  // app.use('/api/prompt', promptRouter);
 
   // -----------------
 
