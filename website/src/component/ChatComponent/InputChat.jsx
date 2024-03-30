@@ -3,16 +3,39 @@ import React from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import './style.css';
 import OptionSelect from '../Select/OptionSelect';
-const defaultOption = [
+const languageOption = [
   {
-    name: 'Option 1',
-    value: 'option1'
+    name: 'English',
+    value: 'english'
   },
   {
-    name: 'Option 2',
-    value: 'option2'
+    name: 'Viet Nam',
+    value: 'vietnamese'
   },
+  {
+    name: 'Japanese',
+    value: 'japanese'
+  }
 ];
+const styleWriting = [
+  {
+    name: 'Default',
+    value: 'default'
+  },
+  {
+    name: 'Academic',
+    value: 'academic'
+  },
+  {
+    name: 'Creative',
+    value: 'creative'
+  },
+  {
+    name: 'Critical',
+    value: 'critical'
+  }
+];
+
 const InputChat = () => {
   const handleValue = (value) => {
     console.log(value);
@@ -29,8 +52,8 @@ const InputChat = () => {
           padding: '12px',
         }}
       >
-        <OptionSelect label={'option'} option={defaultOption} handle={handleValue} />
-        <OptionSelect label={'option'} option={defaultOption} handle={handleValue} />
+        <OptionSelect label={'Language'} option={languageOption} handle={handleValue} />
+        <OptionSelect label={'Style Writing'} option={styleWriting} handle={handleValue} />
       </Stack>
       <div className='chat-input'>
         <input placeholder='Type your question' type="text" className='input' />

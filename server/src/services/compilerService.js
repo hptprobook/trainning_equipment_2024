@@ -1,15 +1,15 @@
-import { compilerModal } from '~/models/compilerModal';
+import { compilerModel } from '~/models/compilerModel';
 import ApiError from '~/utils/ApiError';
 import { StatusCodes } from 'http-status-codes';
 
 const saveCode = async (userId, reqBody) => {
   try {
-    const savedCode = await compilerModal.saveCode({
+    const savedCode = await compilerModel.saveCode({
       ...reqBody,
       userId,
     });
 
-    return await compilerModal.findOneById(savedCode.insertedId);
+    return await compilerModel.findOneById(savedCode.insertedId);
   } catch (error) {
     throw error;
   }
@@ -17,7 +17,7 @@ const saveCode = async (userId, reqBody) => {
 
 const listCodeSaved = async (userId) => {
   try {
-    const listCodeSaved = await compilerModal.listCodeSaved(userId);
+    const listCodeSaved = await compilerModel.listCodeSaved(userId);
 
     return listCodeSaved;
   } catch (error) {
@@ -26,7 +26,7 @@ const listCodeSaved = async (userId) => {
 };
 
 const getDetails = async (codeId) => {
-  const code = await compilerModal.getDetails(codeId);
+  const code = await compilerModel.getDetails(codeId);
 
   if (!code) throw new ApiError(StatusCodes.NOT_FOUND, 'Code not found!');
 
@@ -34,11 +34,11 @@ const getDetails = async (codeId) => {
 };
 
 const shareCode = async (codeId) => {
-  await compilerModal.shareCode(codeId);
+  await compilerModel.shareCode(codeId);
 };
 
 const codePublicDetail = async (codeId) => {
-  const code = await compilerModal.codePublicDetail(codeId);
+  const code = await compilerModel.codePublicDetail(codeId);
 
   if (!code) throw new ApiError(StatusCodes.NOT_FOUND, 'Code not found!');
 
@@ -47,11 +47,17 @@ const codePublicDetail = async (codeId) => {
 
 const updateCode = async (codeId, reqBody) => {
   const updateData = { ...reqBody, updatedAt: Date.now() };
-  const updatedCode = await compilerModal.updateCode(codeId, updateData);
+  const updatedCode = await compilerModel.updateCode(codeId, updateData);
 
   if (!updatedCode) throw new ApiError(StatusCodes.BAD_REQUEST, 'Cannot update this Code!');
 
   return updatedCode;
 };
 
-export const compilerService = { saveCode, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode };
+const deleteCodeSaved = async (codeId) => {
+  await compilerModel.deleteOneById(codeId);
+
+  return { deleteResult: 'Deleted successfully!' };
+};
+
+export const compilerService = { saveCode, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode, deleteCodeSaved };

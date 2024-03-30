@@ -62,7 +62,7 @@ export default function ChatLayout({ children }) {
         <Box
           sx={{
             maxWidth: '100%',
-            padding: 3,
+            // padding: 3,
             height: '100%',
             display: 'flex',
             justifyContent: 'center',

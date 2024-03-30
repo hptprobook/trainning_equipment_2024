@@ -11,7 +11,6 @@ const request = axios.create({
     'auth-token': getAccessToken(), // Initial value
     'Content-Type': 'application/json',
     Authorization: `Bearer ${getAccessToken()}`, // Initial value
-    'auth-token': getAccessToken(),
   },
 });
 

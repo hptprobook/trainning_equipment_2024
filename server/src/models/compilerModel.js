@@ -5,6 +5,7 @@ import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators';
 
 const SAVE_CODE_SCHEMA = Joi.object({
   userId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+  title: Joi.string().required().max(256),
   code: Joi.string().required().max(2500),
   language: Joi.string().required().valid('py', 'cpp', 'php', 'js'),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
@@ -131,4 +132,25 @@ const updateCode = async (codeId, updateData) => {
   }
 };
 
-export const compilerModal = { saveCode, findOneById, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode };
+const deleteOneById = async (id) => {
+  try {
+    const result = await GET_DB()
+      .collection('codeSnippets')
+      .deleteOne({ _id: new ObjectId(id) });
+    if (!result) throw new Error('Not found');
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const compilerModel = {
+  saveCode,
+  findOneById,
+  listCodeSaved,
+  getDetails,
+  shareCode,
+  codePublicDetail,
+  updateCode,
+  deleteOneById,
+};

@@ -92,4 +92,23 @@ const updateCode = async (req, res, next) => {
   }
 };
 
-export const compilerController = { compilerCode, saveCode, listCodeSaved, getDetails, shareCode, codePublicDetail, updateCode };
+const deleteCodeSaved = async (req, res, next) => {
+  try {
+    await compilerService.deleteCodeSaved(req.params.id);
+
+    res.status(StatusCodes.OK).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const compilerController = {
+  compilerCode,
+  saveCode,
+  listCodeSaved,
+  getDetails,
+  shareCode,
+  codePublicDetail,
+  updateCode,
+  deleteCodeSaved,
+};
