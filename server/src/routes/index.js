@@ -6,9 +6,12 @@ import { APILogins } from './login';
 import { APIConversations } from './conversationRouter';
 import { APIMessages } from './messageRouter';
 import { APIGemini } from './gemini';
+import { APIGpt } from './gptRouter';
 const Router = express.Router();
 
 Router.get('/status', async (req, res) => {
+  // #swagger.tags = ['Test']
+  // #swagger.summary = ''
   res.status(StatusCodes.OK).json({
     message: 'APIs are ready to use.',
   });
@@ -16,10 +19,13 @@ Router.get('/status', async (req, res) => {
 
 Router.route('/test')
   .get((req, res) => {
+    // #swagger.tags = ['Test']
+    // #swagger.summary = ''
     res.status(StatusCodes.OK).json({ message: 'Get all' });
   })
   .post(expController.addDocument);
 
+// api compiler
 Router.use('/compiler', compileCodeRoute);
 // api login user
 Router.use('/account', APILogins);
@@ -28,4 +34,6 @@ Router.use('/conversations', APIConversations);
 // api messages
 Router.use('/messages', APIMessages);
 Router.use('/gemini', APIGemini);
+
+Router.use('/gpt', APIGpt);
 export const APIs = Router;

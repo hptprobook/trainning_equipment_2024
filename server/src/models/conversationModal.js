@@ -11,6 +11,18 @@ const SAVE_CODE_SCHEMA = Joi.object({
 const validateBeforeCreate = async (data) => {
   return await SAVE_CODE_SCHEMA.validateAsync(data, { abortEarly: false });
 };
+const findOneById = async (id) => {
+  try {
+    const result = await GET_DB()
+      .collection('conversations')
+      .findOne({ _id: id });
+    if (!result) throw new Error('Conversation not found');
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 const addConversations = async (dataConversations) => {
   try {
     const validData = await validateBeforeCreate(dataConversations);
@@ -31,6 +43,7 @@ const delConversations = async (id) => {
     const db = await GET_DB();
     const collection = db.collection('conversations');
     const objectId = new ObjectId(id);
+    await findOneById(objectId);
     const delMess = await messagesService.delbyidConver(id);
     const result = await collection.deleteOne({ _id: objectId });
     return { result, delMess };
