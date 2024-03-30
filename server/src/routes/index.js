@@ -14,6 +14,8 @@ import promptRouter from './promptRouter';
 const Router = express.Router();
 
 Router.get('/status', async (req, res) => {
+  // #swagger.tags = ['Test']
+  // #swagger.summary = ''
   res.status(StatusCodes.OK).json({
     message: 'APIs are ready to use.',
   });
@@ -21,10 +23,13 @@ Router.get('/status', async (req, res) => {
 
 Router.route('/test')
   .get((req, res) => {
+    // #swagger.tags = ['Test']
+    // #swagger.summary = ''
     res.status(StatusCodes.OK).json({ message: 'Get all' });
   })
   .post(expController.addDocument);
 
+// api compiler
 Router.use('/compiler', compileCodeRoute);
 // api login user
 Router.use('/account', APILogins);
