@@ -11,14 +11,22 @@ const addMess = async (req, res) => {
   });
 };
 const getMessagesbyidConver = async (req, res) => {
-  // #swagger.tags = ['message']
+    // #swagger.tags = ['message']
   // #swagger.summary = 'get all'
-  const { idConver } = req.params;
-  const dataMess = await messagesService.getMessagesbyidConver(idConver);
-  return res.status(StatusCodes.OK).json({
-    success: true,
-    dataMess,
-  });
+  const id = req.params;
+  try {
+    const dataMess = await messagesService.getMessagesbyidConver(id);
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      dataMess,
+    });
+  }
+  catch (error) {
+    return res.status(StatusCodes.FAILED_DEPENDENCY).json({
+      error: error.message,
+      success: false,
+    });
+  }
 };
 export const messagesController = {
   addMess,

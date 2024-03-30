@@ -11,6 +11,7 @@ const handleAsyncThunk = async (asyncFunction, args, { rejectWithValue }) => {
 };
 
 export const resetState = createAction('conversations/resetState');
+export const resetStateDelete = createAction('conversations/resetStateDelete');
 export const handleAddConversation = createAsyncThunk(
   'conversations/add',
   ({ data }, thunkAPI) => handleAsyncThunk(ConversationsService.add, [data], thunkAPI)
@@ -18,6 +19,10 @@ export const handleAddConversation = createAsyncThunk(
 export const handleGetAllConversations = createAsyncThunk(
   'conversations/getAll',
   (_, thunkAPI) => handleAsyncThunk(ConversationsService.getAll, [], thunkAPI)
+);
+export const handleDeleteConversation = createAsyncThunk(
+  'conversations/delete',
+  ({ id }, thunkAPI) => handleAsyncThunk(ConversationsService.delete, [id], thunkAPI)
 );
 
 const conversationsSlice = createSlice({
@@ -32,6 +37,10 @@ const conversationsSlice = createSlice({
       state.error = null;
       state.status = 'idle';
     },
+    resetStateDelete: (state) => {
+      state.error = null;
+      state.statusDelete = 'idle';
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -45,7 +54,18 @@ const conversationsSlice = createSlice({
       .addCase(handleAddConversation.rejected, (state, { payload }) => {
         state.status = 'failed';
         state.error = payload;
-      }) 
+      })
+      .addCase(handleDeleteConversation.fulfilled, (state, { payload }) => {
+        state.statusDelete = 'success';
+        state.data = payload;
+      })
+      .addCase(handleDeleteConversation.pending, (state) => {
+        state.statusDelete = 'loading';
+      })
+      .addCase(handleDeleteConversation.rejected, (state, { payload }) => {
+        state.statusDelete = 'failed';
+        state.error = payload;
+      })
       .addCase(handleGetAllConversations.fulfilled, (state, { payload }) => {
         state.statusGetAll = 'success';
         state.all = payload;
@@ -60,4 +80,5 @@ const conversationsSlice = createSlice({
   },
 });
 export const { resetState: resetStateAction } = conversationsSlice.actions;
+export const { resetStateDelete: resetStateDeleteAction } = conversationsSlice.actions;
 export default conversationsSlice.reducer;

@@ -7,7 +7,7 @@ Router.post('/add', verifyToken, (req, res) =>
   conversationsController.addConversations(req, res)
 );
 
-Router.delete('/delete', verifyToken, (req, res) =>
+Router.delete('/:id', verifyToken, (req, res) =>
   conversationsController.delConversations(req, res)
 );
 
