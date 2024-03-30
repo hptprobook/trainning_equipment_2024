@@ -5,6 +5,8 @@ import { env } from '~/config/environment';
 import jwt from 'jsonwebtoken';
 
 const getUser = async (req, res) => {
+  // #swagger.tags = ['user']
+  // #swagger.summary = 'get user'
   const idGitUser = req.verifiedData.idGit;
   const dataUser = await userService.getUser(idGitUser);
   return res.status(StatusCodes.OK).json({
@@ -58,6 +60,8 @@ const getUserGit = async (token) => {
 };
 
 const getAccessTokenGit = async (req, res) => {
+  // #swagger.tags = ['user']
+  // #swagger.summary = 'get access from token code'
   try {
     const code = req.query.code;
     if (code) {

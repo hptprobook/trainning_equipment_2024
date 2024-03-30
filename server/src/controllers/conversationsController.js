@@ -2,6 +2,8 @@ import { conversationsService } from '~/services/conversationsService';
 import { StatusCodes } from 'http-status-codes';
 import { userService } from '~/services/userService';
 const addConversations = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'List conversation'
   try {
     const dataU = req.verifiedData;
     const dataUser = await userService.getUser(dataU.idGit);
@@ -39,6 +41,8 @@ const addConversations = async (req, res) => {
   }
 };
 const delConversations = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'del conversation'
   try {
     const id = req.params;
     if (!id) {
@@ -60,6 +64,8 @@ const delConversations = async (req, res) => {
 };
 
 const converUpdateIsArchive = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'update is archive conversation'
   try {
     const { idConver, archive = false } = req.body;
 
@@ -91,6 +97,8 @@ const converUpdateIsArchive = async (req, res) => {
   }
 };
 const converUpdateTitle = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'update title'
   try {
     const { idConver, title } = req.body;
     if (!idConver || !title) {
@@ -113,6 +121,8 @@ const converUpdateTitle = async (req, res) => {
 };
 
 const converGetAll = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'get all conversation not archive'
   try {
     const dataU = req.verifiedData;
     const dataUser = await userService.getUser(dataU.idGit);
@@ -137,6 +147,8 @@ const converGetAll = async (req, res) => {
 };
 
 const converGetAllIsArchive = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'get all conversation archive'
   try {
     const dataU = req.verifiedData;
     const dataUser = await userService.getUser(dataU.idGit);
@@ -161,6 +173,8 @@ const converGetAllIsArchive = async (req, res) => {
 };
 
 const converDelAll = async (req, res) => {
+  // #swagger.tags = ['Conversation']
+  // #swagger.summary = 'Del all'
   try {
     const data = req.verifiedData;
     const dataUser = await userService.getUser(data.idGit);

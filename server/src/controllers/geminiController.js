@@ -1,4 +1,8 @@
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
+import {
+  GoogleGenerativeAI,
+  HarmBlockThreshold,
+  HarmCategory,
+} from '@google/generative-ai';
 import { StatusCodes } from 'http-status-codes';
 import { messagesService } from '~/services/messagesService';
 import { isArray } from 'lodash';
@@ -12,23 +16,24 @@ const safetySettings = [
   {
     category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
     threshold: HarmBlockThreshold.BLOCK_NONE,
-  }
+  },
 ];
 
 const model = genAI.getGenerativeModel({ model: 'gemini-pro', safetySettings });
 const gemini = async (req, res) => {
+  // #swagger.tags = ['gemini']
+  // #swagger.summary = ''
   const data = req.body;
   if (!data.content) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
       msg: 'Invalid request content',
     });
-  }
-  else {
+  } else {
     const dataUser = {
       conversationId: data.conversationId,
       content: data.content,
-      isUserMessage: true
+      isUserMessage: true,
     };
     const prompt = data.content;
     const history = data?.history || {};
@@ -46,25 +51,22 @@ const gemini = async (req, res) => {
                 role: 'model',
                 parts: [{ text: history.model }],
               },
-            ]
+            ],
           });
           return await chat.sendMessage(prompt);
-        }
-        else {
+        } else {
           return await model.generateContent(prompt);
         }
       };
       const response = (await result()).response;
       let dataModel = {
         conversationId: data.conversationId,
-        isUserMessage: false
+        isUserMessage: false,
       };
       try {
         dataModel.content = response.text();
-      }
-      catch (error) {
-        dataModel.content = 'Sorry, I can\'t anwser this question.';
-
+      } catch (error) {
+        dataModel.content = "Sorry, I can't anwser this question.";
       }
       await messagesService.addMessages(dataUser);
       await messagesService.addMessages(dataModel);
@@ -79,7 +81,6 @@ const gemini = async (req, res) => {
       });
     }
   }
-
 };
 export const geminiController = {
   gemini,
