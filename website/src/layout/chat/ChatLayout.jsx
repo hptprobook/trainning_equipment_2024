@@ -36,6 +36,7 @@ export default function ChatLayout({ children }) {
   /* Code từ Compiler */
   const location = useLocation();
   const { sourceCode } = location.state || {};
+console.log(sourceCode);
 
   const handleDrawerOpen = () => {
     setOpen(true);
