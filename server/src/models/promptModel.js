@@ -3,7 +3,6 @@ import { GET_DB } from "~/config/mongodb";
 import Joi from "joi";
 
 const SAVE_PROMPT_SCHEMA = Joi.object({
-  id: Joi.string().optional(),
   category: Joi.string().required(),
   prompt_hint: Joi.string().optional(),
   prompt_template: Joi.string().required(),
@@ -38,12 +37,6 @@ const addPromptModel = async (dataPrompt) => {
   // Validate each object in the array and save it to the database
   for (const item of dataPrompt) {
     const validData = await validateBeforeCreate(item);
-
-    // Check if a document with the same id already exists in the database
-    const existingPrompt = await promptsCollection.findOne({ id: validData.id });
-    if (existingPrompt) {
-      throw new Error(`A prompt with the id ${validData.id} already exists in the database`);
-    }
 
     await promptsCollection.insertOne(validData);
   }

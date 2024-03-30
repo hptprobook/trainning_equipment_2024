@@ -13,8 +13,12 @@ const GetPrompts = () => {
           page_size: 5,
           category: "Software Engineering"
         });
-        setData(response.data.data);
-        console.log(response.data.data);
+    
+        // Map over the data and return a new object that excludes the id property
+        const filteredData = response.data.data.map(({ id, ...item }) => item);
+    
+        setData(filteredData);
+        console.log(filteredData);
       } catch (error) {
         console.error(`Error: ${error}`);
       }

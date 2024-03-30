@@ -6,7 +6,6 @@ import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware';
 import { APIs } from './routes';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import chatgpt from './routes/chatgpt';
 import excelRouter from './routes/excelRouter';
 import promptRouter from './routes/promptRouter';
 // import { corsOptions } from './config/cors';
