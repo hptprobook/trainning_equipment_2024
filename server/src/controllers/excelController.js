@@ -1,6 +1,8 @@
 import * as excelService from '../services/excelService';
 
 export const importData = async (req, res) => {
+  // #swagger.tags = ['excel']
+  // #swagger.summary = 'import data'
   if (!req.file) {
     return res.status(400).send('No file was uploaded');
   }
@@ -15,6 +17,8 @@ export const importData = async (req, res) => {
 };
 
 export const exportData = async (req, res) => {
+  // #swagger.tags = ['excel']
+  // #swagger.summary = 'export data'
   try {
     const filePath = await excelService.exportData();
     res.status(200).download(filePath);

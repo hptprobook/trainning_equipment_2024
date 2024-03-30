@@ -5,9 +5,13 @@ import { userService } from '~/services/userService';
 import { compilerService } from '~/services/compilerService';
 
 const compilerCode = async (req, res) => {
+  // #swagger.tags = ['compiler']
   const { language = 'js', code } = req.body;
 
-  if (!code) return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Code must be Empty' });
+  if (!code)
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: 'Code must be Empty' });
 
   try {
     const filePath = await generateFile(language, code);
@@ -15,7 +19,8 @@ const compilerCode = async (req, res) => {
     let output;
 
     if (language === 'js') output = await executeFile.executeJs(filePath);
-    else if (language === 'php') output = await executeFile.executePhp(filePath);
+    else if (language === 'php')
+      output = await executeFile.executePhp(filePath);
     else if (language === 'py') output = await executeFile.executePy(filePath);
 
     res.status(StatusCodes.OK).json({ success: true, output: output });
@@ -25,12 +30,20 @@ const compilerCode = async (req, res) => {
 };
 
 const saveCode = async (req, res, next) => {
+  // #swagger.tags = ['compiler']
+  // #swagger.summary = 'save code'
   try {
     const currentUser = await userService.getUser(req.verifiedData.idGit);
 
-    if (!currentUser) return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found!' });
+    if (!currentUser)
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'User not found!' });
 
-    const savedCode = await compilerService.saveCode(currentUser._id.toString(), req.body);
+    const savedCode = await compilerService.saveCode(
+      currentUser._id.toString(),
+      req.body
+    );
 
     res.status(StatusCodes.OK).json(savedCode);
   } catch (error) {
@@ -39,10 +52,15 @@ const saveCode = async (req, res, next) => {
 };
 
 const listCodeSaved = async (req, res, next) => {
+  // #swagger.tags = ['compiler']
+  // #swagger.summary = 'List code save'
   try {
     const currentUser = await userService.getUser(req.verifiedData.idGit);
 
-    if (!currentUser) return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found!' });
+    if (!currentUser)
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: 'User not found!' });
 
     const listCodeSaved = await compilerService.listCodeSaved(currentUser._id);
 
@@ -53,6 +71,8 @@ const listCodeSaved = async (req, res, next) => {
 };
 
 const getDetails = async (req, res, next) => {
+  // #swagger.tags = ['compiler']
+  // #swagger.summary = 'get detail'
   try {
     const code = await compilerService.getDetails(req.params.id);
 
@@ -63,6 +83,8 @@ const getDetails = async (req, res, next) => {
 };
 
 const shareCode = async (req, res, next) => {
+  // #swagger.tags = ['compiler']
+  // #swagger.summary = 'share code'
   try {
     await compilerService.shareCode(req.params.id);
 
@@ -73,6 +95,7 @@ const shareCode = async (req, res, next) => {
 };
 
 const codePublicDetail = async (req, res, next) => {
+  // #swagger.tags = ['compiler']
   try {
     const code = await compilerService.codePublicDetail(req.params.id);
 
@@ -83,6 +106,8 @@ const codePublicDetail = async (req, res, next) => {
 };
 
 const updateCode = async (req, res, next) => {
+  // #swagger.tags = ['compiler']
+  // #swagger.summary = 'update code'
   try {
     await compilerService.updateCode(req.params.id, req.body);
 
@@ -93,9 +118,10 @@ const updateCode = async (req, res, next) => {
 };
 
 const deleteCodeSaved = async (req, res, next) => {
+  // #swagger.tags = ['compiler']
+  // #swagger.summary = 'delete code'
   try {
     await compilerService.deleteCodeSaved(req.params.id);
-
     res.status(StatusCodes.OK).json({ success: true });
   } catch (error) {
     next(error);

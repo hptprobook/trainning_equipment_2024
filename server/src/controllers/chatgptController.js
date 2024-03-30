@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 
 export const chatGptController = async (req, res) => {
+  // #swagger.tags = ['chatgpt']
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY, // This is also the default, can be omitted
   });
