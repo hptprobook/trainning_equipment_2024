@@ -21,7 +21,6 @@ const START_SERVER = () => {
   app.use(cors());
   app.use('/api', APIs);
 
-  app.use('/api', chatgpt);
   app.use('/api/excel', excelRouter);
   app.use('/api/prompt', promptRouter);
   app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));

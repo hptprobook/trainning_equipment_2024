@@ -7,7 +7,6 @@ import ChatIndexPage from '~/pages/Chat/ChatIndexPage';
 import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
 import LoginGit from '~/test/test';
-import Chat from '~/test/chat';
 import ChatDetailPage from '~/pages/Chat/ChatDetailPage';
 import Excel from '~/test/excel';
 import CompilerDetailPage from '~/pages/Compiler/_id';
@@ -59,10 +58,6 @@ const MainRoute = () => {
     {
       path: '*',
       element: <NotFoundPage />,
-    },
-    {
-      path: 'chatgpt',
-      element: <Chat />,
     },
     {
       path: 'excel',
