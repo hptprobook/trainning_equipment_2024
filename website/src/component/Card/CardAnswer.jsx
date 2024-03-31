@@ -1,12 +1,13 @@
 import { Avatar, Box } from '@mui/material';
-import React from 'react';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { useResponsive } from '~/config/reponsiveConfig';
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { extractCodeBlocks } from '~/utils/formatters';
 const CardAnswer = ({ name, avatar, answer }) => {
   const mdReponsive = useResponsive('down', 'sm');
+  console.log(extractCodeBlocks(answer));
   return (
     <div
       style={{

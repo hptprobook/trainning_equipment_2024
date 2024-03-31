@@ -36,3 +36,36 @@ export const truncateString = (str, num) => {
   }
   return str.slice(0, num) + '...';
 };
+
+export const extractCodeBlocks = (markdown) => {
+  const regex = /```([^`]+)```/g;
+  const blocks = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(markdown)) !== null) {
+    // Add text before code block
+    if (match.index !== lastIndex) {
+      blocks.push({
+        type: 'text',
+        content: markdown.substring(lastIndex, match.index),
+      });
+    }
+    // Add code block
+    blocks.push({
+      type: 'code',
+      content: match[0],
+    });
+    lastIndex = regex.lastIndex;
+  }
+
+  // Add text after last code block if any
+  if (lastIndex < markdown.length) {
+    blocks.push({
+      type: 'text',
+      content: markdown.substring(lastIndex),
+    });
+  }
+
+  return blocks;
+};
