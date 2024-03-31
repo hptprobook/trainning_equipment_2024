@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { Grid } from '@mui/material';
 import PropTypes from 'prop-types'; // Add this line to import PropTypes
 
-export default function CardPrompt({ title, content, handleClick }) {
+export default function CardPrompt({ title, content, template, handleClick }) {
   return (
     <Grid item xs={12} md={6} sm={12}>
       <Card variant="outlined">
@@ -18,7 +18,7 @@ export default function CardPrompt({ title, content, handleClick }) {
               boxShadow: '0 0 10px rgba(0,0,0,0.2)'
             }
           }}
-          onClick={() => handleClick({ title: title, content: content })}>
+          onClick={() => handleClick({ title: title, content: content, template: template })}>
           <Typography sx={{ fontSize: 17 }} color="text.secondary" gutterBottom>
             {title}
           </Typography>

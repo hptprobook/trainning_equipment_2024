@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import { GET_DB } from "~/config/mongodb";
-import Joi from "joi";
+import mongoose from 'mongoose';
+import { GET_DB } from '~/config/mongodb';
+import Joi from 'joi';
 
 const SAVE_PROMPT_SCHEMA = Joi.object({
   category: Joi.string().required(),
@@ -17,8 +17,8 @@ const SAVE_PROMPT_SCHEMA = Joi.object({
 });
 
 const validateBeforeCreate = async (data) => {
-  if (typeof data !== "object" || data === null) {
-    throw new Error("Data must be an object");
+  if (typeof data !== 'object' || data === null) {
+    throw new Error('Data must be an object');
   }
 
   return await SAVE_PROMPT_SCHEMA.validateAsync(data, { abortEarly: false });
@@ -41,4 +41,10 @@ const addPromptModel = async (dataPrompt) => {
     await promptsCollection.insertOne(validData);
   }
 };
-export { addPromptModel };
+const getPromptsModel = async () => {
+  const db = GET_DB();
+  const promptsCollection = db.collection('prompts');
+  const prompts = await promptsCollection.find().toArray();
+  return prompts;
+};
+export { addPromptModel, getPromptsModel };

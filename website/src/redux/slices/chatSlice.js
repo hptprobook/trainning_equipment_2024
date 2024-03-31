@@ -15,6 +15,10 @@ export const chatWithGemini = createAsyncThunk(
   'chat/gemini',
   ({ data }, thunkAPI) => handleAsyncThunk(ChatService.gemini, [data], thunkAPI)
 );
+export const chatWithGpt = createAsyncThunk(
+  'chat/gpt',
+  ({ data }, thunkAPI) => handleAsyncThunk(ChatService.gpt, [data], thunkAPI)
+);
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
@@ -38,6 +42,17 @@ const chatSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(chatWithGemini.rejected, (state, { payload }) => {
+        state.status = 'failed';
+        state.error = payload;
+      })
+      .addCase(chatWithGpt.fulfilled, (state, { payload }) => {
+        state.status = 'success';
+        state.data = payload;
+      })
+      .addCase(chatWithGpt.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(chatWithGpt.rejected, (state, { payload }) => {
         state.status = 'failed';
         state.error = payload;
       });
