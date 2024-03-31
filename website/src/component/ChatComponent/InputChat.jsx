@@ -1,8 +1,9 @@
 import { Box, IconButton, Stack } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import './style.css';
 import OptionSelect from '../Select/OptionSelect';
+import { useSelector } from 'react-redux';
 const languageOption = [
   {
     name: 'English',
@@ -42,11 +43,12 @@ const modeOption = [
   },
   {
     name: 'Chat GPT',
-    value:'gpt'
+    value: 'gpt'
   }
 ];
 
 const InputChat = ({ handleGetContent }) => {
+  const status = useSelector((state) => state.chat.status);
   const [dissable, setDissable] = React.useState(true);
   const handleInput = (e) => {
     if (e.target.value === '') {
@@ -55,13 +57,25 @@ const InputChat = ({ handleGetContent }) => {
     else {
       setDissable(false);
     }
-  }
+  };
   const handleForm = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
     const value = Object.fromEntries(data.entries());
+    if (value.language !== '') {
+      value.input = value.input + ' ' + ` with language output: ${value.language}`;
+    }
+    if (value.style !== '') {
+      value.input = value.input + ' ' + ` and style writing: ${value.style}`;
+    }
+    e.target.reset();
     handleGetContent(value);
-  }
+  };
+  useEffect(() => {
+    if (status === 'loading') {
+      setDissable(true);
+    }
+  }, [status]);
   return (
     <Box
       className='container-chat-input'

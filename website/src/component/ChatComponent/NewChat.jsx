@@ -1,35 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CardPrompt from '../Card/CardPrompt';
 import { Grid, Stack } from '@mui/material';
-const searchItems = [
-  {
-    title: 'JavaScript Frameworks Comparison',
-    description: 'Compare popular JavaScript frameworks like React, Angular, and Vue.js.'
-  },
-  {
-    title: 'Introduction to Node.js',
-    description: 'Learn the basics of Node.js and how to build server-side applications with JavaScript.'
-  },
-  {
-    title: 'Data Structures and Algorithms in JavaScript',
-    description: 'Explore common data structures and algorithms implemented in JavaScript.'
-  },
-  {
-    title: 'Responsive Web Design Techniques',
-    description: 'Learn how to create responsive web designs using HTML, CSS, and media queries.'
-  },
-  {
-    title: 'Introduction to SQL Databases',
-    description: 'Get started with SQL databases, including basic queries and database design principles.'
-  },
-  {
-    title: 'Cybersecurity Best Practices',
-    description: 'Discover essential cybersecurity practices to protect your systems and data.'
-  }
-];
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPrompts } from '~/redux/slices/promptsSlice';
 
 const NewChat = ({ handleAddPrompt }) => {
+  const dispatch = useDispatch();
+  const [prompts, setPrompts] = useState([]);
+  const data = useSelector((state) => state.prompts.data.prompts);
+  const status = useSelector((state) => state.prompts.status);
+  const error = useSelector((state) => state.prompts.error);
+  useEffect(() => {
+    dispatch(getAllPrompts());
+  }, [dispatch]);
+  useEffect(() => {
+    if (status === 'success') {
+      setPrompts(data);
+    }
+  }, [status, data]);
   const handlePrompt = (content) => {
     handleAddPrompt(content);
   };
@@ -38,11 +26,12 @@ const NewChat = ({ handleAddPrompt }) => {
       <h1>New Chat</h1>
       <p>How can I help you today?</p>
       <Grid spacing={2} container>
-        {searchItems.map((item, index) => (
+        {prompts.map((item, index) => (
           <CardPrompt
             key={index}
-            title={item.title}
-            content={item.description}
+            template={item.prompt_template}
+            title={item.prompt_title}
+            content={item.teaser}
             handleClick={handlePrompt}
           />
         )
