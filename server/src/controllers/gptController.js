@@ -1,8 +1,8 @@
-import { StatusCodes } from "http-status-codes";
+import { StatusCodes } from 'http-status-codes';
 
-import OpenAI from "openai";
-import Configuration from "openai";
-import { messagesService } from "~/services/messagesService";
+import OpenAI from 'openai';
+import Configuration from 'openai';
+import { messagesService } from '~/services/messagesService';
 const configuration = new Configuration({
   // organization: process.env.OPENAI_ORGANIZATION_ID,
   apiKey: process.env.OPENAI_API_KEY,
@@ -13,7 +13,7 @@ const gpt = async (req, res) => {
   if (!data.content) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
-      msg: "Invalid request content",
+      msg: 'Invalid request content',
     });
   } else {
     const dataUser = {
@@ -21,31 +21,30 @@ const gpt = async (req, res) => {
       content: data.content,
       isUserMessage: true,
     };
-    const prompt = data.content;
     const history = data?.history || {};
     try {
       let systemHistory = [];
       if (Object.keys(history).length > 0) {
         systemHistory = [
           {
-            role: "user",
+            role: 'user',
             content: history.user,
           },
           {
-            role: "assistant",
+            role: 'assistant',
             content: history.model,
           },
-          { role: "user", content: data.content },
+          { role: 'user', content: data.content },
         ];
       }
       else {
         systemHistory = [
-          { role: "user", content: data.content },
+          { role: 'user', content: data.content },
         ];
       }
       const completion = await openai.chat.completions.create({
         messages: systemHistory,
-        model: "gpt-4",
+        model: 'gpt-4',
       });
       let dataModel = {
         conversationId: data.conversationId,
@@ -62,20 +61,11 @@ const gpt = async (req, res) => {
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        mgs: "Failed to call the API",
+        mgs: 'Failed to call the API',
       });
     }
   }
 };
-
-class RateLimitError extends Error {
-  constructor(status, error, message, headers) {
-    super(message);
-    this.status = status;
-    this.error = error;
-    this.headers = headers;
-  }
-}
 export const gptController = {
   gpt,
 };

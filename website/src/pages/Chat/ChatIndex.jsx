@@ -1,14 +1,12 @@
 
-import { Box, Button, Container, Grid, IconButton, Stack } from '@mui/material';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { Grid } from '@mui/material';
 import InputChat from '~/component/ChatComponent/InputChat';
 import React, { useEffect } from 'react';
 import { useResponsive } from '~/config/reponsiveConfig';
 import NewChat from '~/component/ChatComponent/NewChat';
 import InputChatWithPrompt from '~/component/ChatComponent/InputChatWithPrompt';
-import { handleToast } from '~/config/toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { chatWithGemini, resetState } from '~/redux/slices/chatSlice';
+import { chatWithGemini, chatWithGpt, resetState } from '~/redux/slices/chatSlice';
 import { handleAddConversation, resetStateAction } from '~/redux/slices/conversationsSlice';
 import LoadingNewChat from '~/component/ChatComponent/LoadingNewChat';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +23,7 @@ export const ChatIndex = () => {
   const navigate = useNavigate();
   const mdReponsive = useResponsive('down', 'md');
   const [addPrompt, setAddPrompt] = React.useState(false);
-  const [promt, setPromt] = React.useState({ title: '', content: '' });
+  const [promt, setPromt] = React.useState({ title: '', content: '', template: '' });
   const [content, setContent] = React.useState({});
   const data = useSelector((state) => state.chat.data);
   const dataUser = useSelector((state) => state.auth.userGit);
@@ -37,7 +35,7 @@ export const ChatIndex = () => {
     if (status === 'success') {
       dispatch(resetStateAction());
       if (content.model == 'gpt') {
-        handleToast('info', 'Comingsoon');
+        dispatch(chatWithGpt({ data: { content: content.input, conversationId: dataConversations.conversationId } }));
       }
       else {
         dispatch(chatWithGemini({ data: { content: content.input, conversationId: dataConversations.conversationId } }));
@@ -61,7 +59,7 @@ export const ChatIndex = () => {
   const handleGetContent = (content) => {
     setUserInput(content.input);
     const titleArr = content.input.split(' ');
-    const title = titleArr.slice(0, 50).join(' ');
+    const title = titleArr.slice(0, 10).join(' ');
     dispatch(handleAddConversation({ data: { title: title, idGit: dataUser.dataUser._id } }));
     setContent(content);
   };

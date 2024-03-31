@@ -16,8 +16,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleGetUser, resetStateAction } from '~/redux/slices/authSlice';
 import { handleToast } from '~/config/toast';
-import { useNavigate } from 'react-router-dom';
-import { handleArchiveConversations, handleDeleteAllConversations, handleDeleteConversation, handleGetAllConversations } from '~/redux/slices/conversationsSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import { handleArchiveConversations, handleDeleteAllConversations, handleDeleteConversation, handleGetAllConversations, resetStateDelete } from '~/redux/slices/conversationsSlice';
 const drawerWidth = NAV_WIDTH;
 const ItemIconCus = styled(ListItemIcon)(({ theme }) => ({
   minWidth: 'auto',
@@ -50,6 +50,8 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const [nav, setNav] = React.useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { urlId } = useParams();
+
   const dataConversations = useSelector((state) => state.conversations.all);
   const statusAdd = useSelector((state) => state.conversations.status);
   const user = useSelector((state) => state.auth.userGit);
@@ -81,8 +83,12 @@ const NavChat = ({ open, handleDrawerClose }) => {
     if (statusDelete === 'success') {
       handleToast('success', 'Delete conversation success!');
       dispatch(handleGetAllConversations());
+      dispatch(resetStateDelete());
+      if (idItem == urlId) {
+        navigate('/chat');
+      }
     }
-  }, [statusDelete, dispatch]);
+  }, [statusDelete, dispatch, navigate, idItem, urlId]);
   useEffect(() => {
     if (statusArchive === 'success') {
       handleToast('success', 'Archive conversation success!');

@@ -59,7 +59,15 @@ const ChatDetail = () => {
   const mdReponsive = useResponsive('down', 'md');
   const handleGetContent = (content) => {
     if (content.model == 'gpt') {
-      handleToast('info', 'Comingsoon');
+      let dataSend = {
+        content: content.input,
+        conversationId: listMessage[0].conversationId,
+      };
+
+      if (Object.keys(historyChat).length !== 0) {
+        dataSend.history = historyChat;
+      }
+      dispatch(chatWithGemini({ data: dataSend }));
     }
     else {
       let dataSend = {
