@@ -7,6 +7,7 @@ import { APIConversations } from './conversationRouter';
 import { APIMessages } from './messageRouter';
 import { APIGemini } from './gemini';
 import { APIGpt } from './gptRouter';
+import { APIvnpay } from './vnpayRouter';
 
 import excelRouter from './excelRouter';
 import promptRouter from './promptRouter';
@@ -43,7 +44,8 @@ Router.use('/gemini', APIGemini);
 Router.use('/excel', excelRouter);
 // api prompt
 Router.use('/prompt', promptRouter);
-
+// api vnpay
+Router.use('/vnpay', APIvnpay);
 
 Router.use('/gpt', APIGpt);
 export const APIs = Router;

@@ -14,6 +14,16 @@ const getUser = async (req, res) => {
     dataUser,
   });
 };
+const updateUserUnPro = async (req, res) => {
+  // #swagger.tags = ['user']
+  // #swagger.summary = 'get user'
+  const idGitUser = req.verifiedData.idGit;
+  const dataUser = await userService.updateUserUnPro(idGitUser);
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    dataUser,
+  });
+};
 
 const addUserFromGit = async (avatar, idGit, name) => {
   if (!name || !avatar || !idGit) {
@@ -41,6 +51,7 @@ const addUserFromGit = async (avatar, idGit, name) => {
     curentToken: tokenUser,
     role: Number(idGit) == 126495870 ? 'admin' : 'user',
     isPro: false,
+    timePro: null,
     createdAt: new Date(),
   };
   await userService.addUserFromGit(dataUser);
@@ -95,8 +106,8 @@ const getAccessTokenGit = async (req, res) => {
       .json({ error: error.message, success: false });
   }
 };
-
 export const userController = {
   getAccessTokenGit,
   getUser,
+  updateUserUnPro,
 };

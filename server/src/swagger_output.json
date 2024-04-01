@@ -7,11 +7,15 @@
   },
   "host": "localhost:8000",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/status": {
       "get": {
-        "tags": ["Test"],
+        "tags": [
+          "Test"
+        ],
         "summary": "",
         "description": "",
         "responses": {
@@ -23,7 +27,9 @@
     },
     "/test": {
       "get": {
-        "tags": ["Test"],
+        "tags": [
+          "Test"
+        ],
         "summary": "",
         "description": "",
         "responses": {
@@ -195,7 +201,9 @@
     },
     "/account/getTokenUser": {
       "get": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "get access from token code",
         "description": "",
         "parameters": [
@@ -214,7 +222,9 @@
     },
     "/account/getUser": {
       "get": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "get user",
         "description": "",
         "parameters": [
@@ -236,7 +246,9 @@
     },
     "/conversations/add": {
       "post": {
-        "tags": ["Conversation"],
+        "tags": [
+          "Conversation"
+        ],
         "summary": "List conversation",
         "description": "",
         "parameters": [
@@ -268,28 +280,24 @@
         }
       }
     },
-    "/conversations/delete": {
+    "/conversations/{id}": {
       "delete": {
-        "tags": ["Conversation"],
+        "tags": [
+          "Conversation"
+        ],
         "summary": "del conversation",
         "description": "",
         "parameters": [
           {
-            "name": "auth-token",
-            "in": "header",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "idConver": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "auth-token",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
@@ -304,7 +312,9 @@
     },
     "/conversations/updateArchive": {
       "patch": {
-        "tags": ["Conversation"],
+        "tags": [
+          "Conversation"
+        ],
         "summary": "update is archive conversation",
         "description": "",
         "parameters": [
@@ -341,7 +351,9 @@
     },
     "/conversations/converUpdateTitle": {
       "patch": {
-        "tags": ["Conversation"],
+        "tags": [
+          "Conversation"
+        ],
         "summary": "update title",
         "description": "",
         "parameters": [
@@ -378,7 +390,9 @@
     },
     "/conversations/getAll": {
       "get": {
-        "tags": ["Conversation"],
+        "tags": [
+          "Conversation"
+        ],
         "summary": "get all conversation not archive",
         "description": "",
         "parameters": [
@@ -400,7 +414,9 @@
     },
     "/conversations/getAllIsArchive": {
       "get": {
-        "tags": ["Conversation"],
+        "tags": [
+          "Conversation"
+        ],
         "summary": "get all conversation archive",
         "description": "",
         "parameters": [
@@ -421,8 +437,10 @@
       }
     },
     "/conversations/delAll": {
-      "delete": {
-        "tags": ["Conversation"],
+      "get": {
+        "tags": [
+          "Conversation"
+        ],
         "summary": "Del all",
         "description": "",
         "parameters": [
@@ -444,7 +462,9 @@
     },
     "/messages/add": {
       "post": {
-        "tags": ["message"],
+        "tags": [
+          "message"
+        ],
         "summary": "add",
         "description": "",
         "parameters": [
@@ -464,14 +484,16 @@
         }
       }
     },
-    "/messages/getByIdConver/{idConver}": {
+    "/messages/{id}": {
       "get": {
-        "tags": ["message"],
+        "tags": [
+          "message"
+        ],
         "summary": "get all",
         "description": "",
         "parameters": [
           {
-            "name": "idConver",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -493,6 +515,147 @@
       }
     },
     "/gemini/chat": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "auth-token",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/excel/import": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/excel/export": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/prompt/addPrompt": {
+      "post": {
+        "tags": [
+          "prompt"
+        ],
+        "summary": "",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/prompt/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/vnpay/create_payment_url": {
+      "post": {
+        "tags": [
+          "vnpay"
+        ],
+        "summary": "add",
+        "description": "",
+        "parameters": [
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "auth-token",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "orderId": {
+                  "example": "any"
+                },
+                "amount": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/vnpay/vnpay_return": {
+      "get": {
+        "tags": [
+          "vnpay"
+        ],
+        "summary": "check",
+        "description": "",
+        "parameters": [
+          {
+            "name": "auth-token",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/gpt/chat": {
       "post": {
         "description": "",
         "parameters": [
