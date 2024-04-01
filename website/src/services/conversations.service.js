@@ -9,7 +9,7 @@ const ConversationsService = {
   archive: (data) => handleRequest('patch', 'conversations/updateArchive', data),
   update: (data) => handleRequest('put', 'conversations/converUpdateTitle', data),
   delete: (id) => handleRequest('delete', `conversations/${id}`),
-  deleteAll: () => handleRequest('delete', 'conversations/delAll'),
+  deleteAll: () => handleRequest('get', 'conversations/delAll'),
   getArchive: () => handleRequest('get', 'conversations/getAllIsArchive'),
   getAll: () => handleRequest('get', 'conversations/getAll'),
 };

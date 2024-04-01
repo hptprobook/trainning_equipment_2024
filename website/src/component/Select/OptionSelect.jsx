@@ -5,8 +5,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import PropTypes from 'prop-types';
 
-export default function OptionSelect({  option, label, name, noneValue = true }) {
-  const [age, setAge] = React.useState('');
+export default function OptionSelect({ option, label, name, noneValue = true, dfValue = '' }) {
+  const [age, setAge] = React.useState(dfValue);
 
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -40,4 +40,5 @@ OptionSelect.protoType = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string,
   noneValue: PropTypes.bool,
+  dfValue: PropTypes.string,
 };

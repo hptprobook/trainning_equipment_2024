@@ -9,6 +9,7 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { forwardRef, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { findCode } from '~/config/regularExpressionConfig';
 const CardAnswer = forwardRef(({ name, avatar, answer }, ref) => {
   const mdReponsive = useResponsive('down', 'sm');
   const [isCopied, setIsCopied] = useState(false);
@@ -79,9 +80,9 @@ const CardAnswer = forwardRef(({ name, avatar, answer }, ref) => {
                     </SyntaxHighlighter>
                   </div>
                 ) : (
-                  <code className={/(\b(?:npm|yarn|npx)\s+([\w-]+))/.exec(children) ? 'npm-block' : ''} {...rest}>
+                  <code className={findCode.exec(children) ? 'npm-block' : ''} {...rest}>
                     {children}
-                    {/(\b(?:npm|yarn|npx)\s+([\w-]+))/.exec(children) ? isCopied ? <i>Coppied</i> : <ContentCopyIcon onClick={() => handleCopyClick(children)} fontSize='small' sx={{ cursor: 'pointer' }} /> : null}
+                    {findCode.exec(children) ? isCopied ? <i>Coppied</i> : <ContentCopyIcon onClick={() => handleCopyClick(children)} fontSize='small' sx={{ cursor: 'pointer' }} /> : null}
                   </code>
                 );
               }

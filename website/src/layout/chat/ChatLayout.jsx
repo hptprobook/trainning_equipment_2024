@@ -8,6 +8,7 @@ import NavChat from './nav';
 import { NAV_WIDTH } from './layoutConfig';
 import { useLocation } from 'react-router-dom';
 import { Container } from '@mui/material';
+import { useSelector } from 'react-redux';
 const drawerWidth = NAV_WIDTH;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open, headerheight }) => ({
@@ -33,14 +34,10 @@ export default function ChatLayout({ children }) {
   const [headerHeight, setHeaderHeight] = React.useState(0);
   const heightRef = React.useRef(null);
 
-  /* Code từ Compiler */
-  const location = useLocation();
-  const { sourceCode } = location.state || {};
-console.log(sourceCode);
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
+  const statusMessage = useSelector((state) => state.messages.status);
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -53,7 +50,10 @@ console.log(sourceCode);
   const mdReponsive = useResponsive('down', 'md');
   React.useEffect(() => {
     setOpen(!mdReponsive);
-  }, [mdReponsive]);
+    if (mdReponsive && statusMessage === 'success') {
+      setOpen(!mdReponsive);
+    }
+  }, [mdReponsive, statusMessage]);
   return (
     <Box sx={{ display: 'flex', position: 'relative' }}>
       <Header ref={heightRef} open={open} handleDrawerOpen={handleDrawerOpen} />

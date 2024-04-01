@@ -4,48 +4,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import './style.css';
 import OptionSelect from '../Select/OptionSelect';
 import { useSelector } from 'react-redux';
-const languageOption = [
-  {
-    name: 'English',
-    value: 'english'
-  },
-  {
-    name: 'Viet Nam',
-    value: 'vietnamese'
-  },
-  {
-    name: 'Japanese',
-    value: 'japanese'
-  }
-];
-const styleWriting = [
-  {
-    name: 'Default',
-    value: 'default'
-  },
-  {
-    name: 'Academic',
-    value: 'academic'
-  },
-  {
-    name: 'Creative',
-    value: 'creative'
-  },
-  {
-    name: 'Critical',
-    value: 'critical'
-  }
-];
-const modeOption = [
-  {
-    name: 'Gemini',
-    value: 'gemini'
-  },
-  {
-    name: 'Chat GPT',
-    value: 'gpt'
-  }
-];
+import { languageOption, modeOption, styleWriting } from '~/config/optionConfig';
+
 
 const InputChat = ({ handleGetContent }) => {
   const status = useSelector((state) => state.chat.status);
@@ -88,9 +48,9 @@ const InputChat = ({ handleGetContent }) => {
             padding: '12px 0',
           }}
         >
-          <OptionSelect label={'Language'} option={languageOption} name={'language'} />
+          <OptionSelect label={'Language'} option={languageOption} name={'language'} noneValue={false} dfValue='vietnamese'/>
           <OptionSelect label={'Style Writing'} option={styleWriting} name={'style'} />
-          <OptionSelect noneValue={false} label={'Model'} option={modeOption} name={'model'} />
+          <OptionSelect noneValue={false} label={'Model'} option={modeOption} name={'model'} dfValue={'gemini'}/>
 
         </Stack>
         <div className='chat-input'>
