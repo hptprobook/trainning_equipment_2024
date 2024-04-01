@@ -30,8 +30,8 @@ const gemini = async (req, res) => {
       String(idUser),
       'gemini'
     );
+    console.log({ countMessOfDay: listMessages.length });
     if (listMessages.length > 49) {
-      console.log({ countMessOfDay: listMessages.length });
       return res.status(StatusCodes.LOCKED).json({
         success: false,
         mgs: 'Limit chat',
