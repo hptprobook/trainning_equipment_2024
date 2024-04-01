@@ -14,6 +14,7 @@ import { chatWithGemini, resetState } from '~/redux/slices/chatSlice';
 import AnswerLoading from '~/component/Loading/AnswerLoading';
 const ChatDetail = () => {
   const { id } = useParams();
+  const lastScroll = React.useRef(null);
   const [listMessage, setListMessage] = React.useState([]);
   const [historyChat, setHistoryChat] = React.useState({});
   const dispatch = useDispatch();
@@ -42,6 +43,9 @@ const ChatDetail = () => {
         user: dataMessage.dataMess[dataMessage.dataMess.length - 2].content,
         model: dataMessage.dataMess[dataMessage.dataMess.length - 1].content,
       });
+      setTimeout(() => {
+        handleScrollLast();
+      }, 1000);
     } else if (status === 'failed') {
       dispatch(resetMessages());
       handleToast('error', 'Message not found');
@@ -57,9 +61,13 @@ const ChatDetail = () => {
       dispatch(resetState());
       navigate('/chat');
     }
-  }, [statusChat, dispatch, id]);
+    else if (statusChat === 'loading') {
+      handleScrollLast();
+    }
+  }, [statusChat, dispatch, id, navigate]);
   const mdReponsive = useResponsive('down', 'md');
   const handleGetContent = (content) => {
+    handleScrollLast();
     if (content.model == 'gpt') {
       let dataSend = {
         content: content.input,
@@ -82,6 +90,13 @@ const ChatDetail = () => {
       dispatch(chatWithGemini({ data: dataSend }));
     }
   };
+  const handleScrollLast = () => {
+    lastScroll.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center'
+    });
+  };
   return (
     <Grid
       container
@@ -97,13 +112,11 @@ const ChatDetail = () => {
         maxWidth: '100%',
       }}
     >
-      <Grid
-        item
-        xs={12}
+      {mainHeight ? <Grid item xs={12}
         sx={{
           height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
-          overflowY: 'scroll',
-          scrollbarWidth: 'none' /* For Firefox */,
+          overflowY: 'auto',
+          scrollbarWidth: 'none', /* For Firefox */
           msOverflowStyle: 'none',
           '&::-webkit-scrollbar': {
             width: 'auto' /* For horizontal scrollbar */,
@@ -111,21 +124,17 @@ const ChatDetail = () => {
           },
         }}
       >
-        {status === 'success' &&
-          listMessage.map((item) => (
-            <CardAnswer
-              key={item._id}
-              name={item.isUserMessage ? user.dataUser.name : 'FPT.AI'}
-              avatar={
-                item.isUserMessage
-                  ? user.dataUser.avatar
-                  : 'https://www.w3schools.com/howto/img_avatar.png'
-              }
-              answer={item.content}
-            />
-          ))}
+        {status === 'success' && listMessage.map((item, index) => (
+          <CardAnswer
+            key={item._id}
+            name={item.isUserMessage ? user.dataUser.name : 'FPT.AI'}
+            avatar={item.isUserMessage ? user.dataUser.avatar : 'https://www.w3schools.com/howto/img_avatar.png'}
+            answer={item.content}
+          />
+        ))}
         {statusChat === 'loading' && <AnswerLoading />}
-      </Grid>
+        <div ref={lastScroll}></div>
+      </Grid> : <></>}
       <Grid ref={heightRef} item xs={12}>
         <InputChat handleGetContent={handleGetContent} />
       </Grid>
