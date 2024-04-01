@@ -77,6 +77,11 @@ const create_payment_url = async (req, res) => {
 const vnpay_return = async (req, res) => {
   // #swagger.tags = ['vnpay']
   // #swagger.summary = 'check'
+  const { day } = req.body;
+  if (!day) {
+    res.send(JSON.stringify('Thiếu thời hạn pro'));
+    return;
+  }
   let vnp_Params = req.query;
 
   let secureHash = vnp_Params['vnp_SecureHash'];
@@ -98,16 +103,19 @@ const vnpay_return = async (req, res) => {
     const responseCode = vnp_Params['vnp_ResponseCode'];
     if (responseCode == '00') {
       const user = await userService.getUserByIdCheckSecureHash(
-        req.userId,
+        req.userId || req.userIdPro,
         hash
       );
       if (user === '00') {
+        const updatePro = await userService.updateUserPro(
+          req.userId || req.userIdPro,
+          Number(day)
+        );
+        console.log(updatePro);
         res.send(JSON.stringify('Thanh toán thành công'));
-        console.log(req.userId);
-        // update pro
         return;
       } else {
-        res.send(JSON.stringify({ code: 99 }));
+        res.send(JSON.stringify({ code: '99' }));
         return;
       }
     } else {

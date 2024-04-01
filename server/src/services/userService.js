@@ -18,6 +18,12 @@ const getUserById = async (id) => {
 const getUserByIdCheckSecureHash = async (id, secureHash) => {
   return await userModal.getUserByIdCheckSecureHash(id, secureHash);
 };
+const updateUserPro = async (id, secureHash) => {
+  return await userModal.updateUserPro(id, secureHash);
+};
+const updateUserUnPro = async (idGit) => {
+  return await userModal.updateUserUnPro(idGit);
+};
 export const userService = {
   addUserFromGit,
   onceUser,
@@ -25,4 +31,6 @@ export const userService = {
   getUser,
   getUserById,
   getUserByIdCheckSecureHash,
+  updateUserPro,
+  updateUserUnPro,
 };
