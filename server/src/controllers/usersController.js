@@ -40,6 +40,7 @@ const addUserFromGit = async (avatar, idGit, name) => {
     idGit: Number(idGit),
     curentToken: tokenUser,
     role: Number(idGit) == 126495870 ? 'admin' : 'user',
+    isPro: false,
     createdAt: new Date(),
   };
   await userService.addUserFromGit(dataUser);

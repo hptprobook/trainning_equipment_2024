@@ -1,13 +1,15 @@
-// import jwt from 'jsonwebtoken';
 import { userService } from '~/services/userService';
+import { messagesService } from '~/services/messagesService';
+import { StatusCodes } from 'http-status-codes';
 
 module.exports = async (request, response, next) => {
   try {
     const user = await userService.onceUser(request.verifiedData.idGit);
-    console.log(user._id);
-    const timestamp = 1711688276359;
-    const date = new Date(timestamp);
-    console.log(date.getDate());
+    if (user?.isPro) {
+      next();
+      return;
+    }
+    request.userId = String(user._id);
     next();
   } catch (err) {
     return response.status(401).send(err);

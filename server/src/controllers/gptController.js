@@ -36,11 +36,8 @@ const gpt = async (req, res) => {
           },
           { role: 'user', content: data.content },
         ];
-      }
-      else {
-        systemHistory = [
-          { role: 'user', content: data.content },
-        ];
+      } else {
+        systemHistory = [{ role: 'user', content: data.content }];
       }
       const completion = await openai.chat.completions.create({
         messages: systemHistory,
