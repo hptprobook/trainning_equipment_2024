@@ -69,3 +69,15 @@ export const extractCodeBlocks = (markdown) => {
 
   return blocks;
 };
+export const detectLanguage = (markdown) => {
+  // Regex để tìm ngôn ngữ trong markdown
+  const languageRegex = /^```(\w+)/;
+  // Lấy các dòng từ markdown
+  const lines = markdown.split('\n');
+
+  // Kiểm tra dòng đầu tiên của code block
+  const match = languageRegex.exec(lines[0]);
+
+  // Nếu match thì trả về ngôn ngữ, nếu không trả về null
+  return match ? match[1] : null;
+};

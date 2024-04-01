@@ -1,7 +1,6 @@
 import request from '../utils/request';
 
 async function handleRequest(method, url, data) {
-  console.log('handleRequest', data);
   return request[method](url, data).then(res => res.data);
 }
 

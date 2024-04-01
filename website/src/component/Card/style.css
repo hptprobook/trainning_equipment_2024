@@ -1,0 +1,9 @@
+
+.npm-block {
+    background-color: #2f2f2f;
+    color: #fff;
+    padding: 16px;
+    width: 100%;
+    display: inline-block;
+    border-radius: 12px;
+}
