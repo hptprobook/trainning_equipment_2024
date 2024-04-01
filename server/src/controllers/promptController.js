@@ -1,3 +1,4 @@
+const { StatusCodes } = require('http-status-codes');
 const promptService = require('../services/promptService');
 
 const addPrompt = async (req, res) => {
@@ -10,5 +11,15 @@ const addPrompt = async (req, res) => {
     res.status(500).send('Error from nodejs: ' + error.message);
   }
 };
+const getPrompts = async (req, res) => {
+  try {
+    const prompts = await promptService.getPrompts();
+    res.status(StatusCodes.CREATED).json({
+      prompts,
+    });
+  } catch (error) {
+    res.status(500).send('Error from nodejs: ' + error.message);
+  }
+};
 
-module.exports = { addPrompt };
+module.exports = { addPrompt, getPrompts };

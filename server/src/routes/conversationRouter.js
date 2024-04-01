@@ -26,9 +26,8 @@ Router.get('/getAll', verifyToken, (req, res) =>
 Router.get('/getAllIsArchive', verifyToken, (req, res) =>
   conversationsController.converGetAllIsArchive(req, res)
 );
-
-Router.delete('/delAll', verifyToken, (req, res) =>
+Router.get('/delAll', verifyToken, (req, res) =>
   conversationsController.converDelAll(req, res)
 );
-// vv
+
 export const APIConversations = Router;

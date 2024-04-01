@@ -16,8 +16,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleGetUser, resetStateAction } from '~/redux/slices/authSlice';
 import { handleToast } from '~/config/toast';
-import { useNavigate } from 'react-router-dom';
-import { handleDeleteConversation, handleGetAllConversations } from '~/redux/slices/conversationsSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import { handleArchiveConversations, handleDeleteAllConversations, handleDeleteConversation, handleGetAllConversations, resetStateDelete } from '~/redux/slices/conversationsSlice';
 const drawerWidth = NAV_WIDTH;
 const ItemIconCus = styled(ListItemIcon)(({ theme }) => ({
   minWidth: 'auto',
@@ -50,14 +50,17 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const [nav, setNav] = React.useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { urlId } = useParams();
+
   const dataConversations = useSelector((state) => state.conversations.all);
   const statusAdd = useSelector((state) => state.conversations.status);
   const user = useSelector((state) => state.auth.userGit);
   const error = useSelector((state) => state.auth.error);
   const statusDelete = useSelector((state) => state.conversations.statusDelete);
+  const statusArchive = useSelector((state) => state.conversations.statusArchive);
+  const statusDeleteAll = useSelector((state) => state.conversations.statusDeleteAll);
   useEffect(() => {
     if (dataConversations) {
-      console.log(dataConversations);
       setNav(dataConversations.data);
     }
   }, [dataConversations]);
@@ -69,13 +72,29 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  useEffect(() => {
+    if (statusDeleteAll === 'success') {
+      handleToast('success', 'Delete all conversation success!');
+      dispatch(handleGetAllConversations());
+      navigate('/chat');
+    }
+  }, [statusDeleteAll, dispatch]);
   useEffect(() => {
     if (statusDelete === 'success') {
-      handleToast('success', 'Xóa cuộc trò chuyện thành công!');
+      handleToast('success', 'Delete conversation success!');
+      dispatch(handleGetAllConversations());
+      dispatch(resetStateDelete());
+      if (idItem == urlId) {
+        navigate('/chat');
+      }
+    }
+  }, [statusDelete, dispatch, navigate, idItem, urlId]);
+  useEffect(() => {
+    if (statusArchive === 'success') {
+      handleToast('success', 'Archive conversation success!');
       dispatch(handleGetAllConversations());
     }
-  }, [statusDelete]);
+  }, [statusArchive, dispatch]);
   useEffect(() => {
     if (user) {
       setData(user.dataUser);
@@ -116,12 +135,19 @@ const NavChat = ({ open, handleDrawerClose }) => {
     handleCloseItem();
     dispatch(handleDeleteConversation({ id: idItem }));
   };
+  const handleArchive = () => {
+    handleCloseItem();
+    dispatch(handleArchiveConversations({ idConver: idItem, archive: true }));
+  }
   const handleChildClick = (e) => {
     // Ngăn sự kiện click lan truyền lên cha
     e.stopPropagation();
     setAnchorElItem(e.currentTarget);
     setIdItem(e.currentTarget.getAttribute('path-id'));
   };
+  const handleDeleteAll = () => {
+    dispatch(handleDeleteAllConversations());
+  }
   const openAvatar = Boolean(anchorEl);
   const openItem = Boolean(anchorElItem);
   const id = openAvatar ? 'simple-popover' : undefined;
@@ -223,6 +249,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                         display: 'flex'
                       },
                     }}
+                    onClick={handleArchive}
                   >
                     <ListItemText primary={'Archive'} />
                     <ItemIconCus>
@@ -359,6 +386,27 @@ const NavChat = ({ open, handleDrawerClose }) => {
                       <ListItemText primary={'Profile'} />
                       <ItemIconCus>
                         <PermIdentityIcon />
+                      </ItemIconCus>
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem
+                    sx={{
+                      padding: theme.palette.padding.list,
+                    }}
+                  >
+                    <ListItemButton
+                      sx={{
+                        borderRadius: '12px',
+                        padding: '4px 8px',
+                        '& .MuiListItemIcon-root': {
+                          display: 'flex'
+                        },
+                      }}
+                      onClick={() => handleDeleteAll()}
+                    >
+                      <ListItemText primary={'Delete All'} />
+                      <ItemIconCus>
+                        <DeleteIcon />
                       </ItemIconCus>
                     </ListItemButton>
                   </ListItem>
