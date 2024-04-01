@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import './style.css';
 import OptionSelect from '../Select/OptionSelect';
@@ -104,10 +104,31 @@ const InputChatWithPrompt = ({ promt, handleGetContent, handleCancel }) => {
         </Stack>
         <div className='chat-input'>
           <input type="hidden" value={promt.template} name='prompt' />
-          <input onChange={handleChange} placeholder='Type your content' type="text" name='input' className='input' />
-          <IconButton aria-label="send" type='submit' disabled={dissable} >
-            <ArrowUpwardIcon />
-          </IconButton>
+          <TextField
+            id="input-chat"
+            multiline
+            name='input'
+            onChange={handleChange}
+            maxRows={3}
+            fullWidth
+            placeholder="Input"
+            sx={{
+              '& .MuiInputBase-root': {
+                padding: 0,
+              },
+              '& .MuiInputBase-input': {
+                padding: '12px 0',
+              },
+              '& .MuiInputBase-root fieldset': {
+                border: 'none',
+              }
+            }}
+          />
+          <div className='btn-submit'>
+            <IconButton aria-label="send" disabled={dissable} type='submit'>
+              <ArrowUpwardIcon />
+            </IconButton>
+          </div>
         </div>
         <Button sx={{ margin: 2 }} onClick={handleCancel}>
           Cancel

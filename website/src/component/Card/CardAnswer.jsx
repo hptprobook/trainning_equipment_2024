@@ -6,21 +6,22 @@ import Markdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import './style.css';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import copy from 'copy-to-clipboard';
-const CardAnswer = ({ name, avatar, answer }) => {
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+const CardAnswer = forwardRef(({ name, avatar, answer }, ref) => {
   const mdReponsive = useResponsive('down', 'sm');
   const [isCopied, setIsCopied] = useState(false);
 
 
   const handleCopyClick = (children) => {
-    console.log(children);
-    // copy(String(children));
-    // setIsCopied(true);
-    // setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    copy(String(children));
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
   };
   return (
     <div
+      ref={ref}
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -64,17 +65,23 @@ const CardAnswer = ({ name, avatar, answer }) => {
                 const { children, className, ...rest } = props;
                 const match = /language-(\w+)/.exec(className || '');
                 return match ? (
-                  <SyntaxHighlighter
-                    {...rest}
-                    PreTag="div"
-                    language={match[1]}
-                    style={oneDark}
-                  >
-                    {String(children).replace(/\n$/, '')}
-                  </SyntaxHighlighter>
+                  <div className='highlight-block'>
+                    <div className='block-btn'>
+                      {isCopied ? <i>Coppied</i> : <ContentCopyIcon onClick={() => handleCopyClick(children)} fontSize='small' sx={{ cursor: 'pointer' }} />}
+                    </div>
+                    <SyntaxHighlighter
+                      {...rest}
+                      PreTag="div"
+                      language={match[1]}
+                      style={oneDark}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  </div>
                 ) : (
                   <code className={/(\b(?:npm|yarn|npx)\s+([\w-]+))/.exec(children) ? 'npm-block' : ''} {...rest}>
                     {children}
+                    {/(\b(?:npm|yarn|npx)\s+([\w-]+))/.exec(children) ? isCopied ? <i>Coppied</i> : <ContentCopyIcon onClick={() => handleCopyClick(children)} fontSize='small' sx={{ cursor: 'pointer' }} /> : null}
                   </code>
                 );
               }
@@ -86,7 +93,7 @@ const CardAnswer = ({ name, avatar, answer }) => {
       </Box >
     </div >
   );
-};
+});
 CardAnswer.protoType = {
   name: PropTypes.string,
   avatar: PropTypes.string,

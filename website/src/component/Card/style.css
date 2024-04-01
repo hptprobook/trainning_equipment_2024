@@ -2,8 +2,21 @@
 .npm-block {
     background-color: #2f2f2f;
     color: #fff;
-    padding: 16px;
+    padding: 12px;
     width: 100%;
     display: inline-block;
     border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+.highlight-block {
+    position: relative;
+}
+.highlight-block .block-btn {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    color: #fff;
+    padding: 6px 12px;
 }

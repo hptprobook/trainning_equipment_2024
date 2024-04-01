@@ -78,14 +78,15 @@ export const ChatIndex = () => {
         maxWidth: '100%',
       }}
     >
-      <Grid item xs={12}
-        sx={{
-          height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
-          overflow: 'auto',
-        }}
-      >
-        {statusChat === 'loading' ? <LoadingNewChat name={dataUser.dataUser.name} avatar={dataUser.dataUser.avatar} answer={userInput} /> : <NewChat handleAddPrompt={handleAddPrompt} />}
-      </Grid>
+      {mainHeight ?
+        <Grid item xs={12}
+          sx={{
+            height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
+            overflow: 'auto',
+          }}
+        >
+          {statusChat === 'loading' ? <LoadingNewChat name={dataUser.dataUser.name} avatar={dataUser.dataUser.avatar} answer={userInput} /> : <NewChat handleAddPrompt={handleAddPrompt} />}
+        </Grid> : null}
       <Grid ref={heightRef} item xs={12} >
         <InputChat handleGetContent={handleGetContent} />
         {addPrompt ? <InputChatWithPrompt promt={promt} handleGetContent={handleGetContent} handleCancel={handleCancel} /> : null}

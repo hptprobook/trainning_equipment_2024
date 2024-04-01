@@ -14,11 +14,11 @@ export default function OptionSelect({  option, label, name, noneValue = true })
 
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="demo-select-small-label">{label}</InputLabel>
+      <InputLabel id={`${name}-label`}>{label}</InputLabel>
       <Select
         name={name}
-        labelId="demo-select-small-label"
-        id="demo-select-small"
+        labelId={`${name}-label`}
+        id={name}
         value={age}
         label={label}
         onChange={handleChange}

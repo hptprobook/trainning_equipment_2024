@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack } from '@mui/material';
+import { Box, IconButton, Stack, TextField } from '@mui/material';
 import React, { useEffect } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import './style.css';
@@ -85,7 +85,7 @@ const InputChat = ({ handleGetContent }) => {
           spacing={2}
           direction="row"
           sx={{
-            padding: '12px',
+            padding: '12px 0',
           }}
         >
           <OptionSelect label={'Language'} option={languageOption} name={'language'} />
@@ -94,10 +94,31 @@ const InputChat = ({ handleGetContent }) => {
 
         </Stack>
         <div className='chat-input'>
-          <input onChange={handleInput} name='input' placeholder='Type your question' type="text" className='input' />
-          <IconButton aria-label="send" disabled={dissable} type='submit'>
-            <ArrowUpwardIcon />
-          </IconButton>
+          <TextField
+            id="input-chat"
+            multiline
+            name='input'
+            onChange={handleInput}
+            maxRows={3}
+            fullWidth
+            placeholder="Input"
+            sx={{
+              '& .MuiInputBase-root': {
+                padding: 0,
+              },
+              '& .MuiInputBase-input': {
+                padding: '12px 0',
+              },
+              '& .MuiInputBase-root fieldset': {
+                border: 'none',
+              }
+            }}
+          />
+          <div className='btn-submit'>
+            <IconButton aria-label="send" disabled={dissable} type='submit'>
+              <ArrowUpwardIcon />
+            </IconButton>
+          </div>
         </div>
       </form>
     </Box>
