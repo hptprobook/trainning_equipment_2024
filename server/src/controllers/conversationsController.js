@@ -54,7 +54,7 @@ const delConversations = async (req, res) => {
     await conversationsService.delConversations(id);
     return res.status(StatusCodes.OK).json({
       mgs: 'Xóa thành công',
-      id
+      id,
     });
   } catch (error) {
     return res
