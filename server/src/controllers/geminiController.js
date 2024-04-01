@@ -24,6 +24,20 @@ const gemini = async (req, res) => {
   // #swagger.tags = ['gemini']
   // #swagger.summary = ''
   const data = req.body;
+  if (req.userId) {
+    const idUser = req.userId;
+    const listMessages = await messagesService.getMessagesTodayByType(
+      String(idUser),
+      'gemini'
+    );
+    if (listMessages.length > 49) {
+      console.log({ countMessOfDay: listMessages.length });
+      return res.status(StatusCodes.LOCKED).json({
+        success: false,
+        mgs: 'Limit chat',
+      });
+    }
+  }
   if (!data.content) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
@@ -33,6 +47,8 @@ const gemini = async (req, res) => {
     const dataUser = {
       conversationId: data.conversationId,
       content: data.content,
+      type: 'gemini',
+      userId: req.userId,
       isUserMessage: true,
     };
     const prompt = data.content;

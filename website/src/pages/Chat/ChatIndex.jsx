@@ -9,18 +9,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { chatWithGemini, chatWithGpt, resetState } from '~/redux/slices/chatSlice';
 import { handleAddConversation, resetStateAction } from '~/redux/slices/conversationsSlice';
 import LoadingNewChat from '~/component/ChatComponent/LoadingNewChat';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 export const ChatIndex = () => {
   const heightRef = React.useRef(null);
   const [mainHeight, setMainHeight] = React.useState(0);
   const [userInput, setUserInput] = React.useState('');
   const dispatch = useDispatch();
-  React.useEffect(() => {
-    if (heightRef.current) {
-      setMainHeight(heightRef.current.clientHeight);
-    }
-  }, [heightRef]);
   const navigate = useNavigate();
+  const location = useLocation();
+
   const mdReponsive = useResponsive('down', 'md');
   const [addPrompt, setAddPrompt] = React.useState(false);
   const [promt, setPromt] = React.useState({ title: '', content: '', template: '' });
@@ -31,6 +28,11 @@ export const ChatIndex = () => {
   const status = useSelector((state) => state.conversations.status);
   const statusChat = useSelector((state) => state.chat.status);
 
+  React.useEffect(() => {
+    if (heightRef.current) {
+      setMainHeight(heightRef.current.clientHeight);
+    }
+  }, [heightRef]);
   useEffect(() => {
     if (status === 'success') {
       dispatch(resetStateAction());
@@ -48,7 +50,7 @@ export const ChatIndex = () => {
       dispatch(resetState());
       navigate(`/chat/${dataConversations.conversationId}`);
     }
-  }, [data, navigate, dataConversations]);
+  }, [data, navigate, dataConversations, statusChat, dispatch]);
   const handleAddPrompt = (content) => {
     setPromt(content);
     setAddPrompt(true);
@@ -63,6 +65,17 @@ export const ChatIndex = () => {
     dispatch(handleAddConversation({ data: { title: title, idGit: dataUser.dataUser._id } }));
     setContent(content);
   };
+  const { sourceCode } = location.state || {};
+
+  React.useEffect(() => {
+    if (sourceCode) {
+      const title = 'Check code snippet';
+      const content = 'Check my code and write any comments you have on it' + '\n' + sourceCode;
+      setUserInput(content);
+      dispatch(handleAddConversation({ data: { title: title, idGit: dataUser.dataUser._id } }));
+      setContent({ input: content, model: 'gpt' });
+    }
+  }, [sourceCode, dispatch]);
   return (
     <Grid
       container
@@ -78,14 +91,21 @@ export const ChatIndex = () => {
         maxWidth: '100%',
       }}
     >
-      <Grid item xs={12}
-        sx={{
-          height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
-          overflow: 'auto',
-        }}
-      >
-        {statusChat === 'loading' ? <LoadingNewChat name={dataUser.dataUser.name} avatar={dataUser.dataUser.avatar} answer={userInput} /> : <NewChat handleAddPrompt={handleAddPrompt} />}
-      </Grid>
+      {mainHeight ?
+        <Grid item xs={12}
+          sx={{
+            height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
+            overflow: 'auto',
+            scrollbarWidth: 'none', /* For Firefox */
+            msOverflowStyle: 'none',
+            '&::-webkit-scrollbar': {
+              width: 'auto', /* For horizontal scrollbar */
+              height: '0px', /* For vertical scrollbar */
+            }
+          }}
+        >
+          {statusChat === 'loading' ? <LoadingNewChat name={dataUser.dataUser.name} avatar={dataUser.dataUser.avatar} answer={userInput} /> : <NewChat handleAddPrompt={handleAddPrompt} />}
+        </Grid> : null}
       <Grid ref={heightRef} item xs={12} >
         <InputChat handleGetContent={handleGetContent} />
         {addPrompt ? <InputChatWithPrompt promt={promt} handleGetContent={handleGetContent} handleCancel={handleCancel} /> : null}
