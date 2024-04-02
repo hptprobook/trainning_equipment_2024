@@ -6,6 +6,9 @@ const addMessages = async (dataMess) => {
 const getMessagesbyidConver = async (idConver) => {
   return await messageModal.getMessagesbyidConver(idConver);
 };
+const getMessagesTodayByType = async (idUser, type) => {
+  return await messageModal.getMessagesTodayByType(idUser, type);
+};
 const delbyidConver = async (idConver) => {
   return await messageModal.delbyidConver(idConver);
 };
@@ -13,4 +16,5 @@ export const messagesService = {
   addMessages,
   getMessagesbyidConver,
   delbyidConver,
+  getMessagesTodayByType,
 };

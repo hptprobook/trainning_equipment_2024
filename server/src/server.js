@@ -6,13 +6,10 @@ import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware';
 import { APIs } from './routes';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import chatgpt from './routes/chatgpt';
-import excelRouter from './routes/excelRouter';
-import promptRouter from './routes/promptRouter';
-// import { corsOptions } from './config/cors';
-import swaggerUi from 'swagger-ui-express';
-import swaggerFile from '../src/swagger_output.json';
-// assert { type: 'json' }
+// import chatgpt from './routes/chatgpt';
+// import excelRouter from './routes/excelRouter';
+// import promptRouter from './routes/promptRouter';
+
 const START_SERVER = () => {
   const app = express();
   app.use(bodyParser.json());
@@ -21,10 +18,11 @@ const START_SERVER = () => {
   app.use(cors());
   app.use('/api', APIs);
 
-  app.use('/api', chatgpt);
-  app.use('/api/excel', excelRouter);
-  app.use('/api/prompt', promptRouter);
-  app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+  // app.use('/api', chatgpt);
+  // app.use('/api/excel', excelRouter);
+  // app.use('/api/prompt', promptRouter);
+
+
   // -----------------
 
   app.get('/', (req, res) => {

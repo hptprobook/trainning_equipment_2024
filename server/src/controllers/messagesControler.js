@@ -11,7 +11,7 @@ const addMess = async (req, res) => {
   });
 };
 const getMessagesbyidConver = async (req, res) => {
-    // #swagger.tags = ['message']
+  // #swagger.tags = ['message']
   // #swagger.summary = 'get all'
   const id = req.params;
   try {
@@ -20,8 +20,7 @@ const getMessagesbyidConver = async (req, res) => {
       success: true,
       dataMess,
     });
-  }
-  catch (error) {
+  } catch (error) {
     return res.status(StatusCodes.FAILED_DEPENDENCY).json({
       error: error.message,
       success: false,
