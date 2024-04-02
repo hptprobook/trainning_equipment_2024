@@ -60,10 +60,6 @@ const MainRoute = () => {
       element: <NotFoundPage />,
     },
     {
-      path: 'excel',
-      element: <Excel />,
-    },
-    {
       path: 'getPrompts',
       element: <Prompts />,
     },
