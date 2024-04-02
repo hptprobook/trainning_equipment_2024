@@ -5,7 +5,6 @@ import {
 } from '@google/generative-ai';
 import { StatusCodes } from 'http-status-codes';
 import { messagesService } from '~/services/messagesService';
-import { isArray } from 'lodash';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 const safetySettings = [
@@ -30,7 +29,6 @@ const gemini = async (req, res) => {
       String(idUser),
       'gemini'
     );
-    console.log({ countMessOfDay: listMessages.length });
     if (listMessages.length > 49) {
       return res.status(StatusCodes.LOCKED).json({
         success: false,
