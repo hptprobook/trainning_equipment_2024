@@ -8,7 +8,6 @@ import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
 import LoginGit from '~/test/test';
 import ChatDetailPage from '~/pages/Chat/ChatDetailPage';
-import Excel from '~/test/excel';
 import CompilerDetailPage from '~/pages/Compiler/_id';
 import CompilerPublicDetailPage from '~/pages/Compiler/public/_id';
 import Prompts from '~/test/prompts';
