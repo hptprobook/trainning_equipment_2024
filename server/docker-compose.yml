@@ -17,9 +17,3 @@ services:
       context: .
       dockerfile: Dockerfile.node
     image: sli2024/node
-
-  dotnet:
-    build:
-      context: .
-      dockerfile: Dockerfile.dotnet
-    image: sli2024/dotnet

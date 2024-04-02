@@ -13,9 +13,6 @@ Router.route('/:id')
   .put(verifyToken, compilerController.updateCode);
 
 Router.route('/share/:id').get(verifyToken, compilerController.shareCode);
-Router.route('/share/public/:id').get(
-  verifyToken,
-  compilerController.codePublicDetail
-);
+Router.route('/share/public/:id').get(compilerController.codePublicDetail);
 
 export const compileCodeRoute = Router;
