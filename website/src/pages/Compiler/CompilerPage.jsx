@@ -55,23 +55,21 @@ const CompilerPage = () => {
   };
 
   useEffect(() => {
-    if (editorRef.current) {
+    if (editorRef.current && monaco) {
       const editor = editorRef.current;
       const model = editor.getModel();
-
-      const position = editor.getPosition();
-      const range = editor.getSelection();
-
       monaco.editor.setModelLanguage(model, selectedLanguage);
       editor.setValue(defaultCode[selectedLanguage]);
 
-      editor.setPosition(position);
-      editor.setSelection(range);
-
       editor.getAction('editor.action.formatDocument').run();
+    }
+  }, [selectedLanguage, monaco]);
+
+  useEffect(() => {
+    if (monaco) {
       monaco.editor.setTheme(theme === 'light' ? 'vs' : 'vs-dark');
     }
-  }, [selectedLanguage, monaco, theme]);
+  }, [theme, monaco]);
 
   const handleRunCode = async () => {
     const languageForServer = convertLanguage(selectedLanguage);
@@ -79,7 +77,12 @@ const CompilerPage = () => {
     setCompileOutput('');
 
     try {
-      const resultAction = await dispatch(runCode({ language: languageForServer, code: sourceCode })).unwrap();
+      const resultAction = await dispatch(
+        runCode({
+          language: languageForServer,
+          code: sourceCode,
+        })
+      ).unwrap();
 
       if (resultAction.success) {
         setCompileOutput(resultAction.output);
@@ -168,8 +171,20 @@ const CompilerPage = () => {
         >
           <DialogTitle>Title of code snippet</DialogTitle>
           <DialogContent>
-            <DialogContentText>What is the title of this code snippet ?</DialogContentText>
-            <TextField autoFocus required margin="dense" id="title" name="title" label="Title" type="text" fullWidth variant="standard" />
+            <DialogContentText>
+              What is the title of this code snippet ?
+            </DialogContentText>
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="title"
+              name="title"
+              label="Title"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenCodeTitleForm(false)}>Cancel</Button>
@@ -230,7 +245,15 @@ const CompilerPage = () => {
             </Grid>
             <Grid item xs={12} md={12} lg={5}>
               {isCompiling && (
-                <Box sx={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
                   <CircularProgress />
                 </Box>
               )}

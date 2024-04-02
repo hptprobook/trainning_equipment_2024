@@ -7,7 +7,6 @@ import { APIs } from './routes';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 // import chatgpt from './routes/chatgpt';
-// import excelRouter from './routes/excelRouter';
 // import promptRouter from './routes/promptRouter';
 
 const START_SERVER = () => {
@@ -19,7 +18,6 @@ const START_SERVER = () => {
   app.use('/api', APIs);
 
   // app.use('/api', chatgpt);
-  // app.use('/api/excel', excelRouter);
   // app.use('/api/prompt', promptRouter);
 
 

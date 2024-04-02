@@ -1,14 +1,40 @@
+/* eslint-disable indent */
 import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { escapeRegExp } from '~/utils/formatters';
 
-const executeCommand = async (command, filePath) => {
+const dirCodes = path.join(__dirname, '../executedFiles');
+
+const executeCommandDocker = async (language, filePath) => {
   return new Promise((resolve, reject) => {
+    const fileName = path.basename(filePath);
+    const volumeMount = `${dirCodes}:/app`;
+    let dockerImage;
+
+    switch (language) {
+      case 'python':
+        dockerImage = 'sli2024/python';
+        break;
+      case 'node':
+        dockerImage = 'sli2024/node';
+        break;
+      case 'php':
+        dockerImage = 'sli2024/php';
+        break;
+      default:
+        return reject(new Error('Unsupported language'));
+    }
+
+    const command = `docker run --rm -v "${volumeMount}" ${dockerImage} ${language} "/app/${fileName}"`;
+    const directoryPath = escapeRegExp(path.dirname(filePath));
+
     exec(command, (error, stdout, stderr) => {
-      const directoryPath = escapeRegExp(path.dirname(filePath));
       if (error) {
-        const cleanedMessage = error.message.replace(new RegExp(directoryPath, 'g'), 'executedFiles');
+        const cleanedMessage = error.message.replace(
+          new RegExp(directoryPath, 'g'),
+          'executedFiles'
+        );
         reject(new Error(cleanedMessage));
       } else if (stderr) {
         const cleanedStderr = stderr.replace(path.dirname(filePath), '');
@@ -16,29 +42,26 @@ const executeCommand = async (command, filePath) => {
       } else {
         resolve(stdout);
       }
-      fs.unlink(filePath, (unlinkError) => {
-        if (unlinkError) reject(new Error(`Unlink error: ${unlinkError.message}\n`));
-      });
+    });
+  }).finally(() => {
+    fs.unlink(filePath, (unlinkError) => {
+      if (unlinkError)
+        // eslint-disable-next-line no-console
+        console.log(`Error deleting file: ${unlinkError.message}`);
     });
   });
 };
 
 const executePy = (filePath) => {
-  return executeCommand(`python "${filePath}"`, filePath);
+  return executeCommandDocker('python', filePath);
 };
 
 const executeJs = (filePath) => {
-  return executeCommand(`node "${filePath}"`, filePath);
+  return executeCommandDocker('node', filePath);
 };
 
 const executePhp = (filePath) => {
-  return executeCommand(`php "${filePath}"`, filePath);
+  return executeCommandDocker('php', filePath);
 };
 
-const executeCpp = async (filePath) => {
-  const executablePath = filePath.replace('.cpp', '');
-  await executeCommand(`g++ "${filePath}" -o "${executablePath}"`, filePath, null); // Compile
-  return executeCommand(`"${executablePath}"`, executablePath, () => fs.unlink(executablePath, () => {})); // Execute
-};
-
-export const executeFile = { executePy, executeJs, executePhp, executeCpp };
+export const executeFile = { executePy, executeJs, executePhp };
