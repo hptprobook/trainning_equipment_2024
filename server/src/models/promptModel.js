@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { GET_DB } from '~/config/mongodb';
 import Joi from 'joi';
 
