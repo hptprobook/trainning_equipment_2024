@@ -55,23 +55,21 @@ const CompilerPage = () => {
   };
 
   useEffect(() => {
-    if (editorRef.current) {
+    if (editorRef.current && monaco) {
       const editor = editorRef.current;
       const model = editor.getModel();
-
-      const position = editor.getPosition();
-      const range = editor.getSelection();
-
       monaco.editor.setModelLanguage(model, selectedLanguage);
       editor.setValue(defaultCode[selectedLanguage]);
 
-      editor.setPosition(position);
-      editor.setSelection(range);
-
       editor.getAction('editor.action.formatDocument').run();
+    }
+  }, [selectedLanguage, monaco]);
+
+  useEffect(() => {
+    if (monaco) {
       monaco.editor.setTheme(theme === 'light' ? 'vs' : 'vs-dark');
     }
-  }, [selectedLanguage, monaco, theme]);
+  }, [theme, monaco]);
 
   const handleRunCode = async () => {
     const languageForServer = convertLanguage(selectedLanguage);
@@ -82,7 +80,7 @@ const CompilerPage = () => {
       const resultAction = await dispatch(
         runCode({
           language: languageForServer,
-          code: sourceCode.replace(/\/\/.*|\/\*[\s\S]*?\*\//g, ''),
+          code: sourceCode,
         })
       ).unwrap();
 

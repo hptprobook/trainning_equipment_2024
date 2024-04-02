@@ -10,7 +10,8 @@ Router.get('/codesSaved', verifyToken, compilerController.listCodeSaved)
 
 Router.route('/:id')
   .get(verifyToken, compilerController.getDetails)
-  .put(verifyToken, compilerController.updateCode);
+  .put(verifyToken, compilerController.updateCode)
+  .delete(verifyToken, compilerController.deleteCodeSaved);
 
 Router.route('/share/:id').get(verifyToken, compilerController.shareCode);
 Router.route('/share/public/:id').get(compilerController.codePublicDetail);
