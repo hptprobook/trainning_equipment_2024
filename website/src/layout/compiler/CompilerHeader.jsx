@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 export default function CompilerHeader({ height, theme }) {
   return (
@@ -16,7 +18,10 @@ export default function CompilerHeader({ height, theme }) {
       }}
     >
       <Link to={'/'}>
-        <Typography variant="body1" color={theme === 'light' ? 'inherit' : '#fff'}>
+        <Typography
+          variant="body1"
+          color={theme === 'light' ? 'inherit' : '#fff'}
+        >
           SLIF Online Compiler
         </Typography>
       </Link>
@@ -26,7 +31,9 @@ export default function CompilerHeader({ height, theme }) {
           color: theme === 'light' ? '#333' : '#fff',
         }}
       >
-        Chat Box{' '}
+        <Button variant="outlined" endIcon={<ArrowRightAltIcon />}>
+          Chat Box
+        </Button>
       </Link>
     </Box>
   );

@@ -14,7 +14,7 @@ const compilerCode = async (req, res) => {
       .json({ error: 'Code must be Empty' });
 
   try {
-    const filePath = await generateFile(language, code);
+    const filePath = await generateFile(code);
 
     let output;
 

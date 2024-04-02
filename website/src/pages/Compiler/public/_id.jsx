@@ -3,7 +3,10 @@ import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Editor, { useMonaco } from '@monaco-editor/react';
-import { convertLanguage, convertShortLangToMonacoLang } from '~/utils/formatters';
+import {
+  convertLanguage,
+  convertShortLangToMonacoLang,
+} from '~/utils/formatters';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,6 +25,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import CircularLoading from '~/component/Loading/CircularLoading';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -33,7 +37,9 @@ export default function CompilerPublicDetailPage() {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [sourceCode, setSourceCode] = useState('');
+  const [sourceCode, setSourceCode] = useState(
+    publicDetails ? publicDetails.code : ''
+  );
   const [title, setTitle] = useState(publicDetails ? publicDetails.title : '');
   const [openCodeTitleForm, setOpenCodeTitleForm] = useState(false);
   const [isCompiling, setIsCompiling] = useState(false);
@@ -41,7 +47,9 @@ export default function CompilerPublicDetailPage() {
   const [compileOutput, setCompileOutput] = useState(data ? data.output : '');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
-  const selectedLanguage = publicDetails ? convertShortLangToMonacoLang(publicDetails.language) : 'javascript';
+  const selectedLanguage = publicDetails
+    ? convertShortLangToMonacoLang(publicDetails.language)
+    : 'javascript';
   const codesSavedData = useSelector((state) => state.compiler.codesSavedData);
   const [openDialogNotAuth, setOpenDialogNotAuth] = useState(false);
   const isAuth = useAuth();
@@ -55,9 +63,13 @@ export default function CompilerPublicDetailPage() {
   };
 
   useEffect(() => {
-    setTitle(publicDetails?.title);
-    setSourceCode(publicDetails?.sourceCode);
-  }, [dispatch, publicDetails]);
+    dispatch(publicCode(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    setTitle(publicDetails?.title || '');
+    setSourceCode(publicDetails?.code || '');
+  }, [publicDetails]);
 
   useEffect(() => {
     if (editorRef.current && publicDetails) {
@@ -66,16 +78,24 @@ export default function CompilerPublicDetailPage() {
       const position = editor.getPosition();
       const range = editor.getSelection();
 
-      monaco.editor.setModelLanguage(editorRef.current.getModel(), convertShortLangToMonacoLang(publicDetails.language));
+      monaco.editor.setModelLanguage(
+        editorRef.current.getModel(),
+        convertShortLangToMonacoLang(publicDetails.language)
+      );
       editorRef.current.setValue(publicDetails.code);
 
       editor.setPosition(position);
       editor.setSelection(range);
 
       editor.getAction('editor.action.formatDocument').run();
+    }
+  }, [selectedLanguage, monaco, publicDetails]);
+
+  useEffect(() => {
+    if (monaco) {
       monaco.editor.setTheme(theme === 'light' ? 'vs' : 'vs-dark');
     }
-  }, [selectedLanguage, monaco, theme, publicDetails]);
+  }, [theme, monaco]);
 
   const handleRunCode = async () => {
     const languageForServer = convertLanguage(selectedLanguage);
@@ -83,7 +103,12 @@ export default function CompilerPublicDetailPage() {
     setCompileOutput('');
 
     try {
-      const resultAction = await dispatch(runCode({ language: languageForServer, code: sourceCode })).unwrap();
+      const resultAction = await dispatch(
+        runCode({
+          language: languageForServer,
+          code: sourceCode,
+        })
+      ).unwrap();
 
       if (resultAction.success) {
         setCompileOutput(resultAction.output);
@@ -142,10 +167,6 @@ export default function CompilerPublicDetailPage() {
     setOpenDialogNotAuth(false);
   };
 
-  useEffect(() => {
-    dispatch(publicCode(id));
-  }, [id, dispatch]);
-
   if (!publicDetails) return <CircularLoading />;
 
   return (
@@ -184,7 +205,9 @@ export default function CompilerPublicDetailPage() {
         >
           <DialogTitle>Title of code snippet</DialogTitle>
           <DialogContent>
-            <DialogContentText>What is the title of this code snippet ?</DialogContentText>
+            <DialogContentText>
+              What is the title of this code snippet ?
+            </DialogContentText>
             <TextField
               autoFocus
               required
@@ -258,6 +281,19 @@ export default function CompilerPublicDetailPage() {
               />
             </Grid>
             <Grid item xs={12} md={12} lg={5}>
+              {isCompiling && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
               <CompilerOutput
                 compileOutput={compileOutput}
                 handleCheckAI={handleCheckAI}
