@@ -37,7 +37,6 @@ const ChatDetail = () => {
   }, [id, dispatch]);
   useEffect(() => {
     if (dataMessage && status === 'success') {
-      console.log(dataMessage.dataMess);
       setListMessage(dataMessage.dataMess);
       setHistoryChat({
         user: dataMessage.dataMess[dataMessage.dataMess.length - 2].content,
@@ -68,10 +67,11 @@ const ChatDetail = () => {
   const mdReponsive = useResponsive('down', 'md');
   const handleGetContent = (content) => {
     handleScrollLast();
-    if (content.model == 'gpt') {
+    if (content.model == 'gpt-4' || content.model == 'gpt-3.5-turbo') {
       let dataSend = {
         content: content.input,
         conversationId: listMessage[0].conversationId,
+        model: content.model,
       };
 
       if (Object.keys(historyChat).length !== 0) {
@@ -124,7 +124,7 @@ const ChatDetail = () => {
           },
         }}
       >
-        {status === 'success' && listMessage.map((item, index) => (
+        {status === 'success' && listMessage.map((item) => (
           <CardAnswer
             key={item._id}
             name={item.isUserMessage ? user.dataUser.name : 'FPT.AI'}
