@@ -9,5 +9,8 @@ Router.get('/getTokenUser', (req, res) =>
 Router.get('/getUser', verifyToken, (req, res) =>
   userController.getUser(req, res)
 );
+Router.post('/updateUserUnPro', verifyToken, (req, res) =>
+  userController.updateUserUnPro(req, res)
+);
 
 export const APILogins = Router;

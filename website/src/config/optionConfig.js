@@ -36,7 +36,11 @@ export const modeOption = [
     value: 'gemini'
   },
   {
+    name: 'Chat GPT 4',
+    value: 'gpt-4'
+  },
+  {
     name: 'Chat GPT',
-    value: 'gpt'
+    value: 'gpt-3.5-turbo'
   }
 ];

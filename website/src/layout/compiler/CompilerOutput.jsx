@@ -18,7 +18,6 @@ const CompilerOutput = ({
   theme,
   setCompileOutput,
   handleCheckAI,
-  isCompiling,
   compileOutput,
   isAuth,
   codesSavedData,
@@ -62,11 +61,13 @@ const CompilerOutput = ({
     dispatch(shareCode(id)).then(() => {
       toast.success('Code is published!', { autoClose: 1000 });
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${CLIENT_ROOT}/compiler/public/${id}`).then(() => {
-          toast.info('Public URL has been copied!', {
-            autoClose: 3000,
+        navigator.clipboard
+          .writeText(`${CLIENT_ROOT}/compiler/public/${id}`)
+          .then(() => {
+            toast.info('Public URL has been copied!', {
+              autoClose: 3000,
+            });
           });
-        });
       } else {
         alert('Clipboard API not available.');
       }
@@ -76,7 +77,12 @@ const CompilerOutput = ({
   return (
     <>
       {!isPublicPage ? (
-        <ListCodeDrawer setOpen={setOpenDrawer} open={openDrawer} toggleDrawer={toggleDrawer} codesSavedData={codesSavedData} />
+        <ListCodeDrawer
+          setOpen={setOpenDrawer}
+          open={openDrawer}
+          toggleDrawer={toggleDrawer}
+          codesSavedData={codesSavedData}
+        />
       ) : (
         ''
       )}
@@ -93,31 +99,51 @@ const CompilerOutput = ({
           bgcolor: theme === 'light' ? 'fff' : '#1e1e1e',
         }}
       >
-        <Typography color={theme === 'light' ? 'inherit' : '#fff'}>Output</Typography>
+        <Typography color={theme === 'light' ? 'inherit' : '#fff'}>
+          Output
+        </Typography>
         <Box
           sx={{
             display: 'flex',
             gap: 2,
           }}
         >
-          <Button size="small" variant="contained" onClick={() => setCompileOutput('')}>
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => setCompileOutput('')}
+          >
             Clear
           </Button>
           <Button onClick={handleCheckAI} size="small" variant="contained">
             Check AI
           </Button>
           {isAuth && (
-            <Button onClick={toggleDrawer(true)} disabled={isPublicPage} size="small" variant="contained">
+            <Button
+              onClick={toggleDrawer(true)}
+              disabled={isPublicPage}
+              size="small"
+              variant="contained"
+            >
               List
             </Button>
           )}
           {isDetails && !isPublic && (
-            <Button onClick={handlePublicCode} disabled={isDissabled} size="small" variant="contained">
+            <Button
+              onClick={handlePublicCode}
+              disabled={isDissabled}
+              size="small"
+              variant="contained"
+            >
               Public
             </Button>
           )}
           {isPublic && (
-            <Button onClick={handleOpenURLDialog} size="small" variant="contained">
+            <Button
+              onClick={handleOpenURLDialog}
+              size="small"
+              variant="contained"
+            >
               URL
             </Button>
           )}
@@ -139,7 +165,6 @@ const CompilerOutput = ({
           py: 2,
         }}
       >
-        {isCompiling && <p>Compiling...</p>}
         {compileOutput && (
           <Typography
             sx={{

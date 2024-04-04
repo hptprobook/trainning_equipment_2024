@@ -5,7 +5,6 @@ import {
 } from '@google/generative-ai';
 import { StatusCodes } from 'http-status-codes';
 import { messagesService } from '~/services/messagesService';
-import { isArray } from 'lodash';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 const safetySettings = [
@@ -31,7 +30,6 @@ const gemini = async (req, res) => {
       'gemini'
     );
     if (listMessages.length > 49) {
-      console.log({ countMessOfDay: listMessages.length });
       return res.status(StatusCodes.LOCKED).json({
         success: false,
         mgs: 'Limit chat',

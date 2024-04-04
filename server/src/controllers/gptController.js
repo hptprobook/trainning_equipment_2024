@@ -10,6 +10,19 @@ const configuration = new Configuration({
 const openai = new OpenAI(configuration);
 const gpt = async (req, res) => {
   const data = req.body;
+  if (req.userId) {
+    const idUser = req.userId;
+    const listMessages = await messagesService.getMessagesTodayByType(
+      String(idUser),
+      'chat4'
+    );
+    if (listMessages.length > 20) {
+      return res.status(StatusCodes.LOCKED).json({
+        success: false,
+        mgs: 'Limit chat',
+      });
+    }
+  }
   if (!data.content) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
@@ -20,6 +33,8 @@ const gpt = async (req, res) => {
       conversationId: data.conversationId,
       content: data.content,
       isUserMessage: true,
+      type: 'chat4',
+      userId: req.userId,
     };
     const history = data?.history || {};
     try {
@@ -41,7 +56,8 @@ const gpt = async (req, res) => {
       }
       const completion = await openai.chat.completions.create({
         messages: systemHistory,
-        model: 'gpt-4',
+        model: data.model,
+        // max_tokens: 100,
       });
       let dataModel = {
         conversationId: data.conversationId,
