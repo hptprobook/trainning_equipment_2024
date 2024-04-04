@@ -56,7 +56,7 @@ const gpt = async (req, res) => {
       }
       const completion = await openai.chat.completions.create({
         messages: systemHistory,
-        model: 'gpt-4',
+        model: data.model,
         // max_tokens: 100,
       });
       let dataModel = {
