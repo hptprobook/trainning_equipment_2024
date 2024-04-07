@@ -12,6 +12,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/Dialog';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import TocIcon from '@mui/icons-material/Toc';
+import AssistantIcon from '@mui/icons-material/Assistant';
+import ShareIcon from '@mui/icons-material/Share';
+import LinkIcon from '@mui/icons-material/Link';
 
 const CompilerOutput = ({
   height,
@@ -28,7 +35,7 @@ const CompilerOutput = ({
 }) => {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [isDissabled, setDissabled] = useState(false);
+  const [isDisabled, setDisabled] = useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen);
   };
@@ -46,30 +53,30 @@ const CompilerOutput = ({
   const handleCopyURL = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(publicURL).then(() => {
-        toast.info('URL copied to clipboard!', {
+        toast.info('Đã copy địa chỉ vào bộ nhớ tạm!', {
           autoClose: 3000,
         });
         handleCloseURLDialog();
       });
     } else {
-      alert('Clipboard API not available.');
+      alert('Bộ nhớ tạm chưa sẵn sàng, vui lòng thử lại sau');
     }
   };
 
   const handlePublicCode = () => {
-    setDissabled(true);
+    setDisabled(true);
     dispatch(shareCode(id)).then(() => {
-      toast.success('Code is published!', { autoClose: 1000 });
+      toast.success('Đoạn mã đã được công bố!', { autoClose: 1000 });
       if (navigator.clipboard) {
         navigator.clipboard
           .writeText(`${CLIENT_ROOT}/compiler/public/${id}`)
           .then(() => {
-            toast.info('Public URL has been copied!', {
+            toast.info('Địa chỉ mã nguồn đã được sao chép!', {
               autoClose: 3000,
             });
           });
       } else {
-        alert('Clipboard API not available.');
+        alert('Bộ nhớ tạm chưa sẵn sàng, vui lòng thử lại sau.');
       }
     });
   };
@@ -100,7 +107,7 @@ const CompilerOutput = ({
         }}
       >
         <Typography color={theme === 'light' ? 'inherit' : '#fff'}>
-          Output
+          Đầu ra
         </Typography>
         <Box
           sx={{
@@ -108,53 +115,49 @@ const CompilerOutput = ({
             gap: 2,
           }}
         >
-          <Button
-            size="small"
-            variant="contained"
-            onClick={() => setCompileOutput('')}
-          >
-            Clear
-          </Button>
-          <Button onClick={handleCheckAI} size="small" variant="contained">
-            Check AI
-          </Button>
-          {isAuth && (
-            <Button
-              onClick={toggleDrawer(true)}
-              disabled={isPublicPage}
-              size="small"
-              variant="contained"
+          <Tooltip title="Làm mới">
+            <IconButton onClick={() => setCompileOutput('')}>
+              <NotInterestedIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Gửi tới AI">
+            <IconButton
+              onClick={() => handleCheckAI('')}
+              className="jr-fourth-step"
             >
-              List
-            </Button>
+              <AssistantIcon />
+            </IconButton>
+          </Tooltip>
+
+          {isAuth && (
+            <Tooltip title="Đoạn mã đã lưu">
+              <IconButton onClick={toggleDrawer(true)}>
+                <TocIcon />
+              </IconButton>
+            </Tooltip>
           )}
           {isDetails && !isPublic && (
-            <Button
-              onClick={handlePublicCode}
-              disabled={isDissabled}
-              size="small"
-              variant="contained"
-            >
-              Public
-            </Button>
+            <Tooltip title="Chia sẻ với cộng đồng">
+              <IconButton onClick={handlePublicCode}>
+                <ShareIcon />
+              </IconButton>
+            </Tooltip>
           )}
           {isPublic && (
-            <Button
-              onClick={handleOpenURLDialog}
-              size="small"
-              variant="contained"
-            >
-              URL
-            </Button>
+            <Tooltip title="Địa chỉ đoạn mã này">
+              <IconButton onClick={handleOpenURLDialog}>
+                <LinkIcon />
+              </IconButton>
+            </Tooltip>
           )}
           <Dialog open={openURLDialog} onClose={handleCloseURLDialog}>
-            <DialogTitle>Code URL</DialogTitle>
+            <DialogTitle>Địa chỉ đoạn code này</DialogTitle>
             <DialogContent>
               <DialogContentText>{publicURL}</DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCopyURL}>Copy</Button>
-              <Button onClick={handleCloseURLDialog}>Close</Button>
+              <Button onClick={handleCopyURL}>Sao chép</Button>
+              <Button onClick={handleCloseURLDialog}>Đóng</Button>
             </DialogActions>
           </Dialog>
         </Box>

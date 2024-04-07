@@ -22,7 +22,7 @@ export default function CompilerHeader({ height, theme }) {
           variant="body1"
           color={theme === 'light' ? 'inherit' : '#fff'}
         >
-          SLIF Online Compiler
+          Logo here
         </Typography>
       </Link>
       <Link
@@ -32,7 +32,7 @@ export default function CompilerHeader({ height, theme }) {
         }}
       >
         <Button variant="outlined" endIcon={<ArrowRightAltIcon />}>
-          Chat Box
+          FPT AI
         </Button>
       </Link>
     </Box>

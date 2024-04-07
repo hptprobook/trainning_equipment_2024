@@ -13,13 +13,22 @@ import { useDispatch } from 'react-redux';
 import { useConfirm } from 'material-ui-confirm';
 import { toast } from 'react-toastify';
 import { codesSaved, deleteCode } from '~/redux/slices/compilerSlice';
+import Divider from '@mui/material/Divider';
 
-export default function ListCodeDrawer({ open = false, toggleDrawer, codesSavedData }) {
+export default function ListCodeDrawer({
+  open = false,
+  toggleDrawer,
+  codesSavedData,
+}) {
   const dispatch = useDispatch();
   const confirm = useConfirm();
 
   const handleDelete = (id) => {
-    confirm({ title: 'Are you sure you want to delete?', description: 'This action will permanently delete your save. Are you sure?' })
+    confirm({
+      title: 'Are you sure you want to delete?',
+      description:
+        'This action will permanently delete your save. Are you sure?',
+    })
       .then(() => {
         try {
           dispatch(deleteCode(id));
@@ -37,41 +46,48 @@ export default function ListCodeDrawer({ open = false, toggleDrawer, codesSavedD
   const DrawerList = (
     <Box sx={{ width: 350 }} role="presentation">
       <Typography variant="h6" textAlign={'center'} pt={2} color="initial">
-        Saved code snippets
+        Danh sách đoạn mã đã lưu
       </Typography>
       <List>
         {codesSavedData?.map((data) => (
-          <ListItem
-            key={data?._id}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Link
-              style={{
-                width: '100%',
-                textDecoration: 'none',
-                color: '#333',
+          <>
+            <ListItem
+              key={data?._id}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
               }}
-              to={`/compiler/${data?._id}`}
-              onClick={toggleDrawer(false)}
             >
-              <ListItemText
-                sx={{
-                  ':hover': {
-                    color: 'green',
-                  },
+              <Link
+                style={{
+                  width: '100%',
+                  textDecoration: 'none',
+                  color: '#333',
                 }}
-                primary={truncateString(data?.title, 30)}
-              />
-            </Link>
-            <Tooltip title="Delete">
-              <IconButton onClick={() => handleDelete(data._id)} edge="start" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          </ListItem>
+                to={`/compiler/${data?._id}`}
+                onClick={toggleDrawer(false)}
+              >
+                <ListItemText
+                  sx={{
+                    ':hover': {
+                      color: 'green',
+                    },
+                  }}
+                  primary={truncateString(data?.title, 30)}
+                />
+              </Link>
+              <Tooltip title="Delete">
+                <IconButton
+                  onClick={() => handleDelete(data._id)}
+                  edge="start"
+                  aria-label="delete"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </ListItem>
+            <Divider />
+          </>
         ))}
       </List>
     </Box>
