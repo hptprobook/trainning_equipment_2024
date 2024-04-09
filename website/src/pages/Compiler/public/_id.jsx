@@ -3,10 +3,7 @@ import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Editor, { useMonaco } from '@monaco-editor/react';
-import {
-  convertLanguage,
-  convertShortLangToMonacoLang,
-} from '~/utils/formatters';
+import { convertShortLangToMonacoLang } from '~/utils/formatters';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -98,20 +95,19 @@ export default function CompilerPublicDetailPage() {
   }, [theme, monaco]);
 
   const handleRunCode = async () => {
-    const languageForServer = convertLanguage(selectedLanguage);
     setIsCompiling(true);
     setCompileOutput('');
 
     try {
       const resultAction = await dispatch(
         runCode({
-          language: languageForServer,
+          language: selectedLanguage,
           code: sourceCode,
         })
       ).unwrap();
 
-      if (resultAction.success) {
-        setCompileOutput(resultAction.output);
+      if (resultAction.status === 'success') {
+        setCompileOutput(resultAction.stdout);
       } else {
         setCompileOutput(
           resultAction.error || 'Đã xảy ra lỗi, vui lòng thử lại'
