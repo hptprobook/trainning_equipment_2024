@@ -1,6 +1,17 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { truncateString } from '~/utils/formatters';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import SaveIcon from '@mui/icons-material/Save';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { programmingLanguages } from '~/utils/formatters';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 export default function EditorAction({
   height,
@@ -11,9 +22,12 @@ export default function EditorAction({
   handleCopyCode,
   handleSaveCode,
   handleRunCode,
-  isCompiling,
   title = '',
 }) {
+  const handleChangeLanguage = (event) => {
+    setSelectedLanguage(event.target.value);
+  };
+
   return (
     <Box
       sx={{
@@ -28,81 +42,24 @@ export default function EditorAction({
       }}
     >
       {!title ? (
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 3,
-            alignItems: 'center',
-          }}
-        >
-          <Box
+        <Box>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={selectedLanguage}
+            label="Ngôn Ngữ"
+            onChange={handleChangeLanguage}
+            size="small"
             sx={{
-              cursor: 'pointer',
-              '&:hover': {
-                opacity: 0.8,
-              },
+              width: '200px',
             }}
-            onClick={() => setSelectedLanguage('javascript')}
           >
-            <img
-              width={30}
-              style={{
-                border:
-                  selectedLanguage === 'javascript'
-                    ? '2px solid #ba000d'
-                    : 'none',
-              }}
-              height={30}
-              alt="JavaScript"
-              src={
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Javascript_badge.svg/946px-Javascript_badge.svg.png'
-              }
-            />
-          </Box>
-          <Box
-            sx={{
-              cursor: 'pointer',
-              '&:hover': {
-                opacity: 0.8,
-              },
-            }}
-            onClick={() => setSelectedLanguage('python')}
-          >
-            <img
-              style={{
-                border:
-                  selectedLanguage === 'python' ? '2px solid #ba000d' : 'none',
-              }}
-              width={30}
-              height={30}
-              alt="Python"
-              src={
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png'
-              }
-            />
-          </Box>
-          <Box
-            sx={{
-              cursor: 'pointer',
-              '&:hover': {
-                opacity: 0.8,
-              },
-            }}
-            onClick={() => setSelectedLanguage('php')}
-          >
-            <img
-              style={{
-                border:
-                  selectedLanguage === 'php' ? '2px solid #ba000d' : 'none',
-              }}
-              width={30}
-              height={30}
-              alt="PHP"
-              src={
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/800px-PHP-logo.svg.png'
-              }
-            />
-          </Box>
+            {programmingLanguages.map((lang) => (
+              <MenuItem key={lang.value} value={lang.value}>
+                {lang.label}
+              </MenuItem>
+            ))}
+          </Select>
         </Box>
       ) : (
         <Box
@@ -119,27 +76,30 @@ export default function EditorAction({
           gap: 2,
         }}
       >
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        >
-          {theme === 'light' ? 'dark' : 'light'}
-        </Button>
-        <Button onClick={handleCopyCode} variant="contained" size="small">
-          Copy
-        </Button>
-        <Button onClick={handleSaveCode} variant="contained" size="small">
-          Save
-        </Button>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={handleRunCode}
-          disabled={isCompiling}
-        >
-          Run
-        </Button>
+        <Tooltip title={theme === 'light' ? 'Ban đêm' : 'Ban ngày'}>
+          <IconButton
+            onClick={() => {
+              setTheme(theme === 'light' ? 'dark' : 'light');
+            }}
+          >
+            {theme === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Sao chép mã">
+          <IconButton onClick={handleCopyCode}>
+            <FileCopyIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Lưu mã">
+          <IconButton onClick={handleSaveCode} className="jr-second-step">
+            <SaveIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Chạy mã">
+          <IconButton onClick={handleRunCode} className="jr-third-step">
+            <PlayArrowIcon />
+          </IconButton>
+        </Tooltip>
       </Box>
     </Box>
   );
