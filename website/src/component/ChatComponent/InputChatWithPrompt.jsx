@@ -57,9 +57,9 @@ const InputChatWithPrompt = ({ promt, handleGetContent, handleCancel }) => {
             padding: '12px',
           }}
         >
-          <OptionSelect label={'Language'} option={languageOption} name={'language'} noneValue={false} dfValue='vietnamese' />
-          <OptionSelect label={'Style Writing'} option={styleWriting} name={'style'} />
-          <OptionSelect noneValue={false} label={'Model'} option={modeOption} name={'model'} dfValue='gemini' />
+          <OptionSelect label={'Ngôn ngữ'} option={languageOption} name={'language'} noneValue={false} dfValue='vietnamese' />
+          <OptionSelect label={'Phong cách'} option={styleWriting} name={'style'} />
+          <OptionSelect noneValue={false} label={'Phiên bản'} option={modeOption} name={'model'} dfValue='gemini' />
         </Stack>
         <div className='chat-input'>
           <input type="hidden" value={promt.template} name='prompt' />
@@ -90,7 +90,7 @@ const InputChatWithPrompt = ({ promt, handleGetContent, handleCancel }) => {
           </div>
         </div>
         <Button sx={{ margin: 2 }} onClick={handleCancel}>
-          Cancel
+          Hủy
         </Button>
       </form>
     </Box>

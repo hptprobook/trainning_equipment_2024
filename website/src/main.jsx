@@ -11,21 +11,30 @@ import { Provider } from 'react-redux';
 import store from './redux/store.js';
 import { ConfirmProvider } from 'material-ui-confirm';
 import './index.css';
+import { UserProvider } from './context/user.context.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <HelmetProvider>
-    <CssBaseLine />
-    <BrowserRouter>
-      <Suspense>
-        <ConfirmProvider>
-          <Provider store={store}>
-            <ThemeProvider>
-              <ToastContainer theme="colored" hideProgressBar position="bottom-left" autoClose={3000} closeOnClick />
-              <App />
-            </ThemeProvider>
-          </Provider>
-        </ConfirmProvider>
-      </Suspense>
-    </BrowserRouter>
-  </HelmetProvider>
+	<HelmetProvider>
+		<CssBaseLine />
+		<BrowserRouter>
+			<Suspense>
+				<ConfirmProvider>
+					<Provider store={store}>
+						<UserProvider>
+							<ThemeProvider>
+								<ToastContainer
+									theme="colored"
+									hideProgressBar
+									position="bottom-left"
+									autoClose={3000}
+									closeOnClick
+								/>
+								<App />
+							</ThemeProvider>
+						</UserProvider>
+					</Provider>
+				</ConfirmProvider>
+			</Suspense>
+		</BrowserRouter>
+	</HelmetProvider>
 );

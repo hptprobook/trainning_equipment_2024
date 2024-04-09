@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CardPrompt from '../Card/CardPrompt';
-import { Grid, Stack } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPrompts } from '~/redux/slices/promptsSlice';
 
@@ -9,7 +9,6 @@ const NewChat = ({ handleAddPrompt }) => {
   const [prompts, setPrompts] = useState([]);
   const data = useSelector((state) => state.prompts.data.prompts);
   const status = useSelector((state) => state.prompts.status);
-  const error = useSelector((state) => state.prompts.error);
   useEffect(() => {
     dispatch(getAllPrompts());
   }, [dispatch]);
@@ -23,8 +22,8 @@ const NewChat = ({ handleAddPrompt }) => {
   };
   return (
     <div>
-      <h1>New Chat</h1>
-      <p>How can I help you today?</p>
+      <h1>Xin chào!</h1>
+      <p>Tôi có thể giúp bạn như thế nào hôm nay?</p>
       <Grid spacing={2} container>
         {prompts.map((item, index) => (
           <CardPrompt

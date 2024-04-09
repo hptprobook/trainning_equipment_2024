@@ -6,19 +6,21 @@ import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
 import ChatIndexPage from '~/pages/Chat/ChatIndexPage';
 import NotFoundPage from '~/pages/Error/NotFoundPage';
 import LoginPage from '~/pages/Login/LoginPage';
-import LoginGit from '~/test/test';
 import ChatDetailPage from '~/pages/Chat/ChatDetailPage';
 import CompilerDetailPage from '~/pages/Compiler/_id';
 import CompilerPublicDetailPage from '~/pages/Compiler/public/_id';
 import Prompts from '~/test/prompts';
+import { UserContext } from '~/context/user.context';
+import AuthLayout from '~/auth/authLayout';
 
 const MainRoute = () => {
+  const { login } = React.useContext(UserContext);
   let element = useRoutes([
     {
       element: (
         <ChatLayout>
           <React.Suspense>
-            <Outlet />
+            <AuthLayout authenticated={login} />
           </React.Suspense>
         </ChatLayout>
       ),
@@ -61,10 +63,6 @@ const MainRoute = () => {
     {
       path: 'getPrompts',
       element: <Prompts />,
-    },
-    {
-      path: 'test',
-      element: <LoginGit />,
     },
   ]);
 
