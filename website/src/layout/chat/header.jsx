@@ -84,7 +84,7 @@ const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
 								marginTop: '3px',
 							}}
 						>
-							Run Compiler
+							Đi tới Compiler
 						</Typography>
 						<ChevronRightIcon />
 					</Link>

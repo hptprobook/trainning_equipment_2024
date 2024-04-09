@@ -6,8 +6,6 @@ import { useResponsive } from '~/config/reponsiveConfig';
 import Header from './header';
 import NavChat from './nav';
 import { NAV_WIDTH } from './layoutConfig';
-import { useLocation } from 'react-router-dom';
-import { Container } from '@mui/material';
 import { useSelector } from 'react-redux';
 const drawerWidth = NAV_WIDTH;
 

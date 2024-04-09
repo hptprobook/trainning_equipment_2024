@@ -27,7 +27,7 @@ import { NAV_WIDTH } from './layoutConfig';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import LogoutIcon from '@mui/icons-material/Logout';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleGetUser, resetStateAction } from '~/redux/slices/authSlice';
 import { handleToast } from '~/config/toast';
@@ -39,6 +39,7 @@ import {
   handleGetAllConversations,
   resetStateDelete,
 } from '~/redux/slices/conversationsSlice';
+import { UserContext } from '~/context/user.context';
 const drawerWidth = NAV_WIDTH;
 const ItemIconCus = styled(ListItemIcon)(({ theme }) => ({
   minWidth: 'auto',
@@ -73,7 +74,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { urlId } = useParams();
-
+  const { setLogin } = useContext(UserContext);
   const dataConversations = useSelector((state) => state.conversations.all);
   const statusAdd = useSelector((state) => state.conversations.status);
   const user = useSelector((state) => state.auth.userGit);
@@ -100,14 +101,14 @@ const NavChat = ({ open, handleDrawerClose }) => {
   };
   useEffect(() => {
     if (statusDeleteAll === 'success') {
-      handleToast('success', 'Delete all conversation success!');
+      handleToast('success', 'Xóa tất cả cuộc trò chuyện thành công!');
       dispatch(handleGetAllConversations());
       navigate('/chat');
     }
-  }, [statusDeleteAll, dispatch]);
+  }, [statusDeleteAll, dispatch, navigate]);
   useEffect(() => {
     if (statusDelete === 'success') {
-      handleToast('success', 'Delete conversation success!');
+      handleToast('success', 'Xóa cuộc trò chuyện thành công!');
       dispatch(handleGetAllConversations());
       dispatch(resetStateDelete());
       if (idItem == urlId) {
@@ -117,14 +118,13 @@ const NavChat = ({ open, handleDrawerClose }) => {
   }, [statusDelete, dispatch, navigate, idItem, urlId]);
   useEffect(() => {
     if (statusArchive === 'success') {
-      handleToast('success', 'Archive conversation success!');
+      handleToast('success', 'Lưu trữ cuộc trò chuyện thành công!');
       dispatch(handleGetAllConversations());
     }
   }, [statusArchive, dispatch]);
   useEffect(() => {
     if (user) {
       setData(user.dataUser);
-      console.log(user.dataUser);
       dispatch(handleGetAllConversations());
     } else {
       dispatch(handleGetUser());
@@ -155,7 +155,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
     localStorage.removeItem('git_token');
     handleToast('success', 'Đăng xuất thành công!');
     dispatch(resetStateAction());
-    navigate('/');
+    setLogin(false);
   };
   const handleDelete = () => {
     handleCloseItem();
@@ -285,7 +285,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     }}
                     onClick={handleArchive}
                   >
-                    <ListItemText primary={'Archive'} />
+                    <ListItemText primary={'Lưu trữ'} />
                     <ItemIconCus>
                       <ArchiveIcon />
                     </ItemIconCus>
@@ -306,7 +306,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     }}
                     onClick={handleDelete}
                   >
-                    <ListItemText primary={'Delete'} />
+                    <ListItemText primary={'Xóa'} />
                     <ItemIconCus>
                       <DeleteIcon />
                     </ItemIconCus>
@@ -340,7 +340,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                 }}
                 onClick={() => handleNavigate('/chat')}
               >
-                <ListItemText primary={'New Chat'} />
+                <ListItemText primary={'Cuộc trò chuyện mới'} />
                 <ItemIconCus>
                   <AddIcon />
                 </ItemIconCus>
@@ -356,7 +356,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                   },
                 }}
               >
-                <ListItemText primary={'Help'} />
+                <ListItemText primary={'Trợ giúp'} />
                 <ItemIconCus>
                   <QuestionMarkIcon />
                 </ItemIconCus>
@@ -431,7 +431,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                         },
                       }}
                     >
-                      <ListItemText primary={'Profile'} />
+                      <ListItemText primary={'Tài khoản'} />
                       <ItemIconCus>
                         <PermIdentityIcon />
                       </ItemIconCus>
@@ -452,7 +452,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                       }}
                       onClick={() => handleDeleteAll()}
                     >
-                      <ListItemText primary={'Delete All'} />
+                      <ListItemText primary={'Xóa hết'} />
                       <ItemIconCus>
                         <DeleteIcon />
                       </ItemIconCus>
@@ -473,7 +473,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                       }}
                       onClick={() => handleLogout()}
                     >
-                      <ListItemText primary={'Logout'} />
+                      <ListItemText primary={'Đăng xuất'} />
                       <ItemIconCus>
                         <LogoutIcon />
                       </ItemIconCus>

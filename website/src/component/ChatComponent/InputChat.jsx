@@ -48,9 +48,9 @@ const InputChat = ({ handleGetContent }) => {
             padding: '12px 0',
           }}
         >
-          <OptionSelect label={'Language'} option={languageOption} name={'language'} noneValue={false} dfValue='vietnamese'/>
-          <OptionSelect label={'Style Writing'} option={styleWriting} name={'style'} />
-          <OptionSelect noneValue={false} label={'Model'} option={modeOption} name={'model'} dfValue={'gemini'}/>
+          <OptionSelect label={'Ngôn ngữ'} option={languageOption} name={'language'} noneValue={false} dfValue='vietnamese'/>
+          <OptionSelect label={'Phong cách viết'} option={styleWriting} name={'style'}  noneValue={false}/>
+          <OptionSelect noneValue={false} label={'Phiên bản'} option={modeOption} name={'model'} dfValue={'gemini'}/>
 
         </Stack>
         <div className='chat-input'>
