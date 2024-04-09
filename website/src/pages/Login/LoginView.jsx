@@ -4,7 +4,10 @@ import './style.css';
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleGetUser, handleGetUserGit } from '~/redux/slices/authSlice';
+import {
+  handleGetUser,
+  handleGetUserGit,
+} from '~/redux/slices/authSlice';
 import { handleToast } from '../../config/toast';
 import { UserContext } from '~/context/user.context';
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
@@ -30,11 +33,8 @@ const LoginView = () => {
   }, [code, gitError, dispatch]);
   useEffect(() => {
     if (tokenGit && status === 'success') {
-      localStorage.setItem('git_token', tokenGit.addUser.tokenUser);
-      // dispatch(resetState());
-      setTimeout(() => {
-        dispatch(handleGetUser());
-      }, 1000);
+      localStorage.setItem('token', tokenGit.addUser.tokenUser);
+      dispatch(handleGetUser());
     }
   }, [tokenGit, status, dispatch]);
   useEffect(() => {

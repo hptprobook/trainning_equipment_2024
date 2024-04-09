@@ -127,9 +127,9 @@ const NavChat = ({ open, handleDrawerClose }) => {
       setData(user.dataUser);
       dispatch(handleGetAllConversations());
     } else {
-      dispatch(handleGetUser());
+      navigate('/login');
     }
-  }, [user, dispatch]);
+  }, [user, dispatch, navigate]);
   const handleNavigate = (path) => {
     navigate(path);
   };
