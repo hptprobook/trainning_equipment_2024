@@ -10,8 +10,6 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { programmingLanguages } from '~/utils/formatters';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 
 export default function EditorAction({
   height,

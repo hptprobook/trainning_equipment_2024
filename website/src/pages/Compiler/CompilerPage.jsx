@@ -72,7 +72,6 @@ const CompilerPage = () => {
   }, [theme, monaco]);
 
   const handleRunCode = async () => {
-    // const languageForServer = convertLanguage(selectedLanguage);
     setIsCompiling(true);
     setCompileOutput('');
 
