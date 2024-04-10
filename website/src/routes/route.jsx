@@ -12,15 +12,15 @@ import CompilerPublicDetailPage from '~/pages/Compiler/public/_id';
 import Prompts from '~/test/prompts';
 import { UserContext } from '~/context/user.context';
 import AuthLayout from '~/auth/authLayout';
+import PlanPage from '~/pages/Plan/PlanPage';
 
 const MainRoute = () => {
-  const { login } = React.useContext(UserContext);
   let element = useRoutes([
     {
       element: (
         <ChatLayout>
           <React.Suspense>
-            <AuthLayout authenticated={login} />
+            <AuthLayout />
           </React.Suspense>
         </ChatLayout>
       ),
@@ -55,6 +55,10 @@ const MainRoute = () => {
     {
       path: 'login',
       element: <LoginPage />,
+    },
+    {
+      path: 'plan',
+      element: <PlanPage />,
     },
     {
       path: '*',

@@ -126,8 +126,6 @@ const NavChat = ({ open, handleDrawerClose }) => {
     if (user) {
       setData(user.dataUser);
       dispatch(handleGetAllConversations());
-    } else {
-      navigate('/login');
     }
   }, [user, dispatch, navigate]);
   const handleNavigate = (path) => {
@@ -135,7 +133,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   };
 
   useEffect(() => {
-    if (error) {
+    if (error ) {
       dispatch(resetStateAction());
       handleToast('error', error);
       localStorage.removeItem('token');
