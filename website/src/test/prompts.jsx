@@ -13,10 +13,14 @@ const GetPrompts = () => {
           page_size: 5,
           category: "Software Engineering"
         });
-    
+
         // Map over the data and return a new object that excludes the id property
-        const filteredData = response.data.data.map(({ id, ...item }) => item);
-    
+        const filteredData = await Promise.all(response.data.data.map(async ({ id, teaser, ...item }) => {
+          // Translate teaser to Vietnamese
+          const translatedTeaser = await translateTeaser(teaser);
+          return { ...item, teaser: translatedTeaser };
+        }));
+
         setData(filteredData);
         console.log(filteredData);
       } catch (error) {
@@ -25,7 +29,28 @@ const GetPrompts = () => {
     };
 
     fetchData();
-  }, [page]); // Add page as a dependency
+  }, [page]);
+
+  const translateTeaser = async (teaser) => {
+    // Comment out the translation logic
+    /*
+    try {
+      let YOUR_GOOGLE_API_KEY = 'AIzaSyBYUWbnrdG_Sy-GSAG1TksUE9n6VPoT8VI';
+      const response = await axios.post(`https://translation.googleapis.com/language/translate/v2?key=${YOUR_GOOGLE_API_KEY}`, {
+        q: teaser,
+        source: 'en',
+        target: 'vi',
+        format: 'text'
+      });
+  
+      return response.data.data.translations[0].translatedText;
+    } catch (error) {
+      console.error(`Translation Error: ${error}`);
+    }
+    */
+    // Return the original teaser
+    return teaser;
+  };
 
   const addPrompt = async () => {
     try {
