@@ -1,4 +1,19 @@
-import { Avatar, Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, Popover, Stack, Typography, styled, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  Popover,
+  Stack,
+  Typography,
+  styled,
+  useTheme,
+} from '@mui/material';
 // import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -12,28 +27,36 @@ import { NAV_WIDTH } from './layoutConfig';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import LogoutIcon from '@mui/icons-material/Logout';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleGetUser, resetStateAction } from '~/redux/slices/authSlice';
+import { resetStateAction } from '~/redux/slices/authSlice';
 import { handleToast } from '~/config/toast';
 import { useNavigate, useParams } from 'react-router-dom';
-import { handleArchiveConversations, handleDeleteAllConversations, handleDeleteConversation, handleGetAllConversations, resetStateDelete } from '~/redux/slices/conversationsSlice';
+import {
+  handleArchiveConversations,
+  handleDeleteAllConversations,
+  handleDeleteConversation,
+  handleGetAllConversations,
+  resetStateDelete,
+} from '~/redux/slices/conversationsSlice';
+import { UserContext } from '~/context/user.context';
 const drawerWidth = NAV_WIDTH;
 const ItemIconCus = styled(ListItemIcon)(({ theme }) => ({
   minWidth: 'auto',
   marginRight: '8px',
   position: 'absolute',
   right: '0',
-  display: 'none'
+  display: 'none',
 }));
-const IconContainer = styled('div')(({ theme }) => ({
-  minWidth: 'auto',
-  marginRight: '8px',
-  position: 'absolute',
-  right: '0',
-  display: 'none'
+const ChipStatus = styled(Typography)(({ theme }) => ({
+  padding: '2px 8px',
+  fontSize: '10px',
+  fontWeight: '600',
+  letterSpacing: '0.5px',
+  color: theme.palette.text.active,
+  borderRadius: '14px',
+  backgroundColor: theme.palette.background.active,
 }));
-
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -51,14 +74,18 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { urlId } = useParams();
-
+  const { setLogin } = useContext(UserContext);
   const dataConversations = useSelector((state) => state.conversations.all);
   const statusAdd = useSelector((state) => state.conversations.status);
   const user = useSelector((state) => state.auth.userGit);
   const error = useSelector((state) => state.auth.error);
   const statusDelete = useSelector((state) => state.conversations.statusDelete);
-  const statusArchive = useSelector((state) => state.conversations.statusArchive);
-  const statusDeleteAll = useSelector((state) => state.conversations.statusDeleteAll);
+  const statusArchive = useSelector(
+    (state) => state.conversations.statusArchive
+  );
+  const statusDeleteAll = useSelector(
+    (state) => state.conversations.statusDeleteAll
+  );
   useEffect(() => {
     if (dataConversations) {
       setNav(dataConversations.data);
@@ -74,14 +101,14 @@ const NavChat = ({ open, handleDrawerClose }) => {
   };
   useEffect(() => {
     if (statusDeleteAll === 'success') {
-      handleToast('success', 'Delete all conversation success!');
+      handleToast('success', 'Xóa tất cả cuộc trò chuyện thành công!');
       dispatch(handleGetAllConversations());
       navigate('/chat');
     }
-  }, [statusDeleteAll, dispatch]);
+  }, [statusDeleteAll, dispatch, navigate]);
   useEffect(() => {
     if (statusDelete === 'success') {
-      handleToast('success', 'Delete conversation success!');
+      handleToast('success', 'Xóa cuộc trò chuyện thành công!');
       dispatch(handleGetAllConversations());
       dispatch(resetStateDelete());
       if (idItem == urlId) {
@@ -91,7 +118,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   }, [statusDelete, dispatch, navigate, idItem, urlId]);
   useEffect(() => {
     if (statusArchive === 'success') {
-      handleToast('success', 'Archive conversation success!');
+      handleToast('success', 'Lưu trữ cuộc trò chuyện thành công!');
       dispatch(handleGetAllConversations());
     }
   }, [statusArchive, dispatch]);
@@ -100,16 +127,13 @@ const NavChat = ({ open, handleDrawerClose }) => {
       setData(user.dataUser);
       dispatch(handleGetAllConversations());
     }
-    else {
-      dispatch(handleGetUser());
-    }
-  }, [user, dispatch]);
+  }, [user, dispatch, navigate]);
   const handleNavigate = (path) => {
     navigate(path);
   };
 
   useEffect(() => {
-    if (error) {
+    if (error ) {
       dispatch(resetStateAction());
       handleToast('error', error);
       localStorage.removeItem('token');
@@ -129,7 +153,8 @@ const NavChat = ({ open, handleDrawerClose }) => {
     localStorage.removeItem('git_token');
     handleToast('success', 'Đăng xuất thành công!');
     dispatch(resetStateAction());
-    navigate('/');
+    navigate('/login');
+    setLogin(false);
   };
   const handleDelete = () => {
     handleCloseItem();
@@ -138,7 +163,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const handleArchive = () => {
     handleCloseItem();
     dispatch(handleArchiveConversations({ idConver: idItem, archive: true }));
-  }
+  };
   const handleChildClick = (e) => {
     // Ngăn sự kiện click lan truyền lên cha
     e.stopPropagation();
@@ -147,7 +172,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   };
   const handleDeleteAll = () => {
     dispatch(handleDeleteAllConversations());
-  }
+  };
   const openAvatar = Boolean(anchorEl);
   const openItem = Boolean(anchorElItem);
   const id = openAvatar ? 'simple-popover' : undefined;
@@ -170,8 +195,8 @@ const NavChat = ({ open, handleDrawerClose }) => {
         '& .MuiPaper-root': {
           backgroundColor: theme.palette.background.secondary,
           position: 'relative',
-          'msOverflowStyle': 'none',
-          'scrollbarWidth': 'none',
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
         },
         // '&:hover .MuiPaper-root': {
         //   'msOverflowStyle': 'block',
@@ -184,7 +209,11 @@ const NavChat = ({ open, handleDrawerClose }) => {
     >
       <DrawerHeader>
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          {theme.direction === 'ltr' ? (
+            <ChevronLeftIcon />
+          ) : (
+            <ChevronRightIcon />
+          )}
         </IconButton>
       </DrawerHeader>
       <List>
@@ -201,13 +230,17 @@ const NavChat = ({ open, handleDrawerClose }) => {
                 borderRadius: '12px',
                 padding: '4px 8px',
                 '&:hover .MuiListItemIcon-root': {
-                  display: 'flex'
+                  display: 'flex',
                 },
               }}
               onClick={() => navigate(`/chat/${item._id}`)}
             >
               <ListItemText primary={item.title} />
-              <ItemIconCus aria-describedby={idItem} path-id={item._id} onClick={handleChildClick}>
+              <ItemIconCus
+                aria-describedby={idItem}
+                path-id={item._id}
+                onClick={handleChildClick}
+              >
                 <MoreVertIcon />
               </ItemIconCus>
             </ListItemButton>
@@ -227,7 +260,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
               sx={{
                 '& .MuiPopover-paper': {
                   borderRadius: '16px',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
                 },
               }}
             >
@@ -246,12 +279,12 @@ const NavChat = ({ open, handleDrawerClose }) => {
                       borderRadius: '12px',
                       padding: '4px 8px',
                       '& .MuiListItemIcon-root': {
-                        display: 'flex'
+                        display: 'flex',
                       },
                     }}
                     onClick={handleArchive}
                   >
-                    <ListItemText primary={'Archive'} />
+                    <ListItemText primary={'Lưu trữ'} />
                     <ItemIconCus>
                       <ArchiveIcon />
                     </ItemIconCus>
@@ -267,12 +300,12 @@ const NavChat = ({ open, handleDrawerClose }) => {
                       borderRadius: '12px',
                       padding: '4px 8px',
                       '& .MuiListItemIcon-root': {
-                        display: 'flex'
+                        display: 'flex',
                       },
                     }}
                     onClick={handleDelete}
                   >
-                    <ListItemText primary={'Delete'} />
+                    <ListItemText primary={'Xóa'} />
                     <ItemIconCus>
                       <DeleteIcon />
                     </ItemIconCus>
@@ -294,47 +327,47 @@ const NavChat = ({ open, handleDrawerClose }) => {
       >
         <Stack spacing={1}>
           <List>
-            <ListItem >
+            <ListItem>
               <ListItemButton
                 sx={{
                   borderRadius: '12px',
                   padding: '4px 8px',
                   backgroundColor: theme.palette.background.active,
                   '& .MuiListItemIcon-root': {
-                    display: 'flex'
+                    display: 'flex',
                   },
                 }}
                 onClick={() => handleNavigate('/chat')}
               >
-                <ListItemText primary={'New Chat'} />
+                <ListItemText primary={'Cuộc trò chuyện mới'} />
                 <ItemIconCus>
                   <AddIcon />
                 </ItemIconCus>
               </ListItemButton>
             </ListItem>
-            <ListItem >
+            <ListItem>
               <ListItemButton
                 sx={{
                   borderRadius: '12px',
                   padding: '4px 8px',
                   '& .MuiListItemIcon-root': {
-                    display: 'flex'
+                    display: 'flex',
                   },
                 }}
               >
-                <ListItemText primary={'Help'} />
+                <ListItemText primary={'Trợ giúp'} />
                 <ItemIconCus>
                   <QuestionMarkIcon />
                 </ItemIconCus>
               </ListItemButton>
             </ListItem>
-            <ListItem >
+            <ListItem>
               <ListItemButton
                 sx={{
                   borderRadius: '12px',
                   padding: '12px 8px',
                   '& .MuiListItemIcon-root': {
-                    display: 'flex'
+                    display: 'flex',
                   },
                 }}
                 aria-describedby={id}
@@ -342,7 +375,21 @@ const NavChat = ({ open, handleDrawerClose }) => {
               >
                 <ListItemText primary={data?.name} />
                 <ItemIconCus>
-                  <Avatar alt="Remy Sharp" src={data?.avatar} />
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                    badgeContent={
+                      <ChipStatus>FREE</ChipStatus>
+                    }
+                  >
+                    <Avatar
+                      alt={data?.name}
+                      src={data?.avatar}
+                    />
+                  </Badge>
                 </ItemIconCus>
               </ListItemButton>
               <Popover
@@ -379,11 +426,11 @@ const NavChat = ({ open, handleDrawerClose }) => {
                         borderRadius: '12px',
                         padding: '4px 8px',
                         '& .MuiListItemIcon-root': {
-                          display: 'flex'
+                          display: 'flex',
                         },
                       }}
                     >
-                      <ListItemText primary={'Profile'} />
+                      <ListItemText primary={'Tài khoản'} />
                       <ItemIconCus>
                         <PermIdentityIcon />
                       </ItemIconCus>
@@ -399,12 +446,12 @@ const NavChat = ({ open, handleDrawerClose }) => {
                         borderRadius: '12px',
                         padding: '4px 8px',
                         '& .MuiListItemIcon-root': {
-                          display: 'flex'
+                          display: 'flex',
                         },
                       }}
                       onClick={() => handleDeleteAll()}
                     >
-                      <ListItemText primary={'Delete All'} />
+                      <ListItemText primary={'Xóa hết'} />
                       <ItemIconCus>
                         <DeleteIcon />
                       </ItemIconCus>
@@ -420,12 +467,12 @@ const NavChat = ({ open, handleDrawerClose }) => {
                         borderRadius: '12px',
                         padding: '4px 8px',
                         '& .MuiListItemIcon-root': {
-                          display: 'flex'
+                          display: 'flex',
                         },
                       }}
                       onClick={() => handleLogout()}
                     >
-                      <ListItemText primary={'Logout'} />
+                      <ListItemText primary={'Đăng xuất'} />
                       <ItemIconCus>
                         <LogoutIcon />
                       </ItemIconCus>
@@ -442,6 +489,6 @@ const NavChat = ({ open, handleDrawerClose }) => {
 };
 NavChat.protoType = {
   handleDrawerClose: PropTypes.func,
-  open: PropTypes.bool
+  open: PropTypes.bool,
 };
 export default NavChat;

@@ -3,10 +3,7 @@ import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Editor, { useMonaco } from '@monaco-editor/react';
-import {
-  convertLanguage,
-  convertShortLangToMonacoLang,
-} from '~/utils/formatters';
+import { convertShortLangToMonacoLang } from '~/utils/formatters';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -98,25 +95,28 @@ export default function CompilerPublicDetailPage() {
   }, [theme, monaco]);
 
   const handleRunCode = async () => {
-    const languageForServer = convertLanguage(selectedLanguage);
     setIsCompiling(true);
     setCompileOutput('');
 
     try {
       const resultAction = await dispatch(
         runCode({
-          language: languageForServer,
+          language: selectedLanguage,
           code: sourceCode,
         })
       ).unwrap();
 
-      if (resultAction.success) {
-        setCompileOutput(resultAction.output);
+      if (resultAction.status === 'success') {
+        setCompileOutput(resultAction.stdout);
       } else {
-        setCompileOutput(resultAction.error || 'An unknown error occurred');
+        setCompileOutput(
+          resultAction.error || 'Đã xảy ra lỗi, vui lòng thử lại'
+        );
       }
     } catch (err) {
-      toast.error('Compilation failed. Please try again.', { autoClose: 1000 });
+      toast.error('Biên dịch mã bị lỗi, vui lòng thử lại!', {
+        autoClose: 1000,
+      });
     } finally {
       setIsCompiling(false);
     }
@@ -127,15 +127,15 @@ export default function CompilerPublicDetailPage() {
       navigator.clipboard
         .writeText(sourceCode)
         .then(() => {
-          toast.success('Copied!', {
+          toast.success('Đã sao chép!', {
             autoClose: 500,
           });
         })
-        .catch((err) => {
-          alert('Failed to copy code: ', err);
+        .catch(() => {
+          toast.error('Lỗi khi sao chép mã, vui lòng thử lại!');
         });
     } else {
-      alert('Clipboard API not available.');
+      toast.warning('Bộ nhớ tạm chưa sẵn sàng, vui lòng thử lại.');
     }
   };
 
@@ -159,10 +159,12 @@ export default function CompilerPublicDetailPage() {
       })
     )
       .then(() => {
-        toast.success('Code updated successfully', { autoClose: 1000 });
+        toast.success('Lưu đoạn mã thành công', { autoClose: 1000 });
       })
       .catch(() => {
-        toast.error('Error saving code', { autoClose: 1000 });
+        toast.error('Lưu đoạn mã thất bại, vui lòng thử lại sau', {
+          autoClose: 1000,
+        });
       });
     setOpenDialogNotAuth(false);
   };
@@ -186,8 +188,8 @@ export default function CompilerPublicDetailPage() {
       >
         {/* ========== HEADER ========== */}
         <DialogSimple
-          description={'You need to log in to be able to save the code'}
-          title={'You are not logged in!'}
+          description={'Bạn cần phải đăng nhập trước khi lưu đoạn code này'}
+          title={'Bạn chưa đăng nhập!'}
           open={openDialogNotAuth}
           setOpen={setOpenDialogNotAuth}
         />
@@ -203,10 +205,10 @@ export default function CompilerPublicDetailPage() {
             },
           }}
         >
-          <DialogTitle>Title of code snippet</DialogTitle>
+          <DialogTitle>Tiêu đề của đoạn mã</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              What is the title of this code snippet ?
+              Hãy đặt tiêu đề cho đoạn mã bạn muốn lưu!
             </DialogContentText>
             <TextField
               autoFocus
@@ -223,8 +225,8 @@ export default function CompilerPublicDetailPage() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenCodeTitleForm(false)}>Cancel</Button>
-            <Button type="submit">SUBMIT</Button>
+            <Button onClick={() => setOpenCodeTitleForm(false)}>Hủy</Button>
+            <Button type="submit">Xác nhận</Button>
           </DialogActions>
         </Dialog>
         <CompilerHeader height={HEADER_HEIGHT} theme={theme} />

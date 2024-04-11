@@ -1,32 +1,61 @@
-import { executeFile } from '~/executeLibs';
-import generateFile from '~/utils/generateFile';
 import { StatusCodes } from 'http-status-codes';
 import { userService } from '~/services/userService';
 import { compilerService } from '~/services/compilerService';
+import axios from 'axios';
+import { getFileExtension } from '~/utils/formatters';
 
 const compilerCode = async (req, res) => {
   // #swagger.tags = ['compiler']
-  const { language = 'js', code } = req.body;
+
+  const { language = 'javascript', code } = req.body;
+  const fileExtension = getFileExtension(language);
 
   if (!code)
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ error: 'Code must be Empty' });
 
+  const options = {
+    method: 'POST',
+    url: 'https://onecompiler-apis.p.rapidapi.com/api/v1/run',
+    headers: {
+      'content-type': 'application/json',
+      'X-RapidAPI-Key': '38951fb092msh88b2a7e001f4149p1f1c8ejsn1a9a38420b12',
+      'X-RapidAPI-Host': 'onecompiler-apis.p.rapidapi.com',
+    },
+    data: {
+      language,
+      stdin: 'null',
+      files: [
+        {
+          name: `index${fileExtension}`,
+          content: code,
+        },
+      ],
+    },
+  };
+
   try {
-    const filePath = await generateFile(code);
-
-    let output;
-
-    if (language === 'js') output = await executeFile.executeJs(filePath);
-    else if (language === 'php')
-      output = await executeFile.executePhp(filePath);
-    else if (language === 'py') output = await executeFile.executePy(filePath);
-
-    res.status(StatusCodes.OK).json({ success: true, output: output });
+    const response = await axios.request(options);
+    res.status(StatusCodes.OK).json(response.data);
   } catch (error) {
     res.status(StatusCodes.OK).json({ error: error.message });
   }
+
+  // try {
+  //   const filePath = await generateFile(code);
+
+  //   let output;
+
+  //   if (language === 'js') output = await executeFile.executeJs(filePath);
+  //   else if (language === 'php')
+  //     output = await executeFile.executePhp(filePath);
+  //   else if (language === 'py') output = await executeFile.executePy(filePath);
+
+  //   res.status(StatusCodes.OK).json({ success: true, output: output });
+  // } catch (error) {
+  //   res.status(StatusCodes.OK).json({ error: error.message });
+  // }
 };
 
 const saveCode = async (req, res, next) => {

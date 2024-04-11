@@ -24,6 +24,7 @@ export const ChatIndex = () => {
   const [content, setContent] = React.useState({});
   const data = useSelector((state) => state.chat.data);
   const dataUser = useSelector((state) => state.auth.userGit);
+  const statusGet = useSelector((state) => state.auth.status);
   const dataConversations = useSelector((state) => state.conversations.data);
   const status = useSelector((state) => state.conversations.status);
   const statusChat = useSelector((state) => state.chat.status);
@@ -68,14 +69,14 @@ export const ChatIndex = () => {
   const { sourceCode } = location.state || {};
 
   React.useEffect(() => {
-    if (sourceCode) {
+    if (sourceCode && dataUser && statusGet === 'success') {
       const title = 'Check code snippet';
       const content = 'Check my code and write any comments you have on it' + '\n' + sourceCode;
       setUserInput(content);
       dispatch(handleAddConversation({ data: { title: title, idGit: dataUser.dataUser._id } }));
-      setContent({ input: content, model: 'gpt' });
+      setContent({ input: content, model: 'gpt-3.5-turbo' });
     }
-  }, [sourceCode, dispatch]);
+  }, [sourceCode, dispatch, dataUser, statusGet]);
   return (
     <Grid
       container
