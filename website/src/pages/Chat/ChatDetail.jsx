@@ -47,7 +47,7 @@ const ChatDetail = () => {
       }, 1000);
     } else if (status === 'failed') {
       dispatch(resetMessages());
-      handleToast('error', 'Message not found');
+      handleToast('error', 'Không tìm thấy dữ liệu');
       navigate('/chat');
     }
   }, [dataMessage, status, navigate, dispatch]);
@@ -56,7 +56,7 @@ const ChatDetail = () => {
       dispatch(handleGetMessageByID({ id }));
       dispatch(resetState());
     } else if (statusChat === 'failed') {
-      handleToast('error', 'Failed to call the API');
+      handleToast('error', 'Hệ thống xảy ra lỗi');
       dispatch(resetState());
       navigate('/chat');
     }
