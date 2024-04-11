@@ -45,7 +45,7 @@ const authSlice = createSlice({
       })
       .addCase(handleGetUserGit.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload.mgs;
+        state.error = action.payload;
       })
       .addCase(handleGetUser.pending, (state) => {
         state.status = 'loading';

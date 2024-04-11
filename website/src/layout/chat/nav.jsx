@@ -29,7 +29,7 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import LogoutIcon from '@mui/icons-material/Logout';
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleGetUser, resetStateAction } from '~/redux/slices/authSlice';
+import { resetStateAction } from '~/redux/slices/authSlice';
 import { handleToast } from '~/config/toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -153,6 +153,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
     localStorage.removeItem('git_token');
     handleToast('success', 'Đăng xuất thành công!');
     dispatch(resetStateAction());
+    navigate('/login');
     setLogin(false);
   };
   const handleDelete = () => {

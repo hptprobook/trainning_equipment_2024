@@ -1,39 +1,37 @@
-import React from 'react';
-import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
+import CardPlan from '~/component/Card/CardPlane';
 
 const PlanView = () => {
-  return (
-    <Grid container spacing={3} sx={{ height: '100%' }}>
-      <Grid
-        item
-        xs={4}
-        sx={{
-          backgroundColor: 'rgb(10,82,160)',
-        }}
-      >
-        <h1>Kế hoạch</h1>
-      </Grid>
-      <Grid
-        item
-        xs={4}
-        sx={{
-          backgroundColor: 'rgb(240,110,40)',
-        }}
-      >
-        <p>Đây là trang kế hoạch</p>
-      </Grid>
-      <Grid
-        item
-        xs={4}
-        sx={{
-          backgroundColor: 'rgb(80,185,70)',
-        }}
-      >
-        <p>Đây là trang kế hoạch</p>
-      </Grid>
-    </Grid>
-  );
+	const CustomGrid = ({ backgroundColor, children }) => (
+		<Grid
+			item
+			xs={12}
+      md={4}
+			sx={{
+				backgroundColor: backgroundColor,
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+        padding: '48px 0'
+			}}
+		>
+			{children}
+		</Grid>
+	);
+
+	return (
+		<Grid container sx={{ height: '100vh', margin: 0, overflow: 'auto' }}>
+			<CustomGrid backgroundColor="rgb(10,82,160)">
+				<CardPlan />
+			</CustomGrid>
+			<CustomGrid backgroundColor="rgb(240,110,40)">
+				<CardPlan />
+			</CustomGrid>
+			<CustomGrid backgroundColor="rgb(80,185,70)">
+				<CardPlan />
+			</CustomGrid>
+		</Grid>
+	);
 };
 
 export default PlanView;
