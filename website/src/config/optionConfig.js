@@ -44,3 +44,17 @@ export const modeOption = [
     value: 'gpt-3.5-turbo'
   }
 ];
+export const sortOption = [
+  {
+    name: 'Mới nhất',
+    value: 'newest'
+  },
+  {
+    name: 'Cũ nhất',
+    value: 'oldest'
+  },
+  {
+    name: 'Ngẫu nhiên',
+    value: 'random'
+  }
+];
