@@ -25,7 +25,7 @@ export default function OptionSelect({ option, label, name, noneValue = true, df
         onChange={handleChange}
       >
         {noneValue ? <MenuItem value="">
-          <em>None</em>
+          Mặc định
         </MenuItem> : null}
         {option.map((item, index) => {
           return (
