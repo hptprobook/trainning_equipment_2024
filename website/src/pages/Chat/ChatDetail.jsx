@@ -127,8 +127,8 @@ const ChatDetail = () => {
         {status === 'success' && listMessage.map((item) => (
           <CardAnswer
             key={item._id}
-            name={item.isUserMessage ? user.dataUser.name : 'FPT.AI'}
-            avatar={item.isUserMessage ? user.dataUser.avatar : 'https://www.w3schools.com/howto/img_avatar.png'}
+            name={item.isUserMessage ? user.dataUser.name : 'BEE AI'}
+            avatar={item.isUserMessage ? user.dataUser.avatar : '/public/logo/white.png'}
             answer={item.content}
           />
         ))}
