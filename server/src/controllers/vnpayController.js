@@ -38,9 +38,7 @@ const create_payment_url = async (req, res) => {
   let returnUrl = 'http://localhost:5173/plan';
 
   let orderId = req.body.orderId;
-  console.log(orderId);
   let amount = req.body.amount;
-  console.log(amount);
 
   let bankCode = '';
 
