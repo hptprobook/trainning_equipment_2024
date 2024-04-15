@@ -254,14 +254,16 @@ const NavChat = ({ open, handleDrawerClose }) => {
                 padding: '4px 8px',
                 color: item._id == id ? theme.palette.text.white : '#000',
                 backgroundColor:
-									item._id == id ? theme.palette.background.fpt : 'transparent',
+                  item._id == id ? theme.palette.background.fpt : 'transparent',
                 '&:hover .MuiListItemIcon-root': {
                   display: 'flex',
                   color: theme.palette.text.white,
                 },
                 '&:hover': {
                   backgroundColor:
-										item._id == id ? theme.palette.background.fptHover : 'rgb(240, 241, 242)',
+                    item._id == id
+                      ? theme.palette.background.fptHover
+                      : 'rgb(240, 241, 242)',
                 },
               }}
               onClick={() => navigate(`/chat/${item._id}`)}
@@ -380,23 +382,25 @@ const NavChat = ({ open, handleDrawerClose }) => {
                 </ItemIconCus>
               </ListItemButton>
             </ListItem>
-            {!data?.isPro ? <ListItem>
-              <ListItemButton
-                sx={{
-                  borderRadius: '12px',
-                  padding: '4px 8px',
-                  '& .MuiListItemIcon-root': {
-                    display: 'flex',
-                  },
-                }}
-                onClick={() => handleNavigate('/plan')}
-              >
-                <ListItemText primary={'Nâng cấp PRO'} />
-                <ItemIconCus>
-                  <FileUploadIcon />
-                </ItemIconCus>
-              </ListItemButton>
-            </ListItem> : null}
+            {!data?.isPro ? (
+              <ListItem>
+                <ListItemButton
+                  sx={{
+                    borderRadius: '12px',
+                    padding: '4px 8px',
+                    '& .MuiListItemIcon-root': {
+                      display: 'flex',
+                    },
+                  }}
+                  onClick={() => handleNavigate('/plan')}
+                >
+                  <ListItemText primary={'Nâng cấp PRO'} />
+                  <ItemIconCus>
+                    <FileUploadIcon />
+                  </ItemIconCus>
+                </ListItemButton>
+              </ListItem>
+            ) : null}
             <ListItem>
               <ListItemButton
                 sx={{
@@ -449,7 +453,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     width: drawerWidth - 32,
                   }}
                 >
-                  {!user?.dataUser?.isPro && (
+                  {/* {!user?.dataUser?.isPro && (
                     <ListItem
                       sx={{
                         padding: theme.palette.padding.list,
@@ -471,7 +475,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                         </ItemIconCus>
                       </ListItemButton>
                     </ListItem>
-                  )}
+                  )} */}
                   <ListItem
                     sx={{
                       padding: theme.palette.padding.list,
