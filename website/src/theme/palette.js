@@ -111,6 +111,7 @@ export function palette() {
       disabled: grey[500],
       active: '#007867',
       normal: '#0000',
+      white: '#FFFFFF',
     },
     background: {
       paper: '#FFFFFF',
@@ -119,6 +120,8 @@ export function palette() {
       neutral: grey[200],
       subBackground: '#f9f9f9',
       active: '#D3E3FD',
+      fpt: 'rgb(242, 112, 27)',
+      fptHover: 'rgba(242, 112, 27, 0.8)',
       chipActive: '#ceeae2',
       hoverActive: '#DFE2E5',
       hover: '#DDE3EA',
