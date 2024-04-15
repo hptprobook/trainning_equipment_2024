@@ -76,12 +76,12 @@ const LoginView = () => {
               width: 'fit-content',
               fontSize: '1rem',
               fontWeight: '500',
-              backgroundColor: 'rgba(60, 70, 255)',
+              backgroundColor: 'rgb(31, 179, 74)',
               color: 'rgba(255,255,255,1)',
               padding: '8px 24px',
               borderRadius: '8px',
               '&:hover': {
-                backgroundColor: 'rgb(0, 0, 255)',
+                backgroundColor: 'rgba(31, 179, 74, 0.9)',
               },
             }}
             onClick={handleLoginGit}

@@ -127,7 +127,7 @@ const ChatDetail = () => {
           <CardAnswer
             key={item._id}
             name={item.isUserMessage ? user.dataUser.name : 'BEE AI'}
-            avatar={item.isUserMessage ? user.dataUser.avatar : '/public/logo/white.png'}
+            avatar={item.isUserMessage ? user.dataUser.avatar : '/logo/white.png'}
             answer={item.content}
           />
         ))}
