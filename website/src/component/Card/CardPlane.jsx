@@ -8,43 +8,47 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 
 export default function CardPlan({
-	label,
-	price,
-	description,
-	handleGetContent,
-  planDate
+  label,
+  price,
+  description,
+  handleGetContent,
+  planDate,
 }) {
-	return (
-		<Box sx={{ minWidth: 275 }}>
-			<Card variant="outlined">
-				<CardContent>
-					<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-						FPT AI
-					</Typography>
-					<Typography variant="h5" component="div">
-						{label}
-					</Typography>
-					<Typography sx={{ mb: 1.5 }} color="text.secondary">
-						{price}
-					</Typography>
-					<Typography variant="body2">{description}</Typography>
-				</CardContent>
-				<CardActions>
-					<Button
-						onClick={() => handleGetContent({ price, planDate })}
-						size="small"
-					>
-						Đăng ký
-					</Button>
-				</CardActions>
-			</Card>
-		</Box>
-	);
+  const formatMoney = (x) => {
+    x = x.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+    return x;
+  };
+  return (
+    <Box sx={{ minWidth: 275 }}>
+      <Card variant="outlined">
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            FPT AI
+          </Typography>
+          <Typography variant="h5" component="div">
+            {label}
+          </Typography>
+          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+            {formatMoney(price)}
+          </Typography>
+          <Typography variant="body2">{description}</Typography>
+        </CardContent>
+        <CardActions>
+          <Button
+            onClick={() => handleGetContent({ price, planDate })}
+            size="small"
+          >
+            Đăng ký
+          </Button>
+        </CardActions>
+      </Card>
+    </Box>
+  );
 }
 CardPlan.propTypes = {
-	label: PropTypes.string,
-	price: PropTypes.string,
-	description: PropTypes.string,
-	handleGetContent: PropTypes.func.isRequired,
-  planDate: PropTypes.number
+  label: PropTypes.string,
+  price: PropTypes.string,
+  description: PropTypes.string,
+  handleGetContent: PropTypes.func.isRequired,
+  planDate: PropTypes.number,
 };

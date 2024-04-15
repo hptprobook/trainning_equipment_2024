@@ -4,10 +4,7 @@ import './style.css';
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  handleGetUser,
-  handleGetUserGit,
-} from '~/redux/slices/authSlice';
+import { handleGetUser, handleGetUserGit } from '~/redux/slices/authSlice';
 import { handleToast } from '../../config/toast';
 import { UserContext } from '~/context/user.context';
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
@@ -67,7 +64,7 @@ const LoginView = () => {
       <div className="content f-col">
         <h2 className="title ml">Support Learning IT</h2>
         <p className="context ml">
-					Công cụ hỗ trợ tốt nhất dành cho sinh viên IT
+          Công cụ hỗ trợ tốt nhất dành cho sinh viên IT
         </p>
       </div>
       <div className="login f-col">
@@ -89,7 +86,7 @@ const LoginView = () => {
             }}
             onClick={handleLoginGit}
           >
-						Đăng nhập với GitHub
+            Đăng nhập với GitHub
             <GitHubIcon
               sx={{
                 marginLeft: '10px',
