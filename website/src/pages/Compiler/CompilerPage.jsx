@@ -6,7 +6,12 @@ import { convertLanguage, defaultCode } from '~/utils/formatters';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { codesSaved, runCode, saveCode } from '~/redux/slices/compilerSlice';
+import {
+  codesSaved,
+  nextStepAfterRun,
+  runCode,
+  saveCode,
+} from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
 import DialogSimple from '~/component/Dialog/DialogSimple';
 import ResponsiveBox from '~/component/ResponsiveBox/ResponsiveBox';
@@ -20,26 +25,32 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularLoading from '~/component/Loading/CircularLoading';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
 
 const CompilerPage = () => {
   const monaco = useMonaco();
-  const editorRef = useRef(null); // Ref cho trình soạn thảo
+  const editorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [sourceCode, setSourceCode] = useState(defaultCode.javascript);
   const [selectedLanguage, setSelectedLanguage] = useState('javascript');
   const [title, setTitle] = useState('Code Snippet');
   const [openCodeTitleForm, setOpenCodeTitleForm] = useState(false);
-  const [isCompiling, setIsCompiling] = useState(false);
   const [compileOutput, setCompileOutput] = useState('');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
   const codesSavedData = useSelector((state) => state.compiler.codesSavedData);
   const [openDialogNotAuth, setOpenDialogNotAuth] = useState(false);
+  const [gptResponseError, setGptResponseError] = useState(null);
+  const [gptResponseRefactor, setGptResponseRefactor] = useState(null);
+  const [openList, setOpenList] = useState(false);
+
+  const { nextStepData, isRunCodeLoading } = useSelector(
+    (state) => state.compiler
+  );
   const isAuth = useAuth();
 
   useEffect(() => {
@@ -72,8 +83,9 @@ const CompilerPage = () => {
   }, [theme, monaco]);
 
   const handleRunCode = async () => {
-    setIsCompiling(true);
     setCompileOutput('');
+    setGptResponseError(null);
+    setGptResponseRefactor(null);
 
     try {
       const resultAction = await dispatch(
@@ -84,18 +96,31 @@ const CompilerPage = () => {
       ).unwrap();
 
       if (resultAction.status === 'success') {
-        setCompileOutput(resultAction.stdout);
+        setCompileOutput(
+          resultAction.stderr
+            ? 'Có lỗi trong đoạn mã này. Chúng tôi đang tìm phương hướng giải quyết cho đoạn mã của bạn...'
+            : resultAction.stdout
+        );
       } else {
         setCompileOutput(
           resultAction.error || 'Đã xảy ra lỗi, vui lòng thử lại'
         );
       }
+
+      if (resultAction.stderr) {
+        setGptResponseError(null);
+        const gptRes = await dispatch(
+          nextStepAfterRun({
+            condition: 'error',
+            code: sourceCode,
+          })
+        ).unwrap();
+        setGptResponseError(JSON.parse(gptRes.content));
+      }
     } catch (err) {
       toast.error('Biên dịch mã bị lỗi, vui lòng thử lại!', {
         autoClose: 1000,
       });
-    } finally {
-      setIsCompiling(false);
     }
   };
 
@@ -137,7 +162,19 @@ const CompilerPage = () => {
           autoClose: 1000,
         });
       });
+    setOpenList(true);
     setOpenDialogNotAuth(false);
+  };
+
+  const handleShowRefactor = async () => {
+    setGptResponseRefactor(null);
+    const gptRes = await dispatch(
+      nextStepAfterRun({
+        condition: 'refactor',
+        code: sourceCode,
+      })
+    ).unwrap();
+    setGptResponseRefactor(JSON.parse(gptRes.content));
   };
 
   return (
@@ -226,7 +263,7 @@ const CompilerPage = () => {
                 handleRunCode={handleRunCode}
                 handleSaveCode={handleSaveCode}
                 height={HEADER_HEIGHT}
-                isCompiling={isCompiling}
+                isCompiling={isRunCodeLoading}
                 selectedLanguage={selectedLanguage}
                 setEditorFontSize={setEditorFontSize}
                 setSelectedLanguage={setSelectedLanguage}
@@ -249,28 +286,33 @@ const CompilerPage = () => {
               />
             </Grid>
             <Grid item xs={12} md={12} lg={5}>
-              {isCompiling && (
+              {isRunCodeLoading && (
                 <Box
                   sx={{
                     display: 'flex',
                     width: '100%',
-                    height: '100%',
                     justifyContent: 'center',
-                    alignItems: 'center',
                   }}
                 >
-                  <CircularProgress />
+                  <CircularLoading />
                 </Box>
               )}
               <CompilerOutput
+                openList={openList}
                 compileOutput={compileOutput}
                 handleCheckAI={handleCheckAI}
                 height={HEADER_HEIGHT}
-                isCompiling={isCompiling}
+                isCompiling={isRunCodeLoading}
+                nextStepData={nextStepData && nextStepData.content}
                 setCompileOutput={setCompileOutput}
+                gptResponseError={gptResponseError}
+                gptResponseRefactor={gptResponseRefactor}
                 theme={theme}
                 isAuth={isAuth}
+                code={sourceCode}
                 codesSavedData={codesSavedData}
+                handleShowRefactor={handleShowRefactor}
+                setOpenList={setOpenList}
               />
             </Grid>
           </Grid>
