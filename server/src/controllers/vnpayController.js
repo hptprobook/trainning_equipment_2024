@@ -80,7 +80,7 @@ const create_payment_url = async (req, res) => {
 const vnpay_return = async (req, res) => {
   // #swagger.tags = ['vnpay']
   // #swagger.summary = 'check'
-  const { day = 30 } = req.body;
+  let { day = 30 } = req.body;
   let vnp_Params = req.query;
 
   let secureHash = vnp_Params['vnp_SecureHash'];
@@ -108,10 +108,10 @@ const vnpay_return = async (req, res) => {
       );
       if (user === '00') {
         if (gia == 50000000) {
-          console.log(180);
+          day = 180;
         }
         if (gia == 100000000) {
-          console.log(365);
+          day = 365;
         }
         const updatePro = await userService.updateUserPro(
           req.userId || req.userIdPro,
