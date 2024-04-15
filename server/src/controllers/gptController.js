@@ -79,6 +79,26 @@ const gpt = async (req, res) => {
     }
   }
 };
+
+const gptResponse = async (content) => {
+  if (!content) {
+    throw new Error('Invalid request content');
+  }
+
+  try {
+    const systemHistory = [{ role: 'user', content }];
+    const completion = await openai.chat.completions.create({
+      messages: systemHistory,
+      model: 'gpt-4',
+    });
+
+    return { success: true, content: completion.choices[0].message.content };
+  } catch (error) {
+    return { success: false, message: 'Failed to call the API' };
+  }
+};
+
 export const gptController = {
   gpt,
+  gptResponse,
 };

@@ -2,69 +2,104 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import CompilerServices from '~/services/compiler.service';
 
 // Async thunks
-export const codesSaved = createAsyncThunk('compiler/codesSaved', async (_, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.codesSaved();
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const codesSaved = createAsyncThunk(
+  'compiler/codesSaved',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.codesSaved();
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
-export const saveCode = createAsyncThunk('compiler/saveCode', async (data, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.saveCode(data);
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const saveCode = createAsyncThunk(
+  'compiler/saveCode',
+  async (data, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.saveCode(data);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
-export const runCode = createAsyncThunk('compiler/run', async (data, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.run(data);
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const runCode = createAsyncThunk(
+  'compiler/run',
+  async (data, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.run(data);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
-export const getDetails = createAsyncThunk('compiler/getDetails', async ({ id }, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.getDetails(id);
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const nextStepAfterRun = createAsyncThunk(
+  'compiler/nextStep',
+  async (data, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.nextStep(data);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
-export const shareCode = createAsyncThunk('compiler/share', async (id, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.share(id);
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const getDetails = createAsyncThunk(
+  'compiler/getDetails',
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.getDetails(id);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
-export const publicCode = createAsyncThunk('compiler/publicCode', async (id, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.publicCode(id);
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const shareCode = createAsyncThunk(
+  'compiler/share',
+  async (id, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.share(id);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
-export const updateCode = createAsyncThunk('compiler/updateCode', async ({ id, data }, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.updateCode(id, data);
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const publicCode = createAsyncThunk(
+  'compiler/publicCode',
+  async (id, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.publicCode(id);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
-export const deleteCode = createAsyncThunk('compiler/deleteCode', async (id, { rejectWithValue }) => {
-  try {
-    return await CompilerServices.deleteCode(id);
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const updateCode = createAsyncThunk(
+  'compiler/updateCode',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.updateCode(id, data);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
+
+export const deleteCode = createAsyncThunk(
+  'compiler/deleteCode',
+  async (id, { rejectWithValue }) => {
+    try {
+      return await CompilerServices.deleteCode(id);
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 
 // Compiler slice
 const compilerSlice = createSlice({
@@ -72,12 +107,15 @@ const compilerSlice = createSlice({
   initialState: {
     data: null,
     codesSavedData: null,
+    nextStepData: null,
     details: null,
     publicDetails: null,
     updatedCode: null,
     codeDeleted: false,
     status: 'idle',
     error: null,
+    isNextStepLoading: false,
+    isRunCodeLoading: false,
   },
   reducers: {
     resetCompilerState: (state) => {
@@ -114,14 +152,26 @@ const compilerSlice = createSlice({
       })
       // runCode async thunk
       .addCase(runCode.pending, (state) => {
-        state.status = 'loading';
+        state.isRunCodeLoading = true;
       })
       .addCase(runCode.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.isRunCodeLoading = false;
         state.data = action.payload;
       })
       .addCase(runCode.rejected, (state, action) => {
-        state.status = 'failed';
+        state.isRunCodeLoading = false;
+        state.error = action.payload;
+      })
+      // Next step
+      .addCase(nextStepAfterRun.pending, (state) => {
+        state.isNextStepLoading = true;
+      })
+      .addCase(nextStepAfterRun.fulfilled, (state, action) => {
+        state.isNextStepLoading = false;
+        state.nextStepData = action.payload;
+      })
+      .addCase(nextStepAfterRun.rejected, (state, action) => {
+        state.isNextStepLoading = false;
         state.error = action.payload;
       })
       // getDetails async thunk
