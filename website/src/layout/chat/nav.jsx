@@ -85,6 +85,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const statusArchive = useSelector(
     (state) => state.conversations.statusArchive
   );
+
   const statusDeleteAll = useSelector(
     (state) => state.conversations.statusDeleteAll
   );
@@ -448,26 +449,29 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     width: drawerWidth - 32,
                   }}
                 >
-                  <ListItem
-                    sx={{
-                      padding: theme.palette.padding.list,
-                    }}
-                  >
-                    <ListItemButton
+                  {!user?.dataUser?.isPro && (
+                    <ListItem
                       sx={{
-                        borderRadius: '12px',
-                        padding: '4px 8px',
-                        '& .MuiListItemIcon-root': {
-                          display: 'flex',
-                        },
+                        padding: theme.palette.padding.list,
                       }}
+                      onClick={() => navigate('/plan')}
                     >
-                      <ListItemText primary={'Tài khoản'} />
-                      <ItemIconCus>
-                        <PermIdentityIcon />
-                      </ItemIconCus>
-                    </ListItemButton>
-                  </ListItem>
+                      <ListItemButton
+                        sx={{
+                          borderRadius: '12px',
+                          padding: '4px 8px',
+                          '& .MuiListItemIcon-root': {
+                            display: 'flex',
+                          },
+                        }}
+                      >
+                        <ListItemText primary={'Nâng cấp tài khoản'} />
+                        <ItemIconCus>
+                          <PermIdentityIcon />
+                        </ItemIconCus>
+                      </ListItemButton>
+                    </ListItem>
+                  )}
                   <ListItem
                     sx={{
                       padding: theme.palette.padding.list,
