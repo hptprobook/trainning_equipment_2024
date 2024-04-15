@@ -1,9 +1,10 @@
+/* eslint-disable indent */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ListCodeDrawer from '~/component/Drawer/Drawer';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { shareCode } from '~/redux/slices/compilerSlice';
 import { toast } from 'react-toastify';
 import { CLIENT_ROOT } from '~/utils/constants';
@@ -19,6 +20,11 @@ import TocIcon from '@mui/icons-material/Toc';
 import AssistantIcon from '@mui/icons-material/Assistant';
 import ShareIcon from '@mui/icons-material/Share';
 import LinkIcon from '@mui/icons-material/Link';
+import CodePending from '~/component/CodePending/CodePending';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import SwipeRightIcon from '@mui/icons-material/SwipeRight';
+import { Divider } from '@mui/material';
 
 const CompilerOutput = ({
   height,
@@ -32,10 +38,42 @@ const CompilerOutput = ({
   id,
   isPublic,
   isPublicPage = false,
+  gptResponseError = null,
+  handleShowRefactor,
+  gptResponseRefactor,
+  openList,
+  setOpenList,
 }) => {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [isDisabled, setDisabled] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { isNextStepLoading } = useSelector((state) => state.compiler);
+  const [copiedRefactor, setCopiedRefactor] = useState(
+    gptResponseRefactor
+      ? Array(gptResponseRefactor.refactors.length).fill(false)
+      : null
+  );
+
+  const copyToClipboard = (codeString) => {
+    navigator.clipboard.writeText(codeString);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  };
+
+  const copyToClipboardRefactor = (codeString, index) => {
+    navigator.clipboard.writeText(codeString);
+    const newCopiedRefactor = [...copiedRefactor];
+    newCopiedRefactor[index] = true;
+    setCopiedRefactor(newCopiedRefactor);
+    setTimeout(() => {
+      const resetCopiedRefactor = [...copiedRefactor];
+      resetCopiedRefactor[index] = false;
+      setCopiedRefactor(resetCopiedRefactor);
+    }, 1000);
+  };
+
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen);
   };
@@ -64,7 +102,6 @@ const CompilerOutput = ({
   };
 
   const handlePublicCode = () => {
-    setDisabled(true);
     dispatch(shareCode(id)).then(() => {
       toast.success('Đoạn mã đã được công bố!', { autoClose: 1000 });
       if (navigator.clipboard) {
@@ -89,6 +126,8 @@ const CompilerOutput = ({
           open={openDrawer}
           toggleDrawer={toggleDrawer}
           codesSavedData={codesSavedData}
+          openList={openList}
+          setOpenList={setOpenList}
         />
       ) : (
         ''
@@ -102,7 +141,6 @@ const CompilerOutput = ({
           alignItems: 'center',
           px: 4,
           borderBottom: '1px solid #c9c6c6',
-          overflowY: 'auto',
           bgcolor: theme === 'light' ? 'fff' : '#1e1e1e',
         }}
       >
@@ -166,18 +204,158 @@ const CompilerOutput = ({
         sx={{
           px: 4,
           py: 2,
+          overflowY: 'auto',
+          height: '800px',
         }}
       >
-        {compileOutput && (
-          <Typography
-            sx={{
-              whiteSpace: 'pre-wrap',
-              color: theme === 'dark' ? 'white' : '#333',
-            }}
-          >
-            {compileOutput}
-          </Typography>
+        {gptResponseError === null ? (
+          <>
+            {compileOutput && (
+              <>
+                <Typography
+                  sx={{
+                    whiteSpace: 'pre-wrap',
+                    color: theme === 'dark' ? 'white' : '#333',
+                    mt: 1,
+                  }}
+                  gutterBottom
+                >
+                  {compileOutput}
+                </Typography>
+                <Divider />
+              </>
+            )}
+            {compileOutput &&
+              compileOutput !==
+                'Có lỗi trong đoạn mã này. Chúng tôi đang tìm phương hướng giải quyết cho đoạn mã của bạn...' &&
+              !gptResponseRefactor && (
+                <Button
+                  onClick={handleShowRefactor}
+                  sx={{
+                    textTransform: 'none',
+                    mt: 2,
+                  }}
+                  endIcon={<SwipeRightIcon />}
+                  disabled={isNextStepLoading}
+                >
+                  Tối ưu đoạn mã
+                </Button>
+              )}
+            {gptResponseRefactor && (
+              <Typography
+                sx={{
+                  mt: 4,
+                  fontSize: '18px',
+                  fontWeight: '600',
+                }}
+              >
+                Các cách để đoạn mã tối ưu hơn:{' '}
+              </Typography>
+            )}
+            {gptResponseRefactor &&
+              gptResponseRefactor.refactors.map((refactor, i) => (
+                <React.Fragment key={i}>
+                  <Typography
+                    sx={{
+                      mt: 2,
+                      fontSize: '13px',
+                      fontWeight: '400',
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    {refactor.direction}:{' '}
+                  </Typography>
+                  {refactor.code && (
+                    <Box style={{ position: 'relative' }}>
+                      <SyntaxHighlighter
+                        language="javascript"
+                        style={vscDarkPlus}
+                      >
+                        {refactor.code}
+                      </SyntaxHighlighter>
+                      <Button
+                        onClick={() =>
+                          copyToClipboardRefactor(refactor.code, i)
+                        }
+                        sx={{
+                          position: 'absolute',
+                          top: 1,
+                          right: 1,
+                          fontSize: '12px',
+                          textTransform: 'none',
+                          color: '#fff',
+                          fontWeight: 300,
+                        }}
+                      >
+                        Copy
+                      </Button>
+                    </Box>
+                  )}
+                </React.Fragment>
+              ))}
+          </>
+        ) : (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Các lỗi bạn đã mắc phải:{' '}
+            </Typography>
+            {gptResponseError.errors.map((err, i) => (
+              <Typography
+                sx={{
+                  ml: 2,
+                }}
+                key={i}
+              >
+                {err.error}
+              </Typography>
+            ))}
+            <Typography
+              variant="h6"
+              sx={{
+                mt: 1,
+              }}
+              gutterBottom
+            >
+              Cách sửa lỗi:{' '}
+            </Typography>
+            <Typography
+              sx={{
+                ml: 2,
+              }}
+            >
+              {gptResponseError.recommends}
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                mt: 1,
+              }}
+              gutterBottom
+            >
+              Đoạn code chính xác như sau:{' '}
+            </Typography>
+            <Box style={{ position: 'relative' }}>
+              <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
+                {gptResponseError.correctCode}
+              </SyntaxHighlighter>
+              <Button
+                onClick={() => copyToClipboard(gptResponseError.correctCode)}
+                sx={{
+                  position: 'absolute',
+                  top: 1,
+                  right: 1,
+                  fontSize: '12px',
+                  textTransform: 'none',
+                  color: '#fff',
+                  fontWeight: 300,
+                }}
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </Button>
+            </Box>
+          </>
         )}
+        {isNextStepLoading && <CodePending />}
       </Box>
     </>
   );

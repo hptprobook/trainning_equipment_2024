@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
@@ -20,6 +19,8 @@ export default function ListCodeDrawer({
   open = false,
   toggleDrawer,
   codesSavedData,
+  openList,
+  setOpenList,
 }) {
   const dispatch = useDispatch();
   const confirm = useConfirm();
@@ -41,6 +42,11 @@ export default function ListCodeDrawer({
       .catch(() => {
         //
       });
+  };
+
+  const handleClose = () => {
+    toggleDrawer(false);
+    setOpenList(false);
   };
 
   const dateCategories = {
@@ -146,7 +152,11 @@ export default function ListCodeDrawer({
 
   return (
     <div>
-      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+      <Drawer
+        anchor="right"
+        open={openList ? openList : open}
+        onClose={handleClose}
+      >
         <Typography
           variant="h6"
           textAlign={'center'}
