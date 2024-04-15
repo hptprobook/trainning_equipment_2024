@@ -1,22 +1,58 @@
-
 .npm-block {
-    background-color: #2f2f2f;
-    color: #fff;
-    padding: 12px;
-    width: 100%;
-    display: inline-block;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    margin: 12px 0;
+  background-color: #2f2f2f;
+  color: #fff;
+  padding: 12px;
+  width: 100%;
+  display: inline-block;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
 }
 .highlight-block {
-    position: relative;
+  position: relative;
 }
 .highlight-block .block-btn {
-    position: absolute;
-    right: 12px;
-    top: 12px;
-    color: #fff;
-    padding: 6px 12px;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  color: #fff;
+  padding: 6px 12px;
+}
+.cartBuy:hover {
+  border: 2px solid rgb(240, 110, 40);
+}
+.cartBuyBtn:hover {
+  background-color: rgb(253, 95, 11) !important;
+}
+
+.cartBuyTitle:hover {
+  color: rgb(253, 95, 11) !important;
+  transition: all 0.2s;
+}
+/* HTML: <div class="loader"></div> */
+.loaderBuy {
+  width: fit-content;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 30px;
+  color: #0000;
+  background: linear-gradient(
+      90deg,
+      #000 calc(50% - 0.5ch),
+      #c02942 0 calc(50% + 0.5ch),
+      #000 0
+    )
+    right/calc(200% + 1ch) 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: l8 2s infinite steps(11);
+}
+.loader:before {
+  content: 'Loading...';
+}
+@keyframes l8 {
+  to {
+    background-position: left;
+  }
 }

@@ -13,7 +13,7 @@
 .content {
     width: 60%;
     height: 100vh;
-    background-color: #8a00ff;
+    background-color: rgb(13, 105, 179);
 }
 
 .f-col {
@@ -23,7 +23,7 @@
 }
 
 .ml {
-    color: #000000;
+    color: aliceblue;
     line-height: auto;
     margin: 0 84px;
 }
@@ -42,7 +42,7 @@
     height: 100vh;
     margin: auto;
     padding: 20px;
-    background-color: #000000;
+    background-color: rgb(242, 115, 35);
     position: relative;
 }
 
