@@ -59,8 +59,7 @@ const ChatDetail = () => {
       handleToast('error', 'Hệ thống xảy ra lỗi');
       dispatch(resetState());
       navigate('/chat');
-    }
-    else if (statusChat === 'loading') {
+    } else if (statusChat === 'loading') {
       handleScrollLast();
     }
   }, [statusChat, dispatch, id, navigate]);
@@ -94,7 +93,7 @@ const ChatDetail = () => {
     lastScroll.current.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
-      inline: 'center'
+      inline: 'center',
     });
   };
   return (
@@ -135,6 +134,7 @@ const ChatDetail = () => {
         {statusChat === 'loading' && <AnswerLoading />}
         <div ref={lastScroll}></div>
       </Grid> : <></>}
+ 
       <Grid ref={heightRef} item xs={12}>
         <InputChat handleGetContent={handleGetContent} />
       </Grid>
