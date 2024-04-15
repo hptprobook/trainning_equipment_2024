@@ -41,8 +41,6 @@ const CompilerOutput = ({
   gptResponseError = null,
   handleShowRefactor,
   gptResponseRefactor,
-  openList,
-  setOpenList,
 }) => {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -126,8 +124,6 @@ const CompilerOutput = ({
           open={openDrawer}
           toggleDrawer={toggleDrawer}
           codesSavedData={codesSavedData}
-          openList={openList}
-          setOpenList={setOpenList}
         />
       ) : (
         ''

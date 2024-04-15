@@ -20,7 +20,6 @@ export default function ListCodeDrawer({
   toggleDrawer,
   codesSavedData,
   openList,
-  setOpenList,
 }) {
   const dispatch = useDispatch();
   const confirm = useConfirm();
@@ -42,11 +41,6 @@ export default function ListCodeDrawer({
       .catch(() => {
         //
       });
-  };
-
-  const handleClose = () => {
-    toggleDrawer(false);
-    setOpenList(false);
   };
 
   const dateCategories = {
@@ -155,7 +149,7 @@ export default function ListCodeDrawer({
       <Drawer
         anchor="right"
         open={openList ? openList : open}
-        onClose={handleClose}
+        onClose={toggleDrawer(false)}
       >
         <Typography
           variant="h6"
