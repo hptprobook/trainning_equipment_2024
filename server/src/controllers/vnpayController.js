@@ -118,7 +118,7 @@ const vnpay_return = async (req, res) => {
           Number(day)
         );
         res.send(
-          JSON.stringify({ success: false, mgs: 'Thanh toán thành công' })
+          JSON.stringify({ success: true, mgs: 'Thanh toán thành công' })
         );
         return;
       } else {

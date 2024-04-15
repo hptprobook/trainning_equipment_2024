@@ -83,6 +83,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const statusArchive = useSelector(
     (state) => state.conversations.statusArchive
   );
+
   const statusDeleteAll = useSelector(
     (state) => state.conversations.statusDeleteAll
   );
@@ -133,7 +134,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   };
 
   useEffect(() => {
-    if (error ) {
+    if (error) {
       dispatch(resetStateAction());
       handleToast('error', error);
       localStorage.removeItem('token');
@@ -382,13 +383,10 @@ const NavChat = ({ open, handleDrawerClose }) => {
                       horizontal: 'left',
                     }}
                     badgeContent={
-                      <ChipStatus>FREE</ChipStatus>
+                      <ChipStatus>{data?.isPro ? 'PRO' : 'FREE'}</ChipStatus>
                     }
                   >
-                    <Avatar
-                      alt={data?.name}
-                      src={data?.avatar}
-                    />
+                    <Avatar alt={data?.name} src={data?.avatar} />
                   </Badge>
                 </ItemIconCus>
               </ListItemButton>
@@ -416,26 +414,29 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     width: drawerWidth - 32,
                   }}
                 >
-                  <ListItem
-                    sx={{
-                      padding: theme.palette.padding.list,
-                    }}
-                  >
-                    <ListItemButton
+                  {!user?.dataUser?.isPro && (
+                    <ListItem
                       sx={{
-                        borderRadius: '12px',
-                        padding: '4px 8px',
-                        '& .MuiListItemIcon-root': {
-                          display: 'flex',
-                        },
+                        padding: theme.palette.padding.list,
                       }}
+                      onClick={() => navigate('/plan')}
                     >
-                      <ListItemText primary={'Tài khoản'} />
-                      <ItemIconCus>
-                        <PermIdentityIcon />
-                      </ItemIconCus>
-                    </ListItemButton>
-                  </ListItem>
+                      <ListItemButton
+                        sx={{
+                          borderRadius: '12px',
+                          padding: '4px 8px',
+                          '& .MuiListItemIcon-root': {
+                            display: 'flex',
+                          },
+                        }}
+                      >
+                        <ListItemText primary={'Nâng cấp tài khoản'} />
+                        <ItemIconCus>
+                          <PermIdentityIcon />
+                        </ItemIconCus>
+                      </ListItemButton>
+                    </ListItem>
+                  )}
                   <ListItem
                     sx={{
                       padding: theme.palette.padding.list,

@@ -6,11 +6,12 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
-
+import './style.css';
 export default function CardPlan({
   label,
   price,
   description,
+  description2,
   handleGetContent,
   planDate,
 }) {
@@ -19,10 +20,21 @@ export default function CardPlan({
     return x;
   };
   return (
-    <Box sx={{ minWidth: 275 }}>
-      <Card variant="outlined">
+    <Box sx={{ minWidth: 400 }}>
+      <Card
+        className="cartBuy"
+        variant="outlined"
+        sx={{
+          boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+          padding: '10px',
+        }}
+      >
         <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          <Typography
+            sx={{ fontSize: 14 }}
+            color="rgb(240, 110, 40)"
+            gutterBottom
+          >
             FPT AI
           </Typography>
           <Typography variant="h5" component="div">
@@ -32,13 +44,23 @@ export default function CardPlan({
             {formatMoney(price)}
           </Typography>
           <Typography variant="body2">{description}</Typography>
+          <Typography sx={{ mt: 1 }} variant="body2">
+            {description2}
+          </Typography>
         </CardContent>
         <CardActions>
           <Button
             onClick={() => handleGetContent({ price, planDate })}
             size="small"
+            className="cartBuyBtn"
+            sx={{
+              minWidth: 400,
+              color: 'white',
+              background: 'rgb(223, 121, 66)',
+              padding: '8px',
+            }}
           >
-            Đăng ký
+            <b>Đăng ký</b>
           </Button>
         </CardActions>
       </Card>
