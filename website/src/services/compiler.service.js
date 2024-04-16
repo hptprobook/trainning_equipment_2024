@@ -15,6 +15,7 @@ const CompilerServices = {
   codesSaved: () => handleRequest('get', 'compiler/codesSaved'),
   saveCode: (data) => handleRequest('post', 'compiler/save', data),
   run: (data) => handleRequest('post', 'compiler/run', data),
+  nextStep: (data) => handleRequest('post', 'compiler/nextStep', data),
   getDetails: (id) => handleRequest('get', `compiler/${id}`),
   share: (id) => handleRequest('get', `compiler/share/${id}`),
   publicCode: (id) => handleRequest('get', `compiler/share/public/${id}`),

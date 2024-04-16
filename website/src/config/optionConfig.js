@@ -1,32 +1,32 @@
 export const languageOption = [
   {
-    name: 'English',
+    name: 'Tiếng Anh',
     value: 'english'
   },
   {
-    name: 'Viet Nam',
+    name: 'Tiếng Việt',
     value: 'vietnamese'
   },
   {
-    name: 'Japanese',
+    name: 'Tiếng Nhật',
     value: 'japanese'
   }
 ];
 export const styleWriting = [
   {
-    name: 'Default',
+    name: 'Mặc định',
     value: 'default'
   },
   {
-    name: 'Academic',
+    name: 'Học thuật',
     value: 'academic'
   },
   {
-    name: 'Creative',
+    name: 'Sáng tạo',
     value: 'creative'
   },
   {
-    name: 'Critical',
+    name: 'Phê phán',
     value: 'critical'
   }
 ];
@@ -42,5 +42,19 @@ export const modeOption = [
   {
     name: 'Chat GPT',
     value: 'gpt-3.5-turbo'
+  }
+];
+export const sortOption = [
+  {
+    name: 'Mới nhất',
+    value: 'newest'
+  },
+  {
+    name: 'Cũ nhất',
+    value: 'oldest'
+  },
+  {
+    name: 'Ngẫu nhiên',
+    value: 'random'
   }
 ];

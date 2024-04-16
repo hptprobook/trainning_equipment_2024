@@ -1,1 +1,1 @@
-export const findCode = /\b(?:npm|yarn|npx|git)\s+([\w-]+)/;
+export const findCode = /\b(?:npm|yarn|npx|git|brew)\s+([\w-]+)/;

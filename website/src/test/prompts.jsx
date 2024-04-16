@@ -1,22 +1,48 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import OptionSelect from '~/component/Select/OptionSelect';
 
 const GetPrompts = () => {
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(0); // Initialize page state variable
+  const [page, setPage] = useState(0);
+  const [category, setCategory] = useState("Software Engineering");
+  const [categoryOption, setCategoryOption] = useState([]);
+
+  // Map categoryOption to the expected format
+  const formattedCategoryOption = categoryOption.map((category) => ({
+    value: category,
+    name: category,
+  }));
+
+  // Populate categoryOption state with categories
   useEffect(() => {
-    const fetchData = async () => {
+    setCategoryOption([
+      'SEO', 'Marketing', 'Copywriting', 'Generative-AI', 'Productivity', 'Ideation',
+      'Operating Systems', 'Design', 'Other', 'Software Engineering', 'DevOps',
+      'Social Media', 'SaaS', 'Applications'
+    ]);
+  }, []);
+
+  const handleSortCategory = (content) => {
+    setCategory(content);
+    console.log(`Selected category: ${content}`);
+  };
+  useEffect(() => {
+    const fetchData = async (category) => {
       try {
         const response = await axios.post('https://api.maxai.me/prompt/search_prompt', {
           page: page,
           page_size: 5,
-          category: "Software Engineering"
+          category: category
         });
-    
         // Map over the data and return a new object that excludes the id property
-        const filteredData = response.data.data.map(({ id, ...item }) => item);
-    
+        const filteredData = await Promise.all(response.data.data.map(async ({ id, teaser, ...item }) => {
+          // Translate teaser to Vietnamese
+          const translatedTeaser = await translateTeaser(teaser);
+          return { ...item, teaser: translatedTeaser };
+        }));
+
         setData(filteredData);
         console.log(filteredData);
       } catch (error) {
@@ -24,8 +50,29 @@ const GetPrompts = () => {
       }
     };
 
-    fetchData();
-  }, [page]); // Add page as a dependency
+    fetchData(category);
+  }, [page, category]);
+
+  const translateTeaser = async (teaser) => {
+    // Comment out the translation logic
+
+    // try {
+    //   let YOUR_GOOGLE_API_KEY = 'AIzaSyBYUWbnrdG_Sy-GSAG1TksUE9n6VPoT8VI';
+    //   const response = await axios.post(`https://translation.googleapis.com/language/translate/v2?key=${YOUR_GOOGLE_API_KEY}`, {
+    //     q: teaser,
+    //     source: 'en',
+    //     target: 'vi',
+    //     format: 'text'
+    //   });
+
+    //   return response.data.data.translations[0].translatedText;
+    // } catch (error) {
+    //   console.error(`Translation Error: ${error}`);
+    // }
+
+    // Return the original teaser
+    return teaser;
+  };
 
   const addPrompt = async () => {
     try {
@@ -33,7 +80,7 @@ const GetPrompts = () => {
       alert('Prompt added successfully');
     } catch (error) {
       console.error('Error adding prompt: ', error);
-      alert('Error from react: ',error);
+      alert('Error from react: ', error);
     }
   };
 
@@ -46,8 +93,16 @@ const GetPrompts = () => {
 
   return (
     <>
-    
-    <Button variant="contained" color="primary" onClick={addPrompt}>Add Prompt</Button>
+
+      <Button variant="contained" color="primary" onClick={addPrompt}>Add Prompt</Button>
+      {/* // OptionSelect component for category filter */}
+
+      <OptionSelect
+        label="Phân loại"
+        name="category"
+        handleGetContent={handleSortCategory}
+        option={formattedCategoryOption}
+      />
       <TableContainer style={{
         maxHeight: '500px',
         overflow: 'auto',
@@ -61,7 +116,6 @@ const GetPrompts = () => {
               <TableCell>Use case </TableCell>
               <TableCell>Variable </TableCell>
               <TableCell>Variable type </TableCell>
-
             </TableRow>
           </TableHead>
           <TableBody>

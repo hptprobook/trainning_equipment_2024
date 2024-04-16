@@ -50,7 +50,7 @@ export default function NotFoundView() {
                         Xin lỗi, chúng tôi không thể tìm thấy trang bạn đang tìm kiếm. Có lẽ bạn đã gõ nhầm URL? Là
                         chắc chắn kiểm tra chính tả của bạn.
           </Typography>
-
+{/* 
           <Box
             component="img"
             // src="/assets/illustrations/illustration_404.svg"
@@ -59,7 +59,7 @@ export default function NotFoundView() {
               height: 260,
               my: { xs: 5, sm: 10 },
             }}
-          />
+          /> */}
 
           <NavLink to="/">
             <Button size="large" variant="contained" >

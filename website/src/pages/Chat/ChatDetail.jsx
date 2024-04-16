@@ -47,7 +47,7 @@ const ChatDetail = () => {
       }, 1000);
     } else if (status === 'failed') {
       dispatch(resetMessages());
-      handleToast('error', 'Message not found');
+      handleToast('error', 'Không tìm thấy dữ liệu');
       navigate('/chat');
     }
   }, [dataMessage, status, navigate, dispatch]);
@@ -56,11 +56,10 @@ const ChatDetail = () => {
       dispatch(handleGetMessageByID({ id }));
       dispatch(resetState());
     } else if (statusChat === 'failed') {
-      handleToast('error', 'Failed to call the API');
+      handleToast('error', 'Hệ thống xảy ra lỗi');
       dispatch(resetState());
       navigate('/chat');
-    }
-    else if (statusChat === 'loading') {
+    } else if (statusChat === 'loading') {
       handleScrollLast();
     }
   }, [statusChat, dispatch, id, navigate]);
@@ -94,7 +93,7 @@ const ChatDetail = () => {
     lastScroll.current.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
-      inline: 'center'
+      inline: 'center',
     });
   };
   return (
@@ -127,14 +126,15 @@ const ChatDetail = () => {
         {status === 'success' && listMessage.map((item) => (
           <CardAnswer
             key={item._id}
-            name={item.isUserMessage ? user.dataUser.name : 'FPT.AI'}
-            avatar={item.isUserMessage ? user.dataUser.avatar : 'https://www.w3schools.com/howto/img_avatar.png'}
+            name={item.isUserMessage ? user.dataUser.name : 'BEE AI'}
+            avatar={item.isUserMessage ? user.dataUser.avatar : '/logo/white.png'}
             answer={item.content}
           />
         ))}
         {statusChat === 'loading' && <AnswerLoading />}
         <div ref={lastScroll}></div>
       </Grid> : <></>}
+ 
       <Grid ref={heightRef} item xs={12}>
         <InputChat handleGetContent={handleGetContent} />
       </Grid>

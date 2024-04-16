@@ -34,10 +34,14 @@ const AppBar = styled(MuiAppBar, {
 const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
   const theme = useTheme();
   return (
-    <AppBar position="fixed" open={open} ref={ref}
+    <AppBar
+      position="fixed"
+      open={open}
+      ref={ref}
       sx={{
-        boxShadow: 'none'
-      }}>
+        boxShadow: 'none',
+      }}
+    >
       <Toolbar
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -51,7 +55,7 @@ const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
           sx={{
             mr: 2,
             ...(open && { display: 'none' }),
-            color: theme.palette.text.primary
+            color: theme.palette.text.primary,
           }}
         >
           <MenuIcon />
@@ -62,7 +66,8 @@ const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
             position: 'absolute',
             right: '20px',
           }}
-          size="medium">
+          size="medium"
+        >
           <Link
             style={{
               display: 'flex',
@@ -70,24 +75,26 @@ const Header = React.forwardRef(({ open, handleDrawerOpen }, ref) => {
               textDecoration: 'none',
               color: theme.palette.text.primary,
             }}
-            to='/'>
+            to="/"
+          >
             <Typography
               sx={{
                 fontWeight: 600,
                 lineHeight: 1.5,
                 marginTop: '3px',
-              }}>
-              Run Compiler
+              }}
+            >
+							Đi tới Compiler
             </Typography>
             <ChevronRightIcon />
           </Link>
         </Button>
       </Toolbar>
-    </AppBar >
+    </AppBar>
   );
 });
 Header.propTypes = {
   open: PropTypes.bool,
-  handleDrawerOpen: PropTypes.func
+  handleDrawerOpen: PropTypes.func,
 };
 export default Header;
