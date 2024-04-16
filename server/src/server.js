@@ -24,7 +24,7 @@ const START_SERVER = () => {
   // -----------------
 
   app.get('/', (req, res) => {
-    res.send('<h1>Hello World</h1>');
+    res.send(`<h1>server is running ${Date.now()} </h1>=`);
   });
   app.use(errorHandlingMiddleware);
   app.listen(env.APP_PORT, env.APP_HOST, () => {
