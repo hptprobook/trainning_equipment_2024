@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install production dependencies.
-RUN yarn install --only=production
+RUN npm install && npm install -g nodemon
 
 # Copy the rest of your app's source code from your host to your image filesystem.
 COPY . .
