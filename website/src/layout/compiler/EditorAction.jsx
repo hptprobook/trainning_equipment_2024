@@ -40,7 +40,7 @@ export default function EditorAction({
       }}
     >
       {!title ? (
-        <Box>
+        <Box className="jr-first-step">
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
