@@ -1,3 +1,5 @@
 *.code-workspace
 website/build
 .DS_Store
+server/yarn.lock
+admin/yarn.lock
