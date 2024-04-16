@@ -19,6 +19,8 @@ RUN yarn run build
 # Serve the app using a simple server
 # Using nginx to serve the static content
 FROM nginx:stable-alpine as production-stage
+RUN rm -rf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/
 COPY --from=build-stage /app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
