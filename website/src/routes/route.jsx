@@ -1,11 +1,18 @@
-
 import * as React from 'react';
 import { Outlet, useRoutes } from 'react-router-dom';
 import ChatLayout from '../layout/chat/ChatLayout';
-import { ChatIndex } from '../pages/ChatIndex';
 import CompilerPage from '~/pages/Compiler/CompilerPage';
 import { CompilerLayout } from '~/layout/compiler/CompilerLayout';
-
+import ChatIndexPage from '~/pages/Chat/ChatIndexPage';
+import NotFoundPage from '~/pages/Error/NotFoundPage';
+import LoginPage from '~/pages/Login/LoginPage';
+import ChatDetailPage from '~/pages/Chat/ChatDetailPage';
+import CompilerDetailPage from '~/pages/Compiler/_id';
+import CompilerPublicDetailPage from '~/pages/Compiler/public/_id';
+import Prompts from '~/test/prompts';
+import { UserContext } from '~/context/user.context';
+import AuthLayout from '~/auth/authLayout';
+import PlanPage from '~/pages/Plan/PlanPage';
 
 const MainRoute = () => {
   let element = useRoutes([
@@ -13,40 +20,53 @@ const MainRoute = () => {
       element: (
         <ChatLayout>
           <React.Suspense>
-            <Outlet />
+            <AuthLayout />
           </React.Suspense>
         </ChatLayout>
       ),
       children: [
-        { element: <ChatIndex />, index: true },
+        { element: <ChatIndexPage />, path: '/chat' },
+        { element: <ChatDetailPage />, path: '/chat/:id' },
       ],
     },
     {
       element: (
-        <ChatLayout>
+        <CompilerLayout>
           <React.Suspense>
             <Outlet />
           </React.Suspense>
-        </ChatLayout>
+        </CompilerLayout>
       ),
       children: [
-        { element: <ChatIndex />, index: true },
         {
-          element: (
-            <CompilerLayout>
-              <React.Suspense>
-                <Outlet />
-              </React.Suspense>
-            </CompilerLayout>
-          ),
-          children: [
-            {
-              path: 'compiler',
-              element: <CompilerPage />,
-            },
-          ],
+          element: <CompilerPage />,
+          index: true,
+        },
+        {
+          path: '/compiler/:id',
+          element: <CompilerDetailPage />,
+        },
+        {
+          path: '/compiler/public/:id',
+          element: <CompilerPublicDetailPage />,
         },
       ],
+    },
+    {
+      path: 'login',
+      element: <LoginPage />,
+    },
+    {
+      path: 'plan',
+      element: <PlanPage />,
+    },
+    {
+      path: '*',
+      element: <NotFoundPage />,
+    },
+    {
+      path: 'getPrompts',
+      element: <Prompts />,
     },
   ]);
 

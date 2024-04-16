@@ -1,8 +1,20 @@
 import express from 'express';
-import { compileCodeController } from '~/controllers/compileCodeController';
+import { compilerController } from '~/controllers/compilerController';
+import verifyToken from '../middlewares/verifyToken';
 
 const Router = express.Router();
 
-Router.post('/run', (req, res) => compileCodeController.compilerCode(req, res));
+Router.get('/codesSaved', verifyToken, compilerController.listCodeSaved)
+  .post('/run', compilerController.compilerCode)
+  .post('/save', verifyToken, compilerController.saveCode)
+  .post('/nextStep', compilerController.chatResponse);
+
+Router.route('/:id')
+  .get(verifyToken, compilerController.getDetails)
+  .put(verifyToken, compilerController.updateCode)
+  .delete(verifyToken, compilerController.deleteCodeSaved);
+
+Router.route('/share/:id').get(verifyToken, compilerController.shareCode);
+Router.route('/share/public/:id').get(compilerController.codePublicDetail);
 
 export const compileCodeRoute = Router;
