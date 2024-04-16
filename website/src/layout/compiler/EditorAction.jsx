@@ -50,10 +50,13 @@ export default function EditorAction({
             size="small"
             sx={{
               width: '200px',
+              '& .MuiSelect-select': {
+                color: theme === 'light' ? '#333' : '#fff',
+              },
             }}
           >
             {programmingLanguages.map((lang) => (
-              <MenuItem key={lang.value} value={lang.value}>
+              <MenuItem key={lang.value} value={lang.value} sx={{}}>
                 {lang.label}
               </MenuItem>
             ))}

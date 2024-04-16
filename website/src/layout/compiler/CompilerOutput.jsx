@@ -22,7 +22,10 @@ import ShareIcon from '@mui/icons-material/Share';
 import LinkIcon from '@mui/icons-material/Link';
 import CodePending from '~/component/CodePending/CodePending';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {
+  vscDarkPlus,
+  coldarkCold,
+} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import { Divider } from '@mui/material';
 
@@ -41,6 +44,8 @@ const CompilerOutput = ({
   gptResponseError = null,
   handleShowRefactor,
   gptResponseRefactor,
+  setGptResponseError,
+  setGptResponseRefactor,
 }) => {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -116,6 +121,12 @@ const CompilerOutput = ({
     });
   };
 
+  const handleClearOutput = () => {
+    setCompileOutput('');
+    setGptResponseError(null);
+    setGptResponseRefactor(null);
+  };
+
   return (
     <>
       {!isPublicPage ? (
@@ -150,7 +161,7 @@ const CompilerOutput = ({
           }}
         >
           <Tooltip title="Làm mới">
-            <IconButton onClick={() => setCompileOutput('')}>
+            <IconButton onClick={handleClearOutput}>
               <NotInterestedIcon />
             </IconButton>
           </Tooltip>
@@ -243,6 +254,7 @@ const CompilerOutput = ({
                   mt: 4,
                   fontSize: '18px',
                   fontWeight: '600',
+                  color: theme === 'dark' ? 'white' : '#333',
                 }}
               >
                 Các cách để đoạn mã tối ưu hơn:{' '}
@@ -257,6 +269,7 @@ const CompilerOutput = ({
                       fontSize: '13px',
                       fontWeight: '400',
                       fontStyle: 'italic',
+                      color: theme === 'dark' ? 'white' : '#333',
                     }}
                   >
                     {refactor.direction}:{' '}
@@ -265,7 +278,7 @@ const CompilerOutput = ({
                     <Box style={{ position: 'relative' }}>
                       <SyntaxHighlighter
                         language="javascript"
-                        style={vscDarkPlus}
+                        style={theme === 'light' ? vscDarkPlus : coldarkCold}
                       >
                         {refactor.code}
                       </SyntaxHighlighter>
@@ -279,8 +292,8 @@ const CompilerOutput = ({
                           right: 1,
                           fontSize: '12px',
                           textTransform: 'none',
-                          color: '#fff',
                           fontWeight: 300,
+                          color: theme === 'dark' ? '#333' : '#fff',
                         }}
                       >
                         Copy
@@ -292,23 +305,31 @@ const CompilerOutput = ({
           </>
         ) : (
           <>
-            <Typography variant="h6" gutterBottom>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{
+                color: theme === 'dark' ? 'white' : '#333',
+              }}
+            >
               Các lỗi bạn đã mắc phải:{' '}
             </Typography>
             {gptResponseError.errors.map((err, i) => (
               <Typography
                 sx={{
                   ml: 2,
+                  color: theme === 'dark' ? 'white' : '#333',
                 }}
                 key={i}
               >
-                {err.error}
+                - Dòng {err.line}: {err.error}
               </Typography>
             ))}
             <Typography
               variant="h6"
               sx={{
                 mt: 1,
+                color: theme === 'dark' ? 'white' : '#333',
               }}
               gutterBottom
             >
@@ -317,21 +338,26 @@ const CompilerOutput = ({
             <Typography
               sx={{
                 ml: 2,
+                color: theme === 'dark' ? 'white' : '#333',
               }}
             >
-              {gptResponseError.recommends}
+              - {gptResponseError.recommends}
             </Typography>
             <Typography
               variant="h6"
               sx={{
                 mt: 1,
+                color: theme === 'dark' ? 'white' : '#333',
               }}
               gutterBottom
             >
               Đoạn code chính xác như sau:{' '}
             </Typography>
             <Box style={{ position: 'relative' }}>
-              <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
+              <SyntaxHighlighter
+                language="javascript"
+                style={theme === 'light' ? vscDarkPlus : coldarkCold}
+              >
                 {gptResponseError.correctCode}
               </SyntaxHighlighter>
               <Button
@@ -342,7 +368,7 @@ const CompilerOutput = ({
                   right: 1,
                   fontSize: '12px',
                   textTransform: 'none',
-                  color: '#fff',
+                  color: theme === 'dark' ? '#333' : '#fff',
                   fontWeight: 300,
                 }}
               >
