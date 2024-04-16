@@ -1,0 +1,10 @@
+/* Hide both start and end track pieces of the scrollbar */
+::-webkit-scrollbar-track-piece:start {
+    width: 0;
+    display: none;
+}
+
+::-webkit-scrollbar-track-piece:end {
+    width: 0;
+    display: none;
+}
