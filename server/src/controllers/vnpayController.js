@@ -35,10 +35,11 @@ const create_payment_url = async (req, res) => {
   let tmnCode = '723MRZEN';
   let secretKey = 'DENHJRMJZSHXENEAWJVJWBBENOMZAXST';
   let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-  let returnUrl = 'http://localhost:5173/chat';
+  let returnUrl = 'http://localhost:5173/plan';
 
   let orderId = req.body.orderId;
   let amount = req.body.amount;
+
   let bankCode = '';
 
   let locale = '';
@@ -77,14 +78,11 @@ const create_payment_url = async (req, res) => {
 const vnpay_return = async (req, res) => {
   // #swagger.tags = ['vnpay']
   // #swagger.summary = 'check'
-  const { day } = req.body;
-  if (!day) {
-    res.send(JSON.stringify('Thiếu thời hạn pro'));
-    return;
-  }
+  let { day = 30 } = req.body;
   let vnp_Params = req.query;
 
   let secureHash = vnp_Params['vnp_SecureHash'];
+  let gia = vnp_Params['vnp_Amount'];
   let hash = secureHash;
 
   delete vnp_Params['vnp_SecureHash'];
@@ -107,22 +105,29 @@ const vnpay_return = async (req, res) => {
         hash
       );
       if (user === '00') {
+        if (gia == 50000000) {
+          day = 180;
+        }
+        if (gia == 100000000) {
+          day = 365;
+        }
         const updatePro = await userService.updateUserPro(
           req.userId || req.userIdPro,
           Number(day)
         );
-        console.log(updatePro);
-        res.send(JSON.stringify('Thanh toán thành công'));
+        res.send(
+          JSON.stringify({ success: true, mgs: 'Thanh toán thành công' })
+        );
         return;
       } else {
-        res.send(JSON.stringify({ code: '99' }));
+        res.send(JSON.stringify({ success: false, code: '99' }));
         return;
       }
     } else {
-      res.send(JSON.stringify({ code: responseCode }));
+      res.send(JSON.stringify({ success: false, code: responseCode }));
     }
   } else {
-    res.send(JSON.stringify({ code: '97' }));
+    res.send(JSON.stringify({ success: false, code: '97' }));
   }
 };
 export const vnpayController = {

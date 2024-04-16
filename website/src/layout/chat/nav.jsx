@@ -15,6 +15,7 @@ import {
   useTheme,
 } from '@mui/material';
 // import React from 'react';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ListItemText from '@mui/material/ListItemText';
@@ -67,13 +68,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const NavChat = ({ open, handleDrawerClose }) => {
   const theme = useTheme();
   const [idItem, setIdItem] = React.useState(null);
+  const [deleteId, setDeleteId] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElItem, setAnchorElItem] = React.useState(null);
   const [data, setData] = React.useState(null);
   const [nav, setNav] = React.useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { urlId } = useParams();
+  const { id } = useParams();
   const { setLogin } = useContext(UserContext);
   const dataConversations = useSelector((state) => state.conversations.all);
   const statusAdd = useSelector((state) => state.conversations.status);
@@ -83,6 +85,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const statusArchive = useSelector(
     (state) => state.conversations.statusArchive
   );
+
   const statusDeleteAll = useSelector(
     (state) => state.conversations.statusDeleteAll
   );
@@ -111,11 +114,12 @@ const NavChat = ({ open, handleDrawerClose }) => {
       handleToast('success', 'Xóa cuộc trò chuyện thành công!');
       dispatch(handleGetAllConversations());
       dispatch(resetStateDelete());
-      if (idItem == urlId) {
+      if (deleteId === id) {
         navigate('/chat');
       }
+      setDeleteId(null);
     }
-  }, [statusDelete, dispatch, navigate, idItem, urlId]);
+  }, [statusDelete, dispatch, navigate, deleteId, id]);
   useEffect(() => {
     if (statusArchive === 'success') {
       handleToast('success', 'Lưu trữ cuộc trò chuyện thành công!');
@@ -133,7 +137,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   };
 
   useEffect(() => {
-    if (error ) {
+    if (error) {
       dispatch(resetStateAction());
       handleToast('error', error);
       localStorage.removeItem('token');
@@ -157,12 +161,13 @@ const NavChat = ({ open, handleDrawerClose }) => {
     setLogin(false);
   };
   const handleDelete = () => {
-    handleCloseItem();
+    setDeleteId(idItem);
     dispatch(handleDeleteConversation({ id: idItem }));
+    handleCloseItem();
   };
   const handleArchive = () => {
-    handleCloseItem();
     dispatch(handleArchiveConversations({ idConver: idItem, archive: true }));
+    handleCloseItem();
   };
   const handleChildClick = (e) => {
     // Ngăn sự kiện click lan truyền lên cha
@@ -175,7 +180,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
   };
   const openAvatar = Boolean(anchorEl);
   const openItem = Boolean(anchorElItem);
-  const id = openAvatar ? 'simple-popover' : undefined;
+  const idAvatar = openAvatar ? 'simple-popover' : undefined;
   return (
     <Drawer
       sx={{
@@ -185,8 +190,8 @@ const NavChat = ({ open, handleDrawerClose }) => {
         '&::-webkit-scrollbar': {
           display: 'none',
         },
-        // 'msOverflowStyle': 'none',
-        // 'scrollbarWidth': 'none',
+        msOverflowStyle: 'none',
+        scrollbarWidth: 'none',
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: drawerWidth,
@@ -207,7 +212,24 @@ const NavChat = ({ open, handleDrawerClose }) => {
       anchor="left"
       open={open}
     >
-      <DrawerHeader>
+      <DrawerHeader
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div
+          style={{
+            padding: '0 16px',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <img src="/logo/fpt.png" height={40} alt="" />
+        </div>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === 'ltr' ? (
             <ChevronLeftIcon />
@@ -227,10 +249,21 @@ const NavChat = ({ open, handleDrawerClose }) => {
           >
             <ListItemButton
               sx={{
+                margin: '4px 0',
                 borderRadius: '12px',
                 padding: '4px 8px',
+                color: item._id == id ? theme.palette.text.white : '#000',
+                backgroundColor:
+                  item._id == id ? theme.palette.background.fpt : 'transparent',
                 '&:hover .MuiListItemIcon-root': {
                   display: 'flex',
+                  color: theme.palette.text.white,
+                },
+                '&:hover': {
+                  backgroundColor:
+                    item._id == id
+                      ? theme.palette.background.fptHover
+                      : 'rgb(240, 241, 242)',
                 },
               }}
               onClick={() => navigate(`/chat/${item._id}`)}
@@ -332,35 +365,42 @@ const NavChat = ({ open, handleDrawerClose }) => {
                 sx={{
                   borderRadius: '12px',
                   padding: '4px 8px',
-                  backgroundColor: theme.palette.background.active,
+                  backgroundColor: theme.palette.background.fpt,
+                  color: theme.palette.text.white,
                   '& .MuiListItemIcon-root': {
                     display: 'flex',
+                  },
+                  '&:hover': {
+                    backgroundColor: theme.palette.background.fptHover,
                   },
                 }}
                 onClick={() => handleNavigate('/chat')}
               >
                 <ListItemText primary={'Cuộc trò chuyện mới'} />
-                <ItemIconCus>
+                <ItemIconCus sx={{ color: theme.palette.text.white }}>
                   <AddIcon />
                 </ItemIconCus>
               </ListItemButton>
             </ListItem>
-            <ListItem>
-              <ListItemButton
-                sx={{
-                  borderRadius: '12px',
-                  padding: '4px 8px',
-                  '& .MuiListItemIcon-root': {
-                    display: 'flex',
-                  },
-                }}
-              >
-                <ListItemText primary={'Trợ giúp'} />
-                <ItemIconCus>
-                  <QuestionMarkIcon />
-                </ItemIconCus>
-              </ListItemButton>
-            </ListItem>
+            {!data?.isPro ? (
+              <ListItem>
+                <ListItemButton
+                  sx={{
+                    borderRadius: '12px',
+                    padding: '4px 8px',
+                    '& .MuiListItemIcon-root': {
+                      display: 'flex',
+                    },
+                  }}
+                  onClick={() => handleNavigate('/plan')}
+                >
+                  <ListItemText primary={'Nâng cấp PRO'} />
+                  <ItemIconCus>
+                    <FileUploadIcon />
+                  </ItemIconCus>
+                </ListItemButton>
+              </ListItem>
+            ) : null}
             <ListItem>
               <ListItemButton
                 sx={{
@@ -370,7 +410,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     display: 'flex',
                   },
                 }}
-                aria-describedby={id}
+                aria-describedby={idAvatar}
                 onClick={handleClick}
               >
                 <ListItemText primary={data?.name} />
@@ -382,18 +422,15 @@ const NavChat = ({ open, handleDrawerClose }) => {
                       horizontal: 'left',
                     }}
                     badgeContent={
-                      <ChipStatus>FREE</ChipStatus>
+                      <ChipStatus>{data?.isPro ? 'PRO' : 'FREE'}</ChipStatus>
                     }
                   >
-                    <Avatar
-                      alt={data?.name}
-                      src={data?.avatar}
-                    />
+                    <Avatar alt={data?.name} src={data?.avatar} />
                   </Badge>
                 </ItemIconCus>
               </ListItemButton>
               <Popover
-                id={id}
+                id={idAvatar}
                 open={openAvatar}
                 anchorEl={anchorEl}
                 onClose={handleClose}
@@ -416,26 +453,29 @@ const NavChat = ({ open, handleDrawerClose }) => {
                     width: drawerWidth - 32,
                   }}
                 >
-                  <ListItem
-                    sx={{
-                      padding: theme.palette.padding.list,
-                    }}
-                  >
-                    <ListItemButton
+                  {/* {!user?.dataUser?.isPro && (
+                    <ListItem
                       sx={{
-                        borderRadius: '12px',
-                        padding: '4px 8px',
-                        '& .MuiListItemIcon-root': {
-                          display: 'flex',
-                        },
+                        padding: theme.palette.padding.list,
                       }}
+                      onClick={() => navigate('/plan')}
                     >
-                      <ListItemText primary={'Tài khoản'} />
-                      <ItemIconCus>
-                        <PermIdentityIcon />
-                      </ItemIconCus>
-                    </ListItemButton>
-                  </ListItem>
+                      <ListItemButton
+                        sx={{
+                          borderRadius: '12px',
+                          padding: '4px 8px',
+                          '& .MuiListItemIcon-root': {
+                            display: 'flex',
+                          },
+                        }}
+                      >
+                        <ListItemText primary={'Nâng cấp tài khoản'} />
+                        <ItemIconCus>
+                          <PermIdentityIcon />
+                        </ItemIconCus>
+                      </ListItemButton>
+                    </ListItem>
+                  )} */}
                   <ListItem
                     sx={{
                       padding: theme.palette.padding.list,
