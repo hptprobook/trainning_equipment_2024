@@ -18,12 +18,7 @@ export default function CompilerHeader({ height, theme }) {
       }}
     >
       <Link to={'/'}>
-        <Typography
-          variant="body1"
-          color={theme === 'light' ? 'inherit' : '#fff'}
-        >
-          Logo here
-        </Typography>
+        <img src="/logo/logo.png" height={20} alt="" />
       </Link>
       <Link
         to={'/chat'}

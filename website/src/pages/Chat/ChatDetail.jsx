@@ -59,8 +59,7 @@ const ChatDetail = () => {
       handleToast('error', 'Hệ thống xảy ra lỗi');
       dispatch(resetState());
       navigate('/chat');
-    }
-    else if (statusChat === 'loading') {
+    } else if (statusChat === 'loading') {
       handleScrollLast();
     }
   }, [statusChat, dispatch, id, navigate]);
@@ -94,7 +93,7 @@ const ChatDetail = () => {
     lastScroll.current.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
-      inline: 'center'
+      inline: 'center',
     });
   };
   return (
@@ -127,14 +126,15 @@ const ChatDetail = () => {
         {status === 'success' && listMessage.map((item) => (
           <CardAnswer
             key={item._id}
-            name={item.isUserMessage ? user.dataUser.name : 'FPT.AI'}
-            avatar={item.isUserMessage ? user.dataUser.avatar : 'https://www.w3schools.com/howto/img_avatar.png'}
+            name={item.isUserMessage ? user.dataUser.name : 'BEE AI'}
+            avatar={item.isUserMessage ? user.dataUser.avatar : '/logo/white.png'}
             answer={item.content}
           />
         ))}
         {statusChat === 'loading' && <AnswerLoading />}
         <div ref={lastScroll}></div>
       </Grid> : <></>}
+ 
       <Grid ref={heightRef} item xs={12}>
         <InputChat handleGetContent={handleGetContent} />
       </Grid>
