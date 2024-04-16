@@ -60,14 +60,21 @@ const LoginView = () => {
   };
   return (
     <div className="login-container">
-      <h2 className="logo">Support Learning IT</h2>
+      <h2 className="logo">
+        <img src="./logo/fpt.png" height={50} alt="" />
+      </h2>
       <div className="content f-col">
-        <h2 className="title ml">Support Learning IT</h2>
+        <h2 className="title ml">Bee AI</h2>
         <p className="context ml">
-          Công cụ hỗ trợ tốt nhất dành cho sinh viên IT
+					Công cụ hỗ trợ tốt nhất dành cho giảng viên và sinh viên CNTT
         </p>
       </div>
       <div className="login f-col">
+        <div style={{
+          marginBottom: '40px',
+        }}>
+          <img src="./logo/logoWhite.png" height={82} width={108} alt="" />
+        </div>
         <h2 className="title">Đăng nhập</h2>
         <div className="button">
           <Button
@@ -86,7 +93,7 @@ const LoginView = () => {
             }}
             onClick={handleLoginGit}
           >
-            Đăng nhập với GitHub
+						Đăng nhập với GitHub
             <GitHubIcon
               sx={{
                 marginLeft: '10px',

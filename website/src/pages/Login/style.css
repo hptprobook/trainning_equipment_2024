@@ -40,16 +40,17 @@
 .login {
     width: 40%;
     height: 100vh;
-    margin: auto;
     padding: 20px;
     background-color: rgb(242, 115, 35);
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .login .title {
     margin: 8px 0;
     color: rgb(255, 255, 255);
-    text-align: center;
     font-weight: 600;
     font-size: 32px;
 }
