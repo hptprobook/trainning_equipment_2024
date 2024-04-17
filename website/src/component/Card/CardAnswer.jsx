@@ -26,7 +26,7 @@ const CardAnswer = forwardRef(({ name, avatar, answer }, ref) => {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        width: mdReponsive ? 'calc(100% - 32px)' : 'calc(800px - 16px)',
+        width: mdReponsive ? 'calc(100% - 64px)' : 'calc(800px - 16px)',
         marginTop: '36px',
 
       }}
