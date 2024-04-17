@@ -12,6 +12,7 @@ import {
 } from '~/redux/slices/messagesSlice';
 import { chatWithGemini, resetState } from '~/redux/slices/chatSlice';
 import AnswerLoading from '~/component/Loading/AnswerLoading';
+import axios from 'axios';
 const ChatDetail = () => {
   const { id } = useParams();
   const lastScroll = React.useRef(null);
@@ -89,6 +90,26 @@ const ChatDetail = () => {
       dispatch(chatWithGemini({ data: dataSend }));
     }
   };
+  const handleGetVoice = async (blob) => {
+    const file = new File([blob], 'recorded_audio.webm', {
+      type: 'audio/webm;codecs=opus',
+    });
+    const formData = new FormData();
+    formData.append('speech', file);
+
+    try {
+      const response = await axios.post(`http://localhost:8000/api/gpt/speech-to-text/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if (response) {
+        dispatch(handleGetMessageByID({ id }));
+      }
+    } catch (error) {
+      handleToast('error', 'Hệ thống xảy ra lỗi');
+    }
+  };
   const handleScrollLast = () => {
     lastScroll.current.scrollIntoView({
       behavior: 'smooth',
@@ -134,9 +155,9 @@ const ChatDetail = () => {
         {statusChat === 'loading' && <AnswerLoading />}
         <div ref={lastScroll}></div>
       </Grid> : <></>}
- 
+
       <Grid ref={heightRef} item xs={12}>
-        <InputChat handleGetContent={handleGetContent} />
+        <InputChat handleGetContent={handleGetContent} handleGetVoice={handleGetVoice}/>
       </Grid>
     </Grid>
   );

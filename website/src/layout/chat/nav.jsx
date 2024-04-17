@@ -284,9 +284,11 @@ const NavChat = ({ open, handleDrawerClose }) => {
                   },
                   '&:hover': {
                     backgroundColor:
+
                       item._id == id
                         ? theme.palette.background.fptHover
                         : 'rgb(240, 241, 242)',
+
                   },
                 }}
                 onClick={() => navigate(`/chat/${item._id}`)}

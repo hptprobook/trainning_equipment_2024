@@ -24,8 +24,16 @@ export const get = async (path, options = {}) => {
   const response = await request.get(path, options);
   return response.data;
 };
-export const post = async (path, options = {}) => {
-  const response = await request.post(path, options);
+export const post = async (path, data, options = {}) => {
+  const config = {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Content-Type': data instanceof FormData ? 'multipart/form-data' : 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  };
+  const response = await request.post(path, data, config);
   return response.data;
 };
 export const put = async (path, options = {}) => {

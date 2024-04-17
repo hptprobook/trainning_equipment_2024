@@ -130,5 +130,5 @@ export const conversationsModal = {
   converUpdateTitle,
   converGetAll,
   converGetAllIsArchive,
-  converDelAll,
+  converDelAll
 };
