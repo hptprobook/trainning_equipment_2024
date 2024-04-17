@@ -161,37 +161,40 @@ const CompilerOutput = ({
           }}
         >
           <Tooltip title="Làm mới">
-            <IconButton onClick={handleClearOutput}>
-              <NotInterestedIcon />
+            <IconButton onClick={handleClearOutput} className="jr-sixth-step">
+              <NotInterestedIcon color="primary" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Gửi tới AI">
             <IconButton
               onClick={() => handleCheckAI('')}
-              className="jr-fourth-step"
+              className="jr-seventh-step"
             >
-              <AssistantIcon />
+              <AssistantIcon color="primary" />
             </IconButton>
           </Tooltip>
 
           {isAuth && (
             <Tooltip title="Đoạn mã đã lưu">
-              <IconButton onClick={toggleDrawer(true)}>
-                <TocIcon />
+              <IconButton
+                onClick={toggleDrawer(true)}
+                className="jr-eigth-step"
+              >
+                <TocIcon color="primary" />
               </IconButton>
             </Tooltip>
           )}
           {isDetails && !isPublic && (
             <Tooltip title="Chia sẻ với cộng đồng">
               <IconButton onClick={handlePublicCode}>
-                <ShareIcon />
+                <ShareIcon color="primary" />
               </IconButton>
             </Tooltip>
           )}
           {isPublic && (
             <Tooltip title="Địa chỉ đoạn mã này">
               <IconButton onClick={handleOpenURLDialog}>
-                <LinkIcon />
+                <LinkIcon color="primary" />
               </IconButton>
             </Tooltip>
           )}
@@ -234,7 +237,7 @@ const CompilerOutput = ({
             )}
             {compileOutput &&
               compileOutput !==
-                'Có lỗi trong đoạn mã này. Chúng tôi đang tìm phương hướng giải quyết cho đoạn mã của bạn...' &&
+                'Có lỗi trong đoạn mã này. Đang tìm phương hướng giải quyết. Vui lòng chờ ...' &&
               !gptResponseRefactor && (
                 <Button
                   onClick={handleShowRefactor}
@@ -272,7 +275,7 @@ const CompilerOutput = ({
                       color: theme === 'dark' ? 'white' : '#333',
                     }}
                   >
-                    {refactor.direction}:{' '}
+                    {refactor.direction}{' '}
                   </Typography>
                   {refactor.code && (
                     <Box style={{ position: 'relative' }}>

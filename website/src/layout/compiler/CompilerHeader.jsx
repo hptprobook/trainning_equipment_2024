@@ -17,7 +17,7 @@ export default function CompilerHeader({ height, theme }) {
       }}
     >
       <Link to={'/'}>
-        <img src="/logo/logo.png" height={20} alt="" />
+        <img src="/logo/fpt.png" height={20} alt="" />
       </Link>
       <Link
         to={'/chat'}

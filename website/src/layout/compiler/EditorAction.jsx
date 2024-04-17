@@ -40,8 +40,9 @@ export default function EditorAction({
       }}
     >
       {!title ? (
-        <Box className="jr-first-step">
+        <Box>
           <Select
+            className="jr-first-step"
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={selectedLanguage}
@@ -82,22 +83,31 @@ export default function EditorAction({
             onClick={() => {
               setTheme(theme === 'light' ? 'dark' : 'light');
             }}
+            className="jr-second-step"
           >
-            {theme === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
+            {theme === 'light' ? (
+              <Brightness4Icon color="primary" />
+            ) : (
+              <Brightness7Icon color="primary" />
+            )}
           </IconButton>
         </Tooltip>
         <Tooltip title="Sao chép mã">
-          <IconButton onClick={handleCopyCode}>
-            <FileCopyIcon />
+          <IconButton onClick={handleCopyCode} className="jr-third-step">
+            <FileCopyIcon color="primary" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Lưu mã">
-          <IconButton onClick={handleSaveCode} className="jr-second-step">
-            <SaveIcon />
+          <IconButton onClick={handleSaveCode} className="jr-fourth-step">
+            <SaveIcon color="primary" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Chạy mã">
-          <IconButton onClick={handleRunCode} className="jr-third-step">
+          <IconButton
+            onClick={handleRunCode}
+            color="primary"
+            className="jr-fifth-step"
+          >
             <PlayArrowIcon />
           </IconButton>
         </Tooltip>
