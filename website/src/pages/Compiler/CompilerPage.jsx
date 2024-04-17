@@ -31,6 +31,7 @@ const CompilerPage = () => {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isAuth = useAuth();
   const [title, setTitle] = useState('Code Snippet');
   const [openCodeTitleForm, setOpenCodeTitleForm] = useState(false);
   const [theme, setTheme] = useState('light');
@@ -58,7 +59,6 @@ const CompilerPage = () => {
   const { nextStepData, isRunCodeLoading } = useSelector(
     (state) => state.compiler
   );
-  const isAuth = useAuth();
 
   useEffect(() => {
     dispatch(codesSaved());

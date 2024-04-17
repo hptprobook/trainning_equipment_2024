@@ -160,7 +160,7 @@ export default function ListCodeDrawer({
         onClose={toggleDrawer(false)}
       >
         <Link to={'#'} style={{ textAlign: 'center', marginTop: '12px' }}>
-          <img src="/logo/logo.png" height={20} alt="" />
+          <img src="/logo/logo.png" height={50} alt="" />
         </Link>
         {DrawerList}
       </Drawer>

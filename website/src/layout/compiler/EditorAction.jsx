@@ -69,7 +69,7 @@ export default function EditorAction({
             color: theme === 'light' ? '#333' : '#fff',
           }}
         >
-          {truncateString(title, 20)}
+          <Tooltip title={title}>{truncateString(title, 20)}</Tooltip>
         </Box>
       )}
       <Box

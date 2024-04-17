@@ -81,7 +81,7 @@ const CompilerOutput = ({
     setOpenDrawer(newOpen);
   };
   const [openURLDialog, setOpenURLDialog] = useState(false);
-  const publicURL = `${CLIENT_ROOT}/compiler/public/${id}`;
+  const publicURL = `${import.meta.env.VITE_CLIENT_URL}/compiler/public/${id}`;
 
   const handleOpenURLDialog = () => {
     setOpenURLDialog(true);
@@ -160,7 +160,7 @@ const CompilerOutput = ({
             gap: 2,
           }}
         >
-          <Tooltip title="Làm mới">
+          <Tooltip title="Làm mới đầu ra">
             <IconButton onClick={handleClearOutput} className="jr-sixth-step">
               <NotInterestedIcon color="primary" />
             </IconButton>
