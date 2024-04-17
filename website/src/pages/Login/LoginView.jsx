@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleGetUser, handleGetUserGit } from '~/redux/slices/authSlice';
 import { handleToast } from '../../config/toast';
 import { UserContext } from '~/context/user.context';
+import './login.css';
+import LoginGG from './LoginGG';
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const LoginView = () => {
   const navigate = useNavigate();
@@ -21,12 +23,15 @@ const LoginView = () => {
   const error = useSelector((state) => state.auth.error);
   const status = useSelector((state) => state.auth.status);
   useEffect(() => {
-    if (code) {
-      dispatch(handleGetUserGit(code));
-    }
-    if (gitError) {
-      handleToast('error', 'Đăng nhập thất bại!');
-    }
+    const run = async () => {
+      if (code) {
+        dispatch(handleGetUserGit(code));
+      }
+      if (gitError) {
+        handleToast('error', 'Đăng nhập thất bại!');
+      }
+    };
+    run();
   }, [code, gitError, dispatch]);
   useEffect(() => {
     if (tokenGit && status === 'success') {
@@ -62,6 +67,7 @@ const LoginView = () => {
       `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`
     );
   };
+
   return (
     <div className="login-container">
       <h2 className="logo">
@@ -70,13 +76,15 @@ const LoginView = () => {
       <div className="content f-col">
         <h2 className="title ml">Bee AI</h2>
         <p className="context ml">
-					Công cụ hỗ trợ tốt nhất dành cho giảng viên và sinh viên CNTT
+          Công cụ hỗ trợ tốt nhất dành cho giảng viên và sinh viên CNTT
         </p>
       </div>
       <div className="login f-col">
-        <div style={{
-          marginBottom: '40px',
-        }}>
+        <div
+          style={{
+            marginBottom: '40px',
+          }}
+        >
           <img src="./logo/logoWhite.png" height={82} width={108} alt="" />
         </div>
         <h2 className="title">Đăng nhập</h2>
@@ -97,7 +105,7 @@ const LoginView = () => {
             }}
             onClick={handleLoginGit}
           >
-						Đăng nhập với GitHub
+            Đăng nhập với GitHub
             <GitHubIcon
               sx={{
                 marginLeft: '10px',
@@ -105,9 +113,17 @@ const LoginView = () => {
             />
             {/* <Iconify icon="eva:google-fill" color="#DF3E30" /> */}
           </Button>
+          <div>
+            <LoginGG />
+            {/* <button type="button" className="login-with-google-btn">
+              Sign in with Google
+            </button> */}
+          </div>
         </div>
         <div className="footer">
-          <a href="https://www.facebook.com/beeittaynguyen">Make by Xuong Thuc Hanh FPT Polytechic</a>
+          <a href="https://www.facebook.com/beeittaynguyen">
+            Make by Xuong Thuc Hanh FPT Polytechic
+          </a>
           {/* <a href="fb.com">Liên hệ</a> */}
         </div>
       </div>

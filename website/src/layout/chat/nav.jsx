@@ -103,7 +103,6 @@ const NavChat = ({ open, handleDrawerClose }) => {
     if (heightLogoRef.current) {
       setHeightLogo(heightLogoRef.current.clientHeight);
     }
-
   }, [heightRef, heightLogoRef]);
   useEffect(() => {
     if (statusAdd === 'success') {
@@ -247,7 +246,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
       </DrawerHeader>
       <List
         sx={{
-          height:  `calc(100% - ${heightLogo}px)`,
+          height: `calc(100% - ${heightLogo}px)`,
         }}
       >
         <List
@@ -276,18 +275,18 @@ const NavChat = ({ open, handleDrawerClose }) => {
                   padding: '4px 8px',
                   color: item._id == id ? theme.palette.text.white : '#000',
                   backgroundColor:
-										item._id == id
-										  ? theme.palette.background.fpt
-										  : 'transparent',
+                    item._id == id
+                      ? theme.palette.background.fpt
+                      : 'transparent',
                   '&:hover .MuiListItemIcon-root': {
                     display: 'flex',
                     color: theme.palette.text.white,
                   },
                   '&:hover': {
                     backgroundColor:
-											item._id == id
-											  ? theme.palette.background.fptHover
-											  : 'rgb(240, 241, 242)',
+                      item._id == id
+                        ? theme.palette.background.fptHover
+                        : 'rgb(240, 241, 242)',
                   },
                 }}
                 onClick={() => navigate(`/chat/${item._id}`)}
