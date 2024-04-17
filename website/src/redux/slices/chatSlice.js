@@ -19,6 +19,10 @@ export const chatWithGpt = createAsyncThunk(
   'chat/gpt',
   ({ data }, thunkAPI) => handleAsyncThunk(ChatService.gpt, [data], thunkAPI)
 );
+// export const gptSpeechToText = createAsyncThunk(
+//   'chat/specchToText',
+//   ({ id, data }, thunkAPI) => handleAsyncThunk(ChatService.gptSpeechToText, [id, data], thunkAPI)
+// );
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
@@ -55,7 +59,19 @@ const chatSlice = createSlice({
       .addCase(chatWithGpt.rejected, (state, { payload }) => {
         state.status = 'failed';
         state.error = payload;
-      });
+      })
+      // .addCase(gptSpeechToText.fulfilled, (state, { payload }) => {
+      //   state.status = 'success';
+      //   state.data = payload;
+      // })
+      // .addCase(gptSpeechToText.pending, (state) => {
+      //   state.status = 'loading';
+      // })
+      // .addCase(gptSpeechToText.rejected, (state, { payload }) => {
+      //   state.status = 'failed';
+      //   state.error = payload;
+      // })
+      ;
   },
 });
 export const { resetState: resetStateAction } = chatSlice.actions;
