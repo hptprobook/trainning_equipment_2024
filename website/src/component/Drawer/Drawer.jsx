@@ -95,7 +95,8 @@ export default function ListCodeDrawer({
               alignItems: 'center',
               borderRadius: 1,
               '&:hover': {
-                bgcolor: '#26c6da',
+                bgcolor: '#f2701b',
+                color: '#fff',
               },
             }}
           >
@@ -110,7 +111,14 @@ export default function ListCodeDrawer({
               to={`/compiler/${data._id}`}
               onClick={toggleDrawer(false)}
             >
-              <ListItemText primary={truncateString(data.title, 30)} />
+              <ListItemText
+                sx={{
+                  '&:hover': {
+                    color: '#fff',
+                  },
+                }}
+                primary={truncateString(data.title, 30)}
+              />
             </Link>
             <Tooltip title="Delete">
               <IconButton
@@ -151,17 +159,9 @@ export default function ListCodeDrawer({
         open={openList ? openList : open}
         onClose={toggleDrawer(false)}
       >
-        <Typography
-          variant="h6"
-          textAlign={'center'}
-          pt={2}
-          color="initial"
-          sx={{
-            mb: 2,
-          }}
-        >
-          LOGO
-        </Typography>
+        <Link to={'#'} style={{ textAlign: 'center', marginTop: '12px' }}>
+          <img src="/logo/logo.png" height={20} alt="" />
+        </Link>
         {DrawerList}
       </Drawer>
     </div>

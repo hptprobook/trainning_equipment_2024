@@ -114,7 +114,7 @@ const ChatDetail = () => {
       {mainHeight ? <Grid item xs={12}
         sx={{
           height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
-          overflowY: 'auto',
+          overflow: 'auto',
           scrollbarWidth: 'none', /* For Firefox */
           msOverflowStyle: 'none',
           '&::-webkit-scrollbar': {

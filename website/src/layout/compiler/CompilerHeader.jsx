@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
@@ -18,7 +17,7 @@ export default function CompilerHeader({ height, theme }) {
       }}
     >
       <Link to={'/'}>
-        <img src="/logo/logo.png" height={20} alt="" />
+        <img src="/logo/fpt.png" height={20} alt="" />
       </Link>
       <Link
         to={'/chat'}

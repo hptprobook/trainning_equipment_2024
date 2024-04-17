@@ -1,6 +1,5 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { expController } from '~/controllers/expController';
 import { compileCodeRoute } from './compileCodeRouter';
 import { APILogins } from './login';
 import { APIConversations } from './conversationRouter';
@@ -21,13 +20,11 @@ Router.get('/status', async (req, res) => {
   });
 });
 
-Router.route('/test')
-  .get((req, res) => {
-    // #swagger.tags = ['Test']
-    // #swagger.summary = ''
-    res.status(StatusCodes.OK).json({ message: 'Get all' });
-  })
-  .post(expController.addDocument);
+Router.route('/test').get((req, res) => {
+  // #swagger.tags = ['Test']
+  // #swagger.summary = ''
+  res.status(StatusCodes.OK).json({ message: 'Get all' });
+});
 
 // api compiler
 Router.use('/compiler', compileCodeRoute);
