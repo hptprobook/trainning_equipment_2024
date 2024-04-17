@@ -8,6 +8,6 @@ const NotFoundPage = () =>
       <title> 404 </title>
     </Helmet>
     <NotFoundView />
-  </>;
+  </>
 
 export default NotFoundPage;

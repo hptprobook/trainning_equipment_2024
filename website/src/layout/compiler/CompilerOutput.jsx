@@ -22,7 +22,10 @@ import ShareIcon from '@mui/icons-material/Share';
 import LinkIcon from '@mui/icons-material/Link';
 import CodePending from '~/component/CodePending/CodePending';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {
+  vscDarkPlus,
+  coldarkCold,
+} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import { Divider } from '@mui/material';
 
@@ -41,8 +44,8 @@ const CompilerOutput = ({
   gptResponseError = null,
   handleShowRefactor,
   gptResponseRefactor,
-  openList,
-  setOpenList,
+  setGptResponseError,
+  setGptResponseRefactor,
 }) => {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -78,7 +81,7 @@ const CompilerOutput = ({
     setOpenDrawer(newOpen);
   };
   const [openURLDialog, setOpenURLDialog] = useState(false);
-  const publicURL = `${CLIENT_ROOT}/compiler/public/${id}`;
+  const publicURL = `${import.meta.env.VITE_CLIENT_URL}/compiler/public/${id}`;
 
   const handleOpenURLDialog = () => {
     setOpenURLDialog(true);
@@ -118,6 +121,12 @@ const CompilerOutput = ({
     });
   };
 
+  const handleClearOutput = () => {
+    setCompileOutput('');
+    setGptResponseError(null);
+    setGptResponseRefactor(null);
+  };
+
   return (
     <>
       {!isPublicPage ? (
@@ -126,8 +135,6 @@ const CompilerOutput = ({
           open={openDrawer}
           toggleDrawer={toggleDrawer}
           codesSavedData={codesSavedData}
-          openList={openList}
-          setOpenList={setOpenList}
         />
       ) : (
         ''
@@ -153,38 +160,41 @@ const CompilerOutput = ({
             gap: 2,
           }}
         >
-          <Tooltip title="Làm mới">
-            <IconButton onClick={() => setCompileOutput('')}>
-              <NotInterestedIcon />
+          <Tooltip title="Làm mới đầu ra">
+            <IconButton onClick={handleClearOutput} className="jr-sixth-step">
+              <NotInterestedIcon color="primary" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Gửi tới AI">
             <IconButton
               onClick={() => handleCheckAI('')}
-              className="jr-fourth-step"
+              className="jr-seventh-step"
             >
-              <AssistantIcon />
+              <AssistantIcon color="primary" />
             </IconButton>
           </Tooltip>
 
           {isAuth && (
             <Tooltip title="Đoạn mã đã lưu">
-              <IconButton onClick={toggleDrawer(true)}>
-                <TocIcon />
+              <IconButton
+                onClick={toggleDrawer(true)}
+                className="jr-eigth-step"
+              >
+                <TocIcon color="primary" />
               </IconButton>
             </Tooltip>
           )}
           {isDetails && !isPublic && (
             <Tooltip title="Chia sẻ với cộng đồng">
               <IconButton onClick={handlePublicCode}>
-                <ShareIcon />
+                <ShareIcon color="primary" />
               </IconButton>
             </Tooltip>
           )}
           {isPublic && (
             <Tooltip title="Địa chỉ đoạn mã này">
               <IconButton onClick={handleOpenURLDialog}>
-                <LinkIcon />
+                <LinkIcon color="primary" />
               </IconButton>
             </Tooltip>
           )}
@@ -227,7 +237,7 @@ const CompilerOutput = ({
             )}
             {compileOutput &&
               compileOutput !==
-                'Có lỗi trong đoạn mã này. Chúng tôi đang tìm phương hướng giải quyết cho đoạn mã của bạn...' &&
+                'Có lỗi trong đoạn mã này. Đang tìm phương hướng giải quyết. Vui lòng chờ ...' &&
               !gptResponseRefactor && (
                 <Button
                   onClick={handleShowRefactor}
@@ -247,6 +257,7 @@ const CompilerOutput = ({
                   mt: 4,
                   fontSize: '18px',
                   fontWeight: '600',
+                  color: theme === 'dark' ? 'white' : '#333',
                 }}
               >
                 Các cách để đoạn mã tối ưu hơn:{' '}
@@ -261,15 +272,16 @@ const CompilerOutput = ({
                       fontSize: '13px',
                       fontWeight: '400',
                       fontStyle: 'italic',
+                      color: theme === 'dark' ? 'white' : '#333',
                     }}
                   >
-                    {refactor.direction}:{' '}
+                    {refactor.direction}{' '}
                   </Typography>
                   {refactor.code && (
                     <Box style={{ position: 'relative' }}>
                       <SyntaxHighlighter
                         language="javascript"
-                        style={vscDarkPlus}
+                        style={theme === 'light' ? vscDarkPlus : coldarkCold}
                       >
                         {refactor.code}
                       </SyntaxHighlighter>
@@ -283,8 +295,8 @@ const CompilerOutput = ({
                           right: 1,
                           fontSize: '12px',
                           textTransform: 'none',
-                          color: '#fff',
                           fontWeight: 300,
+                          color: theme === 'dark' ? '#333' : '#fff',
                         }}
                       >
                         Copy
@@ -296,23 +308,31 @@ const CompilerOutput = ({
           </>
         ) : (
           <>
-            <Typography variant="h6" gutterBottom>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{
+                color: theme === 'dark' ? 'white' : '#333',
+              }}
+            >
               Các lỗi bạn đã mắc phải:{' '}
             </Typography>
             {gptResponseError.errors.map((err, i) => (
               <Typography
                 sx={{
                   ml: 2,
+                  color: theme === 'dark' ? 'white' : '#333',
                 }}
                 key={i}
               >
-                {err.error}
+                - Dòng {err.line}: {err.error}
               </Typography>
             ))}
             <Typography
               variant="h6"
               sx={{
                 mt: 1,
+                color: theme === 'dark' ? 'white' : '#333',
               }}
               gutterBottom
             >
@@ -321,21 +341,26 @@ const CompilerOutput = ({
             <Typography
               sx={{
                 ml: 2,
+                color: theme === 'dark' ? 'white' : '#333',
               }}
             >
-              {gptResponseError.recommends}
+              - {gptResponseError.recommends}
             </Typography>
             <Typography
               variant="h6"
               sx={{
                 mt: 1,
+                color: theme === 'dark' ? 'white' : '#333',
               }}
               gutterBottom
             >
               Đoạn code chính xác như sau:{' '}
             </Typography>
             <Box style={{ position: 'relative' }}>
-              <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
+              <SyntaxHighlighter
+                language="javascript"
+                style={theme === 'light' ? vscDarkPlus : coldarkCold}
+              >
                 {gptResponseError.correctCode}
               </SyntaxHighlighter>
               <Button
@@ -346,7 +371,7 @@ const CompilerOutput = ({
                   right: 1,
                   fontSize: '12px',
                   textTransform: 'none',
-                  color: '#fff',
+                  color: theme === 'dark' ? '#333' : '#fff',
                   fontWeight: 300,
                 }}
               >

@@ -42,11 +42,15 @@ const LoginView = () => {
       navigate('/chat');
     }
   }, [userGit, navigate, setLogin]);
+  const token = localStorage.getItem('token');
   useEffect(() => {
     if (login) {
       navigate('/chat');
     }
-  }, [login, navigate]);
+    // if (token) {
+    //   navigate('/chat');
+    // }
+  }, [login, navigate, token]);
   useEffect(() => {
     if (error) {
       handleToast('error', error);
@@ -60,14 +64,21 @@ const LoginView = () => {
   };
   return (
     <div className="login-container">
-      <h2 className="logo">Support Learning IT</h2>
+      <h2 className="logo">
+        <img src="./logo/fpt.png" height={50} alt="" />
+      </h2>
       <div className="content f-col">
-        <h2 className="title ml">Support Learning IT</h2>
+        <h2 className="title ml">Bee AI</h2>
         <p className="context ml">
-          Công cụ hỗ trợ tốt nhất dành cho sinh viên IT
+					Công cụ hỗ trợ tốt nhất dành cho giảng viên và sinh viên CNTT
         </p>
       </div>
       <div className="login f-col">
+        <div style={{
+          marginBottom: '40px',
+        }}>
+          <img src="./logo/logoWhite.png" height={82} width={108} alt="" />
+        </div>
         <h2 className="title">Đăng nhập</h2>
         <div className="button">
           <Button
@@ -86,7 +97,7 @@ const LoginView = () => {
             }}
             onClick={handleLoginGit}
           >
-            Đăng nhập với GitHub
+						Đăng nhập với GitHub
             <GitHubIcon
               sx={{
                 marginLeft: '10px',
@@ -96,8 +107,8 @@ const LoginView = () => {
           </Button>
         </div>
         <div className="footer">
-          <a href="fb.com">Điều khoản và dịch vụ</a>
-          <a href="fb.com">Liên hệ</a>
+          <a href="https://www.facebook.com/beeittaynguyen">Make by Xuong Thuc Hanh FPT Polytechic</a>
+          {/* <a href="fb.com">Liên hệ</a> */}
         </div>
       </div>
     </div>

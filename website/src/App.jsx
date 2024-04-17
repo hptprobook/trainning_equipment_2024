@@ -14,17 +14,37 @@ class App extends Component {
       },
       {
         target: '.jr-second-step',
+        content: 'Chuyển đổi giao diện!',
+        placement: 'top',
+      },
+      {
+        target: '.jr-third-step',
         content: 'Lưu đoạn mã!',
         placement: 'bottom',
       },
       {
-        target: '.jr-third-step',
-        content: 'Chạy mã lệnh!',
+        target: '.jr-fourth-step',
+        content: 'Sao chép đoạn mã!',
         placement: 'bottom',
       },
       {
-        target: '.jr-fourth-step',
+        target: '.jr-fifth-step',
+        content: 'Chạy đoạn mã!',
+        placement: 'bottom',
+      },
+      {
+        target: '.jr-sixth-step',
+        content: 'Làm sạch đầu ra!',
+        placement: 'bottom',
+      },
+      {
+        target: '.jr-seventh-step',
         content: 'Tra cứu đoạn mã bằng AI của chúng tôi!',
+        placement: 'bottom',
+      },
+      {
+        target: '.jr-eighth-step',
+        content: 'Danh sách đoạn mã đã lưu!',
         placement: 'bottom',
       },
     ],
@@ -37,7 +57,7 @@ class App extends Component {
   initializeTour = () => {
     const isFirstVisit = localStorage.getItem('isFirstVisit') === null;
     if (isFirstVisit) {
-      localStorage.setItem('isFirstVisit', 'no');
+      localStorage.setItem('isFirstVisit', 'visited');
       this.setState({ run: true });
     }
   };
@@ -66,7 +86,7 @@ class App extends Component {
             },
           }}
         />
-        <MainRoute />;
+        <MainRoute />
       </>
     );
   }

@@ -10,8 +10,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   codesSaved,
   getDetails,
-  nextStepAfterRun,
-  runCode,
   updateCode,
 } from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
@@ -28,6 +26,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import CircularLoading from '~/component/Loading/CircularLoading';
+import useCompiler from '~/customHooks/useCompiler';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -39,13 +38,11 @@ export default function CompilerDetailPage() {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [sourceCode, setSourceCode] = useState(details ? details.code : '');
   const [title, setTitle] = useState(details ? details.title : '');
   const [openCodeTitleForm, setOpenCodeTitleForm] = useState(false);
-  const { data } = useSelector((state) => state.compiler);
-  const [compileOutput, setCompileOutput] = useState(data ? data.output : '');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
+  const [sourceCode, setSourceCode] = useState(details ? details.code : '');
   const selectedLanguage = details
     ? convertShortLangToMonacoLang(details.language)
     : 'javascript';
@@ -56,8 +53,18 @@ export default function CompilerDetailPage() {
   const { nextStepData, isRunCodeLoading } = useSelector(
     (state) => state.compiler
   );
-  const [gptResponseError, setGptResponseError] = useState(null);
-  const [gptResponseRefactor, setGptResponseRefactor] = useState(null);
+
+  const {
+    compileOutput,
+    setCompileOutput,
+    gptResponseError,
+    setGptResponseError,
+    gptResponseRefactor,
+    setGptResponseRefactor,
+    handleRunCode,
+    handleCopyCode,
+    handleShowRefactor,
+  } = useCompiler();
 
   const handleCheckAI = () => {
     navigate('/chat', { state: { sourceCode } });
@@ -77,7 +84,7 @@ export default function CompilerDetailPage() {
     dispatch(codesSaved());
     setTitle(details?.title || '');
     setSourceCode(details?.code || '');
-  }, [dispatch, details]);
+  }, [dispatch, details, setSourceCode]);
 
   useEffect(() => {
     if (editorRef.current && details) {
@@ -104,65 +111,6 @@ export default function CompilerDetailPage() {
       monaco.editor.setTheme(theme === 'light' ? 'vs' : 'vs-dark');
     }
   }, [theme, monaco]);
-
-  const handleRunCode = async () => {
-    setCompileOutput('');
-    setGptResponseError(null);
-    setGptResponseRefactor(null);
-
-    try {
-      const resultAction = await dispatch(
-        runCode({
-          language: selectedLanguage,
-          code: sourceCode,
-        })
-      ).unwrap();
-
-      if (resultAction.status === 'success') {
-        setCompileOutput(
-          resultAction.stderr
-            ? 'Có lỗi trong đoạn mã này. Chúng tôi đang tìm phương hướng giải quyết cho đoạn mã của bạn...'
-            : resultAction.stdout
-        );
-      } else {
-        setCompileOutput(
-          resultAction.error || 'Đã xảy ra lỗi, vui lòng thử lại'
-        );
-      }
-
-      if (resultAction.stderr) {
-        setGptResponseError(null);
-        const gptRes = await dispatch(
-          nextStepAfterRun({
-            condition: 'error',
-            code: sourceCode,
-          })
-        ).unwrap();
-        setGptResponseError(JSON.parse(gptRes.content));
-      }
-    } catch (err) {
-      toast.error('Biên dịch mã bị lỗi, vui lòng thử lại!', {
-        autoClose: 1000,
-      });
-    }
-  };
-
-  const handleCopyCode = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(sourceCode)
-        .then(() => {
-          toast.success('Đã sao chép!', {
-            autoClose: 500,
-          });
-        })
-        .catch(() => {
-          toast.error('Lỗi khi sao chép mã, vui lòng thử lại!');
-        });
-    } else {
-      toast.warning('Bộ nhớ tạm chưa sẵn sàng, vui lòng thử lại.');
-    }
-  };
 
   const handleSaveCode = () => {
     setTitle(title);
@@ -193,17 +141,6 @@ export default function CompilerDetailPage() {
         });
       });
     setOpenDialogNotAuth(false);
-  };
-
-  const handleShowRefactor = async () => {
-    setGptResponseRefactor(null);
-    const gptRes = await dispatch(
-      nextStepAfterRun({
-        condition: 'refactor',
-        code: sourceCode,
-      })
-    ).unwrap();
-    setGptResponseRefactor(JSON.parse(gptRes.content));
   };
 
   if (!details) return <CircularLoading />;
@@ -255,7 +192,7 @@ export default function CompilerDetailPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               name="title"
-              label="Title"
+              label="Tiêu đề"
               type="text"
               fullWidth
               variant="standard"
@@ -299,7 +236,6 @@ export default function CompilerDetailPage() {
                 isCompiling={isRunCodeLoading}
                 selectedLanguage={selectedLanguage}
                 setEditorFontSize={setEditorFontSize}
-                // setSelectedLanguage={setSelectedLanguage}
                 setTheme={setTheme}
                 theme={theme}
                 title={details?.title}
@@ -341,6 +277,8 @@ export default function CompilerDetailPage() {
                 setCompileOutput={setCompileOutput}
                 gptResponseError={gptResponseError}
                 gptResponseRefactor={gptResponseRefactor}
+                setGptResponseError={setGptResponseError}
+                setGptResponseRefactor={setGptResponseRefactor}
                 theme={theme}
                 isAuth={isAuth}
                 code={sourceCode}
