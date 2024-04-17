@@ -98,7 +98,7 @@ const CompilerPage = () => {
       if (resultAction.status === 'success') {
         setCompileOutput(
           resultAction.stderr
-            ? 'Có lỗi trong đoạn mã này. Chúng tôi đang tìm phương hướng giải quyết cho đoạn mã của bạn...'
+            ? 'Có lỗi trong đoạn mã này. Đang tìm phương hướng giải quyết. Vui lòng chờ ...'
             : resultAction.stdout
         );
       } else {
@@ -222,7 +222,7 @@ const CompilerPage = () => {
               margin="dense"
               id="title"
               name="title"
-              label="Title"
+              label="Tiêu đề"
               type="text"
               fullWidth
               variant="standard"
