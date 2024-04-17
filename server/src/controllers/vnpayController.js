@@ -38,9 +38,7 @@ const create_payment_url = async (req, res) => {
   let returnUrl = 'http://localhost:5173/plan';
 
   let orderId = req.body.orderId;
-  console.log(orderId);
   let amount = req.body.amount;
-  console.log(amount);
 
   let bankCode = '';
 
@@ -118,7 +116,7 @@ const vnpay_return = async (req, res) => {
           Number(day)
         );
         res.send(
-          JSON.stringify({ success: false, mgs: 'Thanh toán thành công' })
+          JSON.stringify({ success: true, mgs: 'Thanh toán thành công' })
         );
         return;
       } else {

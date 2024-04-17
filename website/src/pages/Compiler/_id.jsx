@@ -341,6 +341,8 @@ export default function CompilerDetailPage() {
                 setCompileOutput={setCompileOutput}
                 gptResponseError={gptResponseError}
                 gptResponseRefactor={gptResponseRefactor}
+                setGptResponseError={setGptResponseError}
+                setGptResponseRefactor={setGptResponseRefactor}
                 theme={theme}
                 isAuth={isAuth}
                 code={sourceCode}

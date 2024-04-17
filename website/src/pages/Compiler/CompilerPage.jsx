@@ -306,7 +306,9 @@ const CompilerPage = () => {
                 nextStepData={nextStepData && nextStepData.content}
                 setCompileOutput={setCompileOutput}
                 gptResponseError={gptResponseError}
+                setGptResponseError={setGptResponseError}
                 gptResponseRefactor={gptResponseRefactor}
+                setGptResponseRefactor={setGptResponseRefactor}
                 theme={theme}
                 isAuth={isAuth}
                 code={sourceCode}

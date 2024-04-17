@@ -24,7 +24,6 @@ const navigate = useNavigate();
           bottom: '64px'
         }}
         onClick={() => navigate('/')}
-
       >
         Trang chủ
       </Button>

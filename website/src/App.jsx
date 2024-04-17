@@ -37,7 +37,7 @@ class App extends Component {
   initializeTour = () => {
     const isFirstVisit = localStorage.getItem('isFirstVisit') === null;
     if (isFirstVisit) {
-      localStorage.setItem('isFirstVisit', 'no');
+      localStorage.setItem('isFirstVisit', 'visited');
       this.setState({ run: true });
     }
   };
