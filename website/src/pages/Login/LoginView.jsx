@@ -42,11 +42,15 @@ const LoginView = () => {
       navigate('/chat');
     }
   }, [userGit, navigate, setLogin]);
+  const token = localStorage.getItem('token');
   useEffect(() => {
     if (login) {
       navigate('/chat');
     }
-  }, [login, navigate]);
+    // if (token) {
+    //   navigate('/chat');
+    // }
+  }, [login, navigate, token]);
   useEffect(() => {
     if (error) {
       handleToast('error', error);
@@ -103,8 +107,8 @@ const LoginView = () => {
           </Button>
         </div>
         <div className="footer">
-          <a href="fb.com">Điều khoản và dịch vụ</a>
-          <a href="fb.com">Liên hệ</a>
+          <a href="https://www.facebook.com/beeittaynguyen">Make by Xuong Thuc Hanh FPT Polytechic</a>
+          {/* <a href="fb.com">Liên hệ</a> */}
         </div>
       </div>
     </div>

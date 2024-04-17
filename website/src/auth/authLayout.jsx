@@ -13,7 +13,7 @@ const AuthLayout = () => {
 	useMemo(() => {
 		dispatch(handleGetUser());
 	}, [dispatch]);
-	useEffect(() => {
+	useMemo(() => {
 		if (status === 'success' && userState) {
 			setLogin(true);
 		}

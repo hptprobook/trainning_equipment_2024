@@ -75,7 +75,7 @@
     padding: 12px;
     position: relative;
 }
-
+/* 
 .login .footer a:first-child::after {
     content: "";
     display: block;
@@ -86,7 +86,7 @@
     bottom: 0;
     right: 0;
     transform: translateY(-50%);
-}
+} */
 
 @media screen and (max-width: 768px) {
     .content {
