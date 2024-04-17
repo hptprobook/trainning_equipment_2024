@@ -7,7 +7,12 @@ import { convertShortLangToMonacoLang } from '~/utils/formatters';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { publicCode, updateCode } from '~/redux/slices/compilerSlice';
+import {
+  nextStepAfterRun,
+  publicCode,
+  runCode,
+  updateCode,
+} from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
 import DialogSimple from '~/component/Dialog/DialogSimple';
 import ResponsiveBox from '~/component/ResponsiveBox/ResponsiveBox';
@@ -59,7 +64,6 @@ export default function CompilerPublicDetailPage() {
     setGptResponseError,
     gptResponseRefactor,
     setGptResponseRefactor,
-    handleRunCode,
     handleCopyCode,
     handleShowRefactor,
   } = useCompiler();
@@ -106,6 +110,48 @@ export default function CompilerPublicDetailPage() {
       monaco.editor.setTheme(theme === 'light' ? 'vs' : 'vs-dark');
     }
   }, [theme, monaco]);
+
+  const handleRunCode = async () => {
+    setCompileOutput('');
+    setGptResponseError(null);
+    setGptResponseRefactor(null);
+
+    try {
+      const resultAction = await dispatch(
+        runCode({
+          language: selectedLanguage,
+          code: sourceCode,
+        })
+      ).unwrap();
+
+      if (resultAction.status === 'success') {
+        setCompileOutput(
+          resultAction.stderr
+            ? 'Có lỗi trong đoạn mã này. Đang tìm phương hướng giải quyết. Vui lòng chờ ...'
+            : resultAction.stdout
+        );
+      } else {
+        setCompileOutput(
+          resultAction.exception || 'Đã xảy ra lỗi, vui lòng thử lại'
+        );
+      }
+
+      if (resultAction.stderr) {
+        setGptResponseError(null);
+        const gptRes = await dispatch(
+          nextStepAfterRun({
+            condition: 'error',
+            code: sourceCode,
+          })
+        ).unwrap();
+        setGptResponseError(JSON.parse(gptRes.content));
+      }
+    } catch (err) {
+      toast.error('Biên dịch mã bị lỗi, vui lòng thử lại!', {
+        autoClose: 1000,
+      });
+    }
+  };
 
   const handleSaveCode = () => {
     setTitle(title);
