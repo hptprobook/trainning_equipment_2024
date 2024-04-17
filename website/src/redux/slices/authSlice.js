@@ -32,7 +32,7 @@ const authSlice = createSlice({
     },
     resetStatus: (state) => {
       state.status = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

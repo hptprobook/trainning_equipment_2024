@@ -7,8 +7,12 @@ import jwt from 'jsonwebtoken';
 const getUser = async (req, res) => {
   // #swagger.tags = ['user']
   // #swagger.summary = 'get user'
-  const idGitUser = req.verifiedData.idGit;
-  const dataUser = await userService.getUser(idGitUser);
+  let dataUser;
+  if (req.verifiedData.idGit) {
+    dataUser = await userService.getUser(req.verifiedData.idGit);
+  } else {
+    dataUser = await userService.getUserEmail(req.verifiedData.email);
+  }
   return res.status(StatusCodes.OK).json({
     success: true,
     dataUser,
@@ -17,16 +21,20 @@ const getUser = async (req, res) => {
 const updateUserUnPro = async (req, res) => {
   // #swagger.tags = ['user']
   // #swagger.summary = 'get user'
-  const idGitUser = req.verifiedData.idGit;
-  const dataUser = await userService.updateUserUnPro(idGitUser);
+  let dataUser;
+  if (req.verifiedData.idGit) {
+    dataUser = await userService.getUser(req.verifiedData.idGit);
+  } else {
+    dataUser = await userService.getUserEmail(req.verifiedData.email);
+  }
   return res.status(StatusCodes.OK).json({
     success: true,
     dataUser,
   });
 };
 
-const addUserFromGit = async (avatar, idGit, name) => {
-  if (!name || !avatar || !idGit) {
+const addUserFromGit = async (avatar, idGit, name = 'user') => {
+  if (!avatar || !idGit) {
     return {
       success: false,
       mgs: 'Không được bỏ trống',
@@ -60,6 +68,48 @@ const addUserFromGit = async (avatar, idGit, name) => {
     mgs: 'Login + register',
     tokenUser,
   };
+};
+
+const addUserFromGG = async (req, res) => {
+  const {
+    avatar = 'https://i.pinimg.com/564x/ac/a3/27/aca3270e1bfcb034363463172320f63c.jpg',
+    email,
+    name = 'user',
+  } = req.body;
+  if (!email) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      mgs: 'Không được bỏ trống email',
+    });
+  }
+  const tokenUser = jwt.sign({ name, email }, env.TOKEN_SECRET, {
+    expiresIn: 60 * 60 * 24 * 30,
+  });
+  const once = await userService.onceUserEmail(email);
+  if (once) {
+    await userService.updateTokenGg(once.email, tokenUser);
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      mgs: '!register',
+      tokenUser,
+    });
+  }
+  const dataUser = {
+    name,
+    avatar,
+    email: email,
+    curentToken: tokenUser,
+    role: 'user',
+    isPro: false,
+    timePro: null,
+    createdAt: new Date(),
+  };
+  await userService.addUserFromGit(dataUser);
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    mgs: 'Login + register',
+    tokenUser,
+  });
 };
 
 const getUserGit = async (token) => {
@@ -110,4 +160,5 @@ export const userController = {
   getAccessTokenGit,
   getUser,
   updateUserUnPro,
+  addUserFromGG,
 };
