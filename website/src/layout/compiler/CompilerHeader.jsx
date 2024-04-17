@@ -2,8 +2,10 @@ import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import useAuth from '~/customHooks/useAuth';
 
 export default function CompilerHeader({ height, theme }) {
+  const isAuth = useAuth();
   return (
     <Box
       sx={{
@@ -17,16 +19,16 @@ export default function CompilerHeader({ height, theme }) {
       }}
     >
       <Link to={'/'}>
-        <img src="/logo/logo.png" height={20} alt="" />
+        <img src="/logo/fpt.png" height={40} alt="" />
       </Link>
       <Link
-        to={'/chat'}
+        to={isAuth ? '/chat' : '/login'}
         style={{
           color: theme === 'light' ? '#333' : '#fff',
         }}
       >
         <Button variant="outlined" endIcon={<ArrowRightAltIcon />}>
-          FPT AI
+          {isAuth ? ' Bee Chat' : 'Login'}
         </Button>
       </Link>
     </Box>

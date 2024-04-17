@@ -1,9 +1,9 @@
 // import { useSelector } from 'react-redux';
 
 const useAuth = () => {
-  const tokenGit = localStorage.getItem('git_token');
+  const token = localStorage.getItem('token');
 
-  return tokenGit;
+  return token;
 };
 
 export default useAuth;

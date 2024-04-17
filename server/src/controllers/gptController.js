@@ -91,7 +91,7 @@ const gptResponse = async (content) => {
     const systemHistory = [{ role: 'user', content }];
     const completion = await openai.chat.completions.create({
       messages: systemHistory,
-      model: 'gpt-4',
+      model: 'gpt-4-turbo',
     });
 
     return { success: true, content: completion.choices[0].message.content };
