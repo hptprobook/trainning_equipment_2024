@@ -37,7 +37,7 @@ export const modeOption = [
   },
   {
     name: 'Chat GPT 4',
-    value: 'gpt-4'
+    value: 'gpt-4-turbo'
   },
   {
     name: 'Chat GPT',

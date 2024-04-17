@@ -6,11 +6,20 @@ const addUserFromGit = async (dataUser) => {
 const onceUser = async (idGit) => {
   return await userModal.onceIdGit(idGit);
 };
+const onceUserEmail = async (email) => {
+  return await userModal.onceEmail(email);
+};
 const updateToken = async (idGit, token) => {
   return await userModal.updateToken(idGit, token);
 };
+const updateTokenGg = async (email, token) => {
+  return await userModal.updateTokenGg(email, token);
+};
 const getUser = async (idGit) => {
   return await userModal.getUser(idGit);
+};
+const getUserEmail = async (email) => {
+  return await userModal.getUserEmail(email);
 };
 const getUserById = async (id) => {
   return await userModal.getUserById(id);
@@ -33,4 +42,7 @@ export const userService = {
   getUserByIdCheckSecureHash,
   updateUserPro,
   updateUserUnPro,
+  onceUserEmail,
+  updateTokenGg,
+  getUserEmail,
 };

@@ -10,6 +10,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   codesSaved,
   getDetails,
+  nextStepAfterRun,
+  runCode,
   updateCode,
 } from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
@@ -61,13 +63,54 @@ export default function CompilerDetailPage() {
     setGptResponseError,
     gptResponseRefactor,
     setGptResponseRefactor,
-    handleRunCode,
     handleCopyCode,
     handleShowRefactor,
   } = useCompiler();
 
   const handleCheckAI = () => {
     navigate('/chat', { state: { sourceCode } });
+  };
+
+  const handleRunCode = async () => {
+    setCompileOutput('');
+    setGptResponseError(null);
+    setGptResponseRefactor(null);
+
+    try {
+      const resultAction = await dispatch(
+        runCode({
+          language: selectedLanguage,
+          code: sourceCode,
+        })
+      ).unwrap();
+
+      if (resultAction.status === 'success') {
+        setCompileOutput(
+          resultAction.stderr
+            ? 'Có lỗi trong đoạn mã này. Đang tìm phương hướng giải quyết. Vui lòng chờ ...'
+            : resultAction.stdout
+        );
+      } else {
+        setCompileOutput(
+          resultAction.exception || 'Đã xảy ra lỗi, vui lòng thử lại'
+        );
+      }
+
+      if (resultAction.stderr) {
+        setGptResponseError(null);
+        const gptRes = await dispatch(
+          nextStepAfterRun({
+            condition: 'error',
+            code: sourceCode,
+          })
+        ).unwrap();
+        setGptResponseError(JSON.parse(gptRes.content));
+      }
+    } catch (err) {
+      toast.error('Biên dịch mã bị lỗi, vui lòng thử lại!', {
+        autoClose: 1000,
+      });
+    }
   };
 
   const handleEditorChange = (value) => {

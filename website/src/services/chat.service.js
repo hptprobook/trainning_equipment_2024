@@ -1,4 +1,4 @@
-import request from '../utils/request';
+import request, { post } from '../utils/request';
 
 async function handleRequest(method, url, data) {
   return request[method](url, data).then((res) => res.data);

@@ -69,19 +69,23 @@ const saveCode = async (req, res, next) => {
   // #swagger.tags = ['compiler']
   // #swagger.summary = 'save code'
   try {
-    const currentUser = await userService.getUser(req.verifiedData.idGit);
-
-    if (!currentUser)
+    let currentUser;
+    if (req.verifiedData.idGit) {
+      currentUser = await userService.getUser(req.verifiedData.idGit);
+    } else {
+      currentUser = await userService.getUserEmail(req.verifiedData.email);
+    }
+    if (!currentUser) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: 'User not found!' });
+    }
 
     const savedCode = await compilerService.saveCode(
       currentUser._id.toString(),
       req.body
     );
-
-    res.status(StatusCodes.OK).json(savedCode);
+    return res.status(StatusCodes.OK).json(savedCode);
   } catch (error) {
     next(error);
   }
@@ -91,8 +95,12 @@ const listCodeSaved = async (req, res, next) => {
   // #swagger.tags = ['compiler']
   // #swagger.summary = 'List code save'
   try {
-    const currentUser = await userService.getUser(req.verifiedData.idGit);
-
+    let currentUser;
+    if (req.verifiedData.idGit) {
+      currentUser = await userService.getUser(req.verifiedData.idGit);
+    } else {
+      currentUser = await userService.getUserEmail(req.verifiedData.email);
+    }
     if (!currentUser)
       return res
         .status(StatusCodes.NOT_FOUND)

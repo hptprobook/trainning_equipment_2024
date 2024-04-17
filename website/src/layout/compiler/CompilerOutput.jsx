@@ -81,7 +81,7 @@ const CompilerOutput = ({
     setOpenDrawer(newOpen);
   };
   const [openURLDialog, setOpenURLDialog] = useState(false);
-  const publicURL = `${import.meta.env.VITE_CLIENT_URL}/compiler/public/${id}`;
+  const publicURL = `${CLIENT_ROOT}/compiler/public/${id}`;
 
   const handleOpenURLDialog = () => {
     setOpenURLDialog(true);
