@@ -103,7 +103,6 @@ const NavChat = ({ open, handleDrawerClose }) => {
     if (heightLogoRef.current) {
       setHeightLogo(heightLogoRef.current.clientHeight);
     }
-
   }, [heightRef, heightLogoRef]);
   useEffect(() => {
     if (statusAdd === 'success') {
@@ -247,7 +246,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
       </DrawerHeader>
       <List
         sx={{
-          height:  `calc(100% - ${heightLogo}px)`,
+          height: `calc(100% - ${heightLogo}px)`,
         }}
       >
         <List
@@ -286,8 +285,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
                   '&:hover': {
                     backgroundColor:
 											item._id == id
-											  ? theme.palette.background.fptHover
-											  : 'rgb(240, 241, 242)',
+											  ? theme.palette.background.fptHover: 'rgb(240, 241, 242)',
                   },
                 }}
                 onClick={() => navigate(`/chat/${item._id}`)}
