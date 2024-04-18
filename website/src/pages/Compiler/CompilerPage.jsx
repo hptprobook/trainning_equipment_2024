@@ -6,12 +6,7 @@ import { convertLanguage, defaultCode } from '~/utils/formatters';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  codesSaved,
-  nextStepAfterRun,
-  runCode,
-  saveCode,
-} from '~/redux/slices/compilerSlice';
+import { codesSaved, saveCode } from '~/redux/slices/compilerSlice';
 import useAuth from '~/customHooks/useAuth';
 import DialogSimple from '~/component/Dialog/DialogSimple';
 import ResponsiveBox from '~/component/ResponsiveBox/ResponsiveBox';
@@ -26,6 +21,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import CircularLoading from '~/component/Loading/CircularLoading';
+import useCompiler from '~/customHooks/useCompiler';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -35,23 +31,34 @@ const CompilerPage = () => {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [sourceCode, setSourceCode] = useState(defaultCode.javascript);
-  const [selectedLanguage, setSelectedLanguage] = useState('javascript');
+  const isAuth = useAuth();
   const [title, setTitle] = useState('Code Snippet');
   const [openCodeTitleForm, setOpenCodeTitleForm] = useState(false);
-  const [compileOutput, setCompileOutput] = useState('');
   const [theme, setTheme] = useState('light');
   const [editorFontSize, setEditorFontSize] = useState(15);
   const codesSavedData = useSelector((state) => state.compiler.codesSavedData);
   const [openDialogNotAuth, setOpenDialogNotAuth] = useState(false);
-  const [gptResponseError, setGptResponseError] = useState(null);
-  const [gptResponseRefactor, setGptResponseRefactor] = useState(null);
   const [openList, setOpenList] = useState(false);
+
+  const {
+    sourceCode,
+    setSourceCode,
+    selectedLanguage,
+    setSelectedLanguage,
+    compileOutput,
+    setCompileOutput,
+    gptResponseError,
+    setGptResponseError,
+    gptResponseRefactor,
+    setGptResponseRefactor,
+    handleRunCode,
+    handleCopyCode,
+    handleShowRefactor,
+  } = useCompiler();
 
   const { nextStepData, isRunCodeLoading } = useSelector(
     (state) => state.compiler
   );
-  const isAuth = useAuth();
 
   useEffect(() => {
     dispatch(codesSaved());
@@ -82,65 +89,6 @@ const CompilerPage = () => {
     }
   }, [theme, monaco]);
 
-  const handleRunCode = async () => {
-    setCompileOutput('');
-    setGptResponseError(null);
-    setGptResponseRefactor(null);
-
-    try {
-      const resultAction = await dispatch(
-        runCode({
-          language: selectedLanguage,
-          code: sourceCode,
-        })
-      ).unwrap();
-
-      if (resultAction.status === 'success') {
-        setCompileOutput(
-          resultAction.stderr
-            ? 'Có lỗi trong đoạn mã này. Chúng tôi đang tìm phương hướng giải quyết cho đoạn mã của bạn...'
-            : resultAction.stdout
-        );
-      } else {
-        setCompileOutput(
-          resultAction.error || 'Đã xảy ra lỗi, vui lòng thử lại'
-        );
-      }
-
-      if (resultAction.stderr) {
-        setGptResponseError(null);
-        const gptRes = await dispatch(
-          nextStepAfterRun({
-            condition: 'error',
-            code: sourceCode,
-          })
-        ).unwrap();
-        setGptResponseError(JSON.parse(gptRes.content));
-      }
-    } catch (err) {
-      toast.error('Biên dịch mã bị lỗi, vui lòng thử lại!', {
-        autoClose: 1000,
-      });
-    }
-  };
-
-  const handleCopyCode = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(sourceCode)
-        .then(() => {
-          toast.success('Đã sao chép!', {
-            autoClose: 500,
-          });
-        })
-        .catch(() => {
-          toast.error('Lỗi khi sao chép mã, vui lòng thử lại!');
-        });
-    } else {
-      toast.warning('Bộ nhớ tạm chưa sẵn sàng, vui lòng thử lại.');
-    }
-  };
-
   const handleSaveCode = () => {
     setTitle(title);
     if (!isAuth) {
@@ -166,17 +114,6 @@ const CompilerPage = () => {
     setOpenDialogNotAuth(false);
   };
 
-  const handleShowRefactor = async () => {
-    setGptResponseRefactor(null);
-    const gptRes = await dispatch(
-      nextStepAfterRun({
-        condition: 'refactor',
-        code: sourceCode,
-      })
-    ).unwrap();
-    setGptResponseRefactor(JSON.parse(gptRes.content));
-  };
-
   return (
     <>
       <ResponsiveBox />
@@ -198,6 +135,20 @@ const CompilerPage = () => {
           title={'Bạn chưa đăng nhập!'}
           open={openDialogNotAuth}
           setOpen={setOpenDialogNotAuth}
+          actions={[
+            {
+              label: 'Hủy',
+              onClick: () => setOpenDialogNotAuth(false),
+              color: 'secondary',
+            },
+            {
+              label: 'Xác nhận',
+              onClick: () => {
+                setOpenDialogNotAuth(false);
+              },
+              color: 'primary',
+            },
+          ]}
         />
         <Dialog
           open={openCodeTitleForm}
@@ -222,7 +173,7 @@ const CompilerPage = () => {
               margin="dense"
               id="title"
               name="title"
-              label="Title"
+              label="Tiêu đề"
               type="text"
               fullWidth
               variant="standard"
@@ -306,7 +257,9 @@ const CompilerPage = () => {
                 nextStepData={nextStepData && nextStepData.content}
                 setCompileOutput={setCompileOutput}
                 gptResponseError={gptResponseError}
+                setGptResponseError={setGptResponseError}
                 gptResponseRefactor={gptResponseRefactor}
+                setGptResponseRefactor={setGptResponseRefactor}
                 theme={theme}
                 isAuth={isAuth}
                 code={sourceCode}

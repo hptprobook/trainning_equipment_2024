@@ -16,6 +16,8 @@ import {
 } from '~/redux/slices/conversationsSlice';
 import LoadingNewChat from '~/component/ChatComponent/LoadingNewChat';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { handleToast } from '~/config/toast';
+import axios from 'axios';
 export const ChatIndex = () => {
   const heightRef = React.useRef(null);
   const [mainHeight, setMainHeight] = React.useState(0);
@@ -31,7 +33,8 @@ export const ChatIndex = () => {
     content: '',
     template: '',
   });
-  const [content, setContent] = React.useState({});
+  const [content, setContent] = React.useState(null);
+  const [voice, setVoice] = React.useState(null);
   const data = useSelector((state) => state.chat.data);
   const dataUser = useSelector((state) => state.auth.userGit);
   const statusGet = useSelector((state) => state.auth.status);
@@ -39,42 +42,61 @@ export const ChatIndex = () => {
   const status = useSelector((state) => state.conversations.status);
   const statusChat = useSelector((state) => state.chat.status);
 
-  React.useEffect(() => {
-    if (heightRef.current) {
-      setMainHeight(heightRef.current.clientHeight);
+  const handleSendVoice = React.useCallback(async (blob, id) => {
+    const file = new File([blob], 'recorded_audio.webm', {
+      type: 'audio/webm;codecs=opus',
+    });
+    const formData = new FormData();
+    formData.append('speech', file);
+    try {
+      const response = await axios.post(`http://localhost:8000/api/gpt/speech-to-text/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if (response) {
+        dispatch(resetState());
+        navigate(`/chat/${dataConversations.conversationId}`);
+      }
+    } catch (error) {
+      handleToast('error', 'Hệ thống xảy ra lỗi');
     }
-  }, [heightRef]);
+  }, [dispatch, dataConversations, navigate]); // Remove unnecessary dependencies from the dependency array
   useEffect(() => {
     if (status === 'success') {
       dispatch(resetStateAction());
-      if (content.model == 'gpt') {
-        dispatch(
-          chatWithGpt({
-            data: {
-              content: content.input,
-              conversationId: dataConversations.conversationId,
-            },
-          })
-        );
-      } else {
-        dispatch(
-          chatWithGemini({
-            data: {
-              content: content.input,
-              conversationId: dataConversations.conversationId,
-            },
-          })
-        );
+      if (content !== null) {
+        if (content.model == 'gpt') {
+          dispatch(
+            chatWithGpt({
+              data: {
+                content: content.input,
+                conversationId: dataConversations.conversationId,
+              },
+            })
+          );
+        } else {
+          dispatch(
+            chatWithGemini({
+              data: {
+                content: content.input,
+                conversationId: dataConversations.conversationId,
+              },
+            })
+          );
+        }
+      }
+      else if (voice !== null) {
+        handleSendVoice(voice, dataConversations.conversationId);
       }
     }
-  }, [status, dispatch, content, dataConversations]);
+  }, [status, dispatch, content, dataConversations, voice, handleSendVoice]);
   useEffect(() => {
     if (
       data != undefined &&
       dataConversations.conversationId != undefined &&
       statusChat === 'success'
     ) {
-      // na
       dispatch(resetState());
       navigate(`/chat/${dataConversations.conversationId}`);
     }
@@ -97,8 +119,20 @@ export const ChatIndex = () => {
     );
     setContent(content);
   };
+  const handleGetVoice = (blob) => {
+    dispatch(
+      handleAddConversation({
+        data: { title: 'Tương tác bằng giọng nói', idGit: dataUser.dataUser._id },
+      })
+    );
+    setVoice(blob);
+  };
   const { sourceCode } = location.state || {};
-
+  useEffect(() => {
+    if (heightRef.current) {
+      setMainHeight(heightRef.current.clientHeight);
+    }
+  }, [heightRef]);
   React.useEffect(() => {
     if (sourceCode && dataUser && statusGet === 'success') {
       const title = 'Check code snippet';
@@ -157,7 +191,7 @@ export const ChatIndex = () => {
         </Grid>
       ) : null}
       <Grid ref={heightRef} item xs={12}>
-        <InputChat handleGetContent={handleGetContent} />
+        <InputChat handleGetContent={handleGetContent} handleGetVoice={handleGetVoice}/>
         {addPrompt ? (
           <InputChatWithPrompt
             promt={promt}

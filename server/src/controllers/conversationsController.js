@@ -5,8 +5,15 @@ const addConversations = async (req, res) => {
   // #swagger.tags = ['Conversation']
   // #swagger.summary = 'List conversation'
   try {
-    const dataU = req.verifiedData;
-    const dataUser = await userService.getUser(dataU.idGit);
+    // const dataU = req.verifiedData;
+    // const dataUser = await userService.getUser(dataU.idGit);
+    let dataUser;
+    if (req.verifiedData.idGit) {
+      dataUser = await userService.getUser(req.verifiedData.idGit);
+    } else {
+      dataUser = await userService.getUserEmail(req.verifiedData.email);
+    }
+
     if (dataUser) {
       const userId = String(dataUser._id);
       const { title } = req.body;
@@ -124,8 +131,12 @@ const converGetAll = async (req, res) => {
   // #swagger.tags = ['Conversation']
   // #swagger.summary = 'get all conversation not archive'
   try {
-    const dataU = req.verifiedData;
-    const dataUser = await userService.getUser(dataU.idGit);
+    let dataUser;
+    if (req.verifiedData.idGit) {
+      dataUser = await userService.getUser(req.verifiedData.idGit);
+    } else {
+      dataUser = await userService.getUserEmail(req.verifiedData.email);
+    }
     if (dataUser) {
       const userId = String(dataUser._id);
       const data = await conversationsService.converGetAll(userId);
@@ -150,8 +161,12 @@ const converGetAllIsArchive = async (req, res) => {
   // #swagger.tags = ['Conversation']
   // #swagger.summary = 'get all conversation archive'
   try {
-    const dataU = req.verifiedData;
-    const dataUser = await userService.getUser(dataU.idGit);
+    let dataUser;
+    if (req.verifiedData.idGit) {
+      dataUser = await userService.getUser(req.verifiedData.idGit);
+    } else {
+      dataUser = await userService.getUserEmail(req.verifiedData.email);
+    }
     if (dataUser) {
       const userId = String(dataUser._id);
       const data = await conversationsService.converGetAllIsArchive(userId);
@@ -176,8 +191,12 @@ const converDelAll = async (req, res) => {
   // #swagger.tags = ['Conversation']
   // #swagger.summary = 'Del all'
   try {
-    const data = req.verifiedData;
-    const dataUser = await userService.getUser(data.idGit);
+    let dataUser;
+    if (req.verifiedData.idGit) {
+      dataUser = await userService.getUser(req.verifiedData.idGit);
+    } else {
+      dataUser = await userService.getUserEmail(req.verifiedData.email);
+    }
     if (dataUser) {
       const userId = String(dataUser._id);
       const data = await conversationsService.converDelAll(userId);
