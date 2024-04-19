@@ -139,7 +139,7 @@ const LoginView = () => {
         </div>
         <div className="footer">
           <a href="https://www.facebook.com/beeittaynguyen" target="_blank">
-            Made by Xuong Thuc Hanh FPT Polytechic Tay Nguyen
+            Made by Xuong Thuc Hanh FPT Polytechnic Tay Nguyen
           </a>
           {/* <a href="fb.com">Liên hệ</a> */}
         </div>
