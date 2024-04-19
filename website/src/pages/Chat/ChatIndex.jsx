@@ -42,26 +42,33 @@ export const ChatIndex = () => {
   const status = useSelector((state) => state.conversations.status);
   const statusChat = useSelector((state) => state.chat.status);
 
-  const handleSendVoice = React.useCallback(async (blob, id) => {
-    const file = new File([blob], 'recorded_audio.webm', {
-      type: 'audio/webm;codecs=opus',
-    });
-    const formData = new FormData();
-    formData.append('speech', file);
-    try {
-      const response = await axios.post(`http://localhost:8000/api/gpt/speech-to-text/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+  const handleSendVoice = React.useCallback(
+    async (blob, id) => {
+      const file = new File([blob], 'recorded_audio.webm', {
+        type: 'audio/webm;codecs=opus',
       });
-      if (response) {
-        dispatch(resetState());
-        navigate(`/chat/${dataConversations.conversationId}`);
+      const formData = new FormData();
+      formData.append('speech', file);
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_ROOT}/gpt/speech-to-text/${id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        if (response) {
+          dispatch(resetState());
+          navigate(`/chat/${dataConversations.conversationId}`);
+        }
+      } catch (error) {
+        handleToast('error', 'Hệ thống xảy ra lỗi');
       }
-    } catch (error) {
-      handleToast('error', 'Hệ thống xảy ra lỗi');
-    }
-  }, [dispatch, dataConversations, navigate]); // Remove unnecessary dependencies from the dependency array
+    },
+    [dispatch, dataConversations, navigate]
+  ); // Remove unnecessary dependencies from the dependency array
   useEffect(() => {
     if (status === 'success') {
       dispatch(resetStateAction());
@@ -85,8 +92,7 @@ export const ChatIndex = () => {
             })
           );
         }
-      }
-      else if (voice !== null) {
+      } else if (voice !== null) {
         handleSendVoice(voice, dataConversations.conversationId);
       }
     }
@@ -122,7 +128,10 @@ export const ChatIndex = () => {
   const handleGetVoice = (blob) => {
     dispatch(
       handleAddConversation({
-        data: { title: 'Tương tác bằng giọng nói', idGit: dataUser.dataUser._id },
+        data: {
+          title: 'Tương tác bằng giọng nói',
+          idGit: dataUser.dataUser._id,
+        },
       })
     );
     setVoice(blob);
@@ -191,7 +200,10 @@ export const ChatIndex = () => {
         </Grid>
       ) : null}
       <Grid ref={heightRef} item xs={12}>
-        <InputChat handleGetContent={handleGetContent} handleGetVoice={handleGetVoice}/>
+        <InputChat
+          handleGetContent={handleGetContent}
+          handleGetVoice={handleGetVoice}
+        />
         {addPrompt ? (
           <InputChatWithPrompt
             promt={promt}

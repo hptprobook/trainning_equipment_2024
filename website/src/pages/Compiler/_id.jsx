@@ -63,8 +63,6 @@ export default function CompilerDetailPage() {
     setGptResponseError,
     gptResponseRefactor,
     setGptResponseRefactor,
-    handleCopyCode,
-    handleShowRefactor,
   } = useCompiler();
 
   const handleCheckAI = () => {
@@ -111,6 +109,35 @@ export default function CompilerDetailPage() {
         autoClose: 1000,
       });
     }
+  };
+
+  const handleCopyCode = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(sourceCode)
+        .then(() => {
+          toast.success('Đã sao chép!', {
+            autoClose: 500,
+          });
+        })
+        .catch(() => {
+          toast.error('Lỗi khi sao chép mã, vui lòng thử lại!');
+        });
+    } else {
+      toast.warning('Bộ nhớ tạm chưa sẵn sàng, vui lòng thử lại.');
+    }
+  };
+
+  const handleShowRefactor = async () => {
+    setGptResponseRefactor(null);
+    const gptRes = await dispatch(
+      nextStepAfterRun({
+        condition: 'refactor',
+        code: sourceCode,
+      })
+    ).unwrap();
+
+    setGptResponseRefactor(JSON.parse(gptRes.content));
   };
 
   const handleEditorChange = (value) => {

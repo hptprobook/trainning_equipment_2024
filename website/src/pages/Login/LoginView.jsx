@@ -9,6 +9,7 @@ import { handleToast } from '../../config/toast';
 import { UserContext } from '~/context/user.context';
 import './login.css';
 import LoginGG from './LoginGG';
+import { TypeAnimation } from 'react-type-animation';
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const LoginView = () => {
   const navigate = useNavigate();
@@ -74,10 +75,26 @@ const LoginView = () => {
         <img src="./logo/fpt.png" height={50} alt="" />
       </h2>
       <div className="content f-col">
-        <h2 className="title ml">Bee AI</h2>
-        <p className="context ml">
+        <h2 className="title ml">BEE AI</h2>
+        {/* <p className="context ml">
           Công cụ hỗ trợ tốt nhất dành cho giảng viên và sinh viên CNTT
-        </p>
+        </p> */}
+        <TypeAnimation
+          className="context ml"
+          sequence={[
+            'Công cụ hỗ trợ tốt nhất dành cho Giảng viên CNTT',
+            1000,
+            'Công cụ hỗ trợ tốt nhất dành cho Sinh viên CNTT',
+            1000,
+            'Tự động tối ưu mã nguồn',
+            1000,
+            'Tăng hiệu suất học tập',
+            1000,
+          ]}
+          speed={40}
+          style={{ fontSize: '2em' }}
+          repeat={Infinity}
+        />
       </div>
       <div className="login f-col">
         <div
@@ -121,8 +138,13 @@ const LoginView = () => {
           </div>
         </div>
         <div className="footer">
+<<<<<<< HEAD
           <a href="https://www.facebook.com/beeittaynguyen">
             Make by Xuong Thuc Hanh FPT Polytechnic
+=======
+          <a href="https://www.facebook.com/beeittaynguyen" target="_blank">
+            Made by Xuong Thuc Hanh FPT Polytechnic Tay Nguyen
+>>>>>>> main
           </a>
           {/* <a href="fb.com">Liên hệ</a> */}
         </div>

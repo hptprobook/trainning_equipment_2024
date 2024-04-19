@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { userService } from '~/services/userService';
+import { env } from '~/config/environment';
 const moment = require('moment');
 
 function sortObject(obj) {
@@ -32,10 +33,10 @@ const create_payment_url = async (req, res) => {
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
 
-  let tmnCode = '723MRZEN';
-  let secretKey = 'DENHJRMJZSHXENEAWJVJWBBENOMZAXST';
-  let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-  let returnUrl = 'http://localhost:5173/plan';
+  let tmnCode = env.VNPAY_TMNCODE;
+  let secretKey = env.VNPAY_SECRET_KEY;
+  let vnpUrl = env.VNPAY_VNP_URL;
+  let returnUrl = env.VNPAY_RETURN_URL;
 
   let orderId = req.body.orderId;
   let amount = req.body.amount;

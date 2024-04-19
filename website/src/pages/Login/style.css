@@ -1,79 +1,79 @@
 .login-container {
-    display: flex;
+  display: flex;
 }
 
 .login-container .logo {
-    position: fixed;
-    color: aliceblue;
-    margin: 0;
-    top: 24px;
-    left: 24px;
+  position: fixed;
+  color: aliceblue;
+  margin: 0;
+  top: 24px;
+  left: 24px;
 }
 
 .content {
-    width: 60%;
-    height: 100vh;
-    background-color: rgb(13, 105, 179);
+  width: 60%;
+  height: 100vh;
+  background-color: rgb(13, 105, 179);
 }
 
 .f-col {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .ml {
-    color: aliceblue;
-    line-height: auto;
-    margin: 0 84px;
+  color: aliceblue;
+  line-height: auto;
+  margin: 0 84px;
 }
 
 .content .title {
-    font-size: 40px;
-    font-weight: 700;
+  font-size: 48px;
+  font-weight: 700;
 }
 
 .content .context {
-    font-size: 28px;
+  font-size: 28px;
 }
 
 .login {
-    width: 40%;
-    height: 100vh;
-    padding: 20px;
-    background-color: rgb(242, 115, 35);
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 40%;
+  height: 100vh;
+  padding: 20px;
+  background-color: rgb(242, 115, 35);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login .title {
-    margin: 8px 0;
-    color: rgb(255, 255, 255);
-    font-weight: 600;
-    font-size: 32px;
+  margin: 8px 0;
+  color: rgb(255, 255, 255);
+  font-weight: 600;
+  font-size: 32px;
 }
 
 .login .button {
-    width: 100%;
-    text-align: center;
+  width: 100%;
+  text-align: center;
 }
 
 .login .footer {
-    position: absolute;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .login .footer a {
-    color: rgb(255, 255, 255);
-    font-size: 0.75rem;
-    font-weight: 400;
-    line-height: 1rem;
-    padding: 12px;
-    position: relative;
+  color: rgb(255, 255, 255);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  padding: 12px;
+  position: relative;
 }
 /* 
 .login .footer a:first-child::after {
@@ -89,11 +89,11 @@
 } */
 
 @media screen and (max-width: 768px) {
-    .content {
-        display: none;
-    }
+  .content {
+    display: none;
+  }
 
-    .login {
-        width: 100%;
-    }
+  .login {
+    width: 100%;
+  }
 }

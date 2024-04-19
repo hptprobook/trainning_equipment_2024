@@ -98,11 +98,15 @@ const ChatDetail = () => {
     formData.append('speech', file);
 
     try {
-      const response = await axios.post(`http://localhost:8000/api/gpt/speech-to-text/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_ROOT}/gpt/speech-to-text/${id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         }
-      });
+      );
       if (response) {
         dispatch(handleGetMessageByID({ id }));
       }
@@ -132,32 +136,44 @@ const ChatDetail = () => {
         maxWidth: '100%',
       }}
     >
-      {mainHeight ? <Grid item xs={12}
-        sx={{
-          height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
-          overflow: 'auto',
-          scrollbarWidth: 'none', /* For Firefox */
-          msOverflowStyle: 'none',
-          '&::-webkit-scrollbar': {
-            width: 'auto' /* For horizontal scrollbar */,
-            height: '0px' /* For vertical scrollbar */,
-          },
-        }}
-      >
-        {status === 'success' && listMessage.map((item) => (
-          <CardAnswer
-            key={item._id}
-            name={item.isUserMessage ? user.dataUser.name : 'BEE AI'}
-            avatar={item.isUserMessage ? user.dataUser.avatar : '/logo/white.png'}
-            answer={item.content}
-          />
-        ))}
-        {statusChat === 'loading' && <AnswerLoading />}
-        <div ref={lastScroll}></div>
-      </Grid> : <></>}
+      {mainHeight ? (
+        <Grid
+          item
+          xs={12}
+          sx={{
+            height: mainHeight ? `calc(100% - ${mainHeight}px)` : '100%',
+            overflow: 'auto',
+            scrollbarWidth: 'none' /* For Firefox */,
+            msOverflowStyle: 'none',
+            '&::-webkit-scrollbar': {
+              width: 'auto' /* For horizontal scrollbar */,
+              height: '0px' /* For vertical scrollbar */,
+            },
+          }}
+        >
+          {status === 'success' &&
+            listMessage.map((item) => (
+              <CardAnswer
+                key={item._id}
+                name={item.isUserMessage ? user.dataUser.name : 'BEE AI'}
+                avatar={
+                  item.isUserMessage ? user.dataUser.avatar : '/logo/white.png'
+                }
+                answer={item.content}
+              />
+            ))}
+          {statusChat === 'loading' && <AnswerLoading />}
+          <div ref={lastScroll}></div>
+        </Grid>
+      ) : (
+        <></>
+      )}
 
       <Grid ref={heightRef} item xs={12}>
-        <InputChat handleGetContent={handleGetContent} handleGetVoice={handleGetVoice}/>
+        <InputChat
+          handleGetContent={handleGetContent}
+          handleGetVoice={handleGetVoice}
+        />
       </Grid>
     </Grid>
   );
