@@ -4,6 +4,7 @@ import { compilerService } from '~/services/compilerService';
 import axios from 'axios';
 import { getFileExtension } from '~/utils/formatters';
 import { gptController } from './gptController';
+import { env } from '~/config/environment';
 
 const compilerCode = async (req, res) => {
   // #swagger.tags = ['compiler']
@@ -18,11 +19,11 @@ const compilerCode = async (req, res) => {
 
   const options = {
     method: 'POST',
-    url: 'https://onecompiler-apis.p.rapidapi.com/api/v1/run',
+    url: env.COMPILER_API_URL,
     headers: {
       'content-type': 'application/json',
-      'X-RapidAPI-Key': '38951fb092msh88b2a7e001f4149p1f1c8ejsn1a9a38420b12',
-      'X-RapidAPI-Host': 'onecompiler-apis.p.rapidapi.com',
+      'X-RapidAPI-Key': env.COMPILER_X_RAPID_API_KEY,
+      'X-RapidAPI-Host': env.COMPILER_X_RAPID_API_HOST,
     },
     data: {
       language,

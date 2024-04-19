@@ -10,6 +10,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { programmingLanguages } from '~/utils/formatters';
+import { useSelector } from 'react-redux';
 
 export default function EditorAction({
   height,
@@ -22,6 +23,9 @@ export default function EditorAction({
   handleRunCode,
   title = '',
 }) {
+  const { isNextStepLoading, isRunCodeLoading } = useSelector(
+    (state) => state.compiler
+  );
   const handleChangeLanguage = (event) => {
     setSelectedLanguage(event.target.value);
   };
@@ -107,6 +111,7 @@ export default function EditorAction({
             onClick={handleRunCode}
             color="primary"
             className="jr-fifth-step"
+            disabled={isNextStepLoading || isRunCodeLoading}
           >
             <PlayArrowIcon />
           </IconButton>
