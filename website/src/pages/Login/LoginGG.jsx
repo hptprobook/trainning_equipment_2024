@@ -24,7 +24,7 @@ const LoginGG = () => {
         const add = await AuthService.addUserGg(dataUser);
         await localStorage.setItem('token', add.tokenUser);
         handleToast('success', 'Đăng nhập thành công!');
-        navigate('/chat');
+        navigate('/');
       })
       .catch((error) => {
         handleToast('error', 'Đăng nhập thất bại');
