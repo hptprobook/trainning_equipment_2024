@@ -66,7 +66,6 @@ const LoginView = () => {
       // else {
       // navigate('/');
       // }
-
     }
   }, [userGit, navigate, setLogin]);
   const token = localStorage.getItem('token');
@@ -157,7 +156,7 @@ const LoginView = () => {
         </div>
         <div className="footer">
           <a href="https://www.facebook.com/beeittaynguyen" target="_blank">
-          Copyright © FPT Polytechnic Tây Nguyên 2024
+            Copyright © 2024 FPT Polytechnic Tây Nguyên
           </a>
           {/* <a href="fb.com">Liên hệ</a> */}
         </div>

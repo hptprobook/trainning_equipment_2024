@@ -38,7 +38,7 @@ const LoginGG = () => {
         fontWeight: '500',
         backgroundColor: 'rgb(31, 179, 74)',
         color: 'rgba(255,255,255,1)',
-        padding: '8px 24px',
+        padding: '10px 24px',
         width: '300px',
         marginTop: '8px',
         borderRadius: '8px',
