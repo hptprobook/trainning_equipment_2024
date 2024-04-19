@@ -86,7 +86,7 @@ const PlanView = () => {
         }}
         className="cartBuyTitle"
       >
-        Support Learning IT
+        <img src="./logo/fpt.png" height={40} alt="" />
       </Link>
       <CustomGrid backgroundColor="rgb(240,240,240)">
         <CardPlan

@@ -115,8 +115,8 @@ const NavChat = ({ open, handleDrawerClose }) => {
   useEffect(() => {
     if (statusDeleteAll === 'success') {
       handleToast('success', 'Xóa tất cả cuộc trò chuyện thành công!');
-      dispatch(handleGetAllConversations());
       navigate('/chat');
+      dispatch(handleGetAllConversations());
     }
   }, [statusDeleteAll, dispatch, navigate]);
   useEffect(() => {
