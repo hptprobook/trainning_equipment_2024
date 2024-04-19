@@ -74,14 +74,14 @@ const conversationsSlice = createSlice({
         state.error = payload;
       })
       .addCase(handleDeleteAllConversations.fulfilled, (state, { payload }) => {
-        state.statusDelete = 'success';
+        state.statusDeleteAll = 'success';
         state.data = payload;
       })
       .addCase(handleDeleteAllConversations.pending, (state) => {
-        state.statusDelete = 'loading';
+        state.statusDeleteAll = 'loading';
       })
       .addCase(handleDeleteAllConversations.rejected, (state, { payload }) => {
-        state.statusDelete = 'failed';
+        state.statusDeleteAll = 'failed';
         state.error = payload;
       })
       .addCase(handleArchiveConversations.fulfilled, (state, { payload }) => {

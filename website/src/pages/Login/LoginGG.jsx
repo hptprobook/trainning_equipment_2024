@@ -27,7 +27,6 @@ const LoginGG = () => {
         navigate('/chat');
       })
       .catch((error) => {
-        console.log(error);
         handleToast('error', 'Đăng nhập thất bại');
       });
   };
@@ -35,12 +34,12 @@ const LoginGG = () => {
     <Button
       onClick={handleLoginG}
       sx={{
-        width: 'fit-content',
         fontSize: '1rem',
         fontWeight: '500',
         backgroundColor: 'rgb(31, 179, 74)',
         color: 'rgba(255,255,255,1)',
-        padding: '10px 24px',
+        padding: '8px 24px',
+        width: '300px',
         marginTop: '8px',
         borderRadius: '8px',
         '&:hover': {

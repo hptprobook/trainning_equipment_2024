@@ -33,7 +33,7 @@ const MainRoute = () => {
       element: (
         <CompilerLayout>
           <React.Suspense>
-            <Outlet />
+            <AuthLayout />
           </React.Suspense>
         </CompilerLayout>
       ),
