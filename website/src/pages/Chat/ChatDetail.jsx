@@ -41,8 +41,8 @@ const ChatDetail = () => {
     if (dataMessage && status === 'success') {
       setListMessage(dataMessage.dataMess);
       setHistoryChat({
-        user: dataMessage.dataMess[dataMessage.dataMess.length - 2].content,
-        model: dataMessage.dataMess[dataMessage.dataMess.length - 1].content,
+        user: dataMessage.dataMess[dataMessage.dataMess.length - 2]?.content,
+        model: dataMessage.dataMess[dataMessage.dataMess.length - 1]?.content,
       });
       setTimeout(() => {
         handleScrollLast();
