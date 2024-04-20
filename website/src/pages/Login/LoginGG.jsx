@@ -24,7 +24,7 @@ const LoginGG = () => {
         const add = await AuthService.addUserGg(dataUser);
         await localStorage.setItem('token', add.tokenUser);
         handleToast('success', 'Đăng nhập thành công!');
-        navigate('/chat');
+        navigate('/');
       })
       .catch((error) => {
         handleToast('error', 'Đăng nhập thất bại');
@@ -38,7 +38,7 @@ const LoginGG = () => {
         fontWeight: '500',
         backgroundColor: 'rgb(31, 179, 74)',
         color: 'rgba(255,255,255,1)',
-        padding: '8px 24px',
+        padding: '10px 24px',
         width: '300px',
         marginTop: '8px',
         borderRadius: '8px',
