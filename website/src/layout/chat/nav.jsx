@@ -25,7 +25,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
 import { NAV_WIDTH } from './layoutConfig';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import LogoutIcon from '@mui/icons-material/Logout';
 import React, { useContext, useEffect } from 'react';
@@ -73,6 +72,10 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const [anchorElItem, setAnchorElItem] = React.useState(null);
   const [data, setData] = React.useState(null);
   const [nav, setNav] = React.useState([]);
+  const [heightAvatar, setHeightAvatar] = React.useState(0);
+  const heightRef = React.useRef(null);
+  const [heightLogo, setHeightLogo] = React.useState(0);
+  const heightLogoRef = React.useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -85,7 +88,6 @@ const NavChat = ({ open, handleDrawerClose }) => {
   const statusArchive = useSelector(
     (state) => state.conversations.statusArchive
   );
-
   const statusDeleteAll = useSelector(
     (state) => state.conversations.statusDeleteAll
   );
@@ -94,6 +96,14 @@ const NavChat = ({ open, handleDrawerClose }) => {
       setNav(dataConversations.data);
     }
   }, [dataConversations]);
+  useEffect(() => {
+    if (heightRef.current) {
+      setHeightAvatar(heightRef.current.clientHeight);
+    }
+    if (heightLogoRef.current) {
+      setHeightLogo(heightLogoRef.current.clientHeight);
+    }
+  }, [heightRef, heightLogoRef]);
   useEffect(() => {
     if (statusAdd === 'success') {
       dispatch(handleGetAllConversations());
@@ -186,12 +196,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
       sx={{
         width: drawerWidth,
         height: '100vh',
-        overflow: 'scroll',
-        '&::-webkit-scrollbar': {
-          display: 'none',
-        },
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none',
+
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: drawerWidth,
@@ -218,6 +223,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
+        ref={heightLogoRef}
       >
         <div
           style={{
@@ -238,227 +244,244 @@ const NavChat = ({ open, handleDrawerClose }) => {
           )}
         </IconButton>
       </DrawerHeader>
-      <List>
-        {nav.map((item, index) => (
-          <ListItem
-            key={index}
-            disablePadding
-            sx={{
-              padding: theme.palette.padding.list,
-            }}
-          >
-            <ListItemButton
-              sx={{
-                margin: '4px 0',
-                borderRadius: '12px',
-                padding: '4px 8px',
-                color: item._id == id ? theme.palette.text.white : '#000',
-                backgroundColor:
-                  item._id == id ? theme.palette.background.fpt : 'transparent',
-                '&:hover .MuiListItemIcon-root': {
-                  display: 'flex',
-                  color: theme.palette.text.white,
-                },
-                '&:hover': {
-                  backgroundColor:
-                    item._id == id
-                      ? theme.palette.background.fptHover
-                      : 'rgb(240, 241, 242)',
-                },
-              }}
-              onClick={() => navigate(`/chat/${item._id}`)}
-            >
-              <ListItemText primary={item.title} />
-              <ItemIconCus
-                aria-describedby={idItem}
-                path-id={item._id}
-                onClick={handleChildClick}
-              >
-                <MoreVertIcon />
-              </ItemIconCus>
-            </ListItemButton>
-            <Popover
-              id={idItem}
-              open={openItem}
-              anchorEl={anchorElItem}
-              onClose={handleCloseItem}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              sx={{
-                '& .MuiPopover-paper': {
-                  borderRadius: '16px',
-                  boxShadow: 'none',
-                },
-              }}
-            >
-              <List
-                sx={{
-                  width: '200px',
-                }}
-              >
-                <ListItem
-                  sx={{
-                    padding: theme.palette.padding.list,
-                  }}
-                >
-                  <ListItemButton
-                    sx={{
-                      borderRadius: '12px',
-                      padding: '4px 8px',
-                      '& .MuiListItemIcon-root': {
-                        display: 'flex',
-                      },
-                    }}
-                    onClick={handleArchive}
-                  >
-                    <ListItemText primary={'Lưu trữ'} />
-                    <ItemIconCus>
-                      <ArchiveIcon />
-                    </ItemIconCus>
-                  </ListItemButton>
-                </ListItem>
-                <ListItem
-                  sx={{
-                    padding: theme.palette.padding.list,
-                  }}
-                >
-                  <ListItemButton
-                    sx={{
-                      borderRadius: '12px',
-                      padding: '4px 8px',
-                      '& .MuiListItemIcon-root': {
-                        display: 'flex',
-                      },
-                    }}
-                    onClick={handleDelete}
-                  >
-                    <ListItemText primary={'Xóa'} />
-                    <ItemIconCus>
-                      <DeleteIcon />
-                    </ItemIconCus>
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </Popover>
-          </ListItem>
-        ))}
-      </List>
-      <Box
+      <List
         sx={{
-          position: 'fixed',
-          width: drawerWidth,
-          bottom: '0',
-          left: '0',
-          backgroundColor: theme.palette.background.secondary,
+          height: `calc(100% - ${heightLogo}px)`,
         }}
       >
-        <Stack spacing={1}>
-          <List>
-            <ListItem>
+        <List
+          sx={{
+            height: `calc(100% - ${heightAvatar}px)`,
+            overflow: 'scroll',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+          }}
+        >
+          {nav.map((item, index) => (
+            <ListItem
+              key={index}
+              disablePadding
+              sx={{
+                padding: theme.palette.padding.list,
+              }}
+            >
               <ListItemButton
                 sx={{
+                  margin: '4px 0',
                   borderRadius: '12px',
                   padding: '4px 8px',
-                  backgroundColor: theme.palette.background.fpt,
-                  color: theme.palette.text.white,
-                  '& .MuiListItemIcon-root': {
+                  color: item._id == id ? theme.palette.text.white : '#000',
+                  backgroundColor:
+                    item._id == id
+                      ? theme.palette.background.fpt
+                      : 'transparent',
+                  '&:hover .MuiListItemIcon-root': {
                     display: 'flex',
+                    color: theme.palette.text.white,
                   },
                   '&:hover': {
-                    backgroundColor: theme.palette.background.fptHover,
+                    backgroundColor:
+
+                      item._id == id
+                        ? theme.palette.background.fptHover
+                        : 'rgb(240, 241, 242)',
+
                   },
                 }}
-                onClick={() => handleNavigate('/chat')}
+                onClick={() => navigate(`/chat/${item._id}`)}
               >
-                <ListItemText primary={'Cuộc trò chuyện mới'} />
-                <ItemIconCus sx={{ color: theme.palette.text.white }}>
-                  <AddIcon />
-                </ItemIconCus>
-              </ListItemButton>
-            </ListItem>
-            {!data?.isPro ? (
-              <ListItem>
-                <ListItemButton
-                  sx={{
-                    borderRadius: '12px',
-                    padding: '4px 8px',
-                    '& .MuiListItemIcon-root': {
-                      display: 'flex',
-                    },
-                  }}
-                  onClick={() => handleNavigate('/plan')}
+                <ListItemText primary={item.title} />
+                <ItemIconCus
+                  aria-describedby={idItem}
+                  path-id={item._id}
+                  onClick={handleChildClick}
                 >
-                  <ListItemText primary={'Nâng cấp PRO'} />
-                  <ItemIconCus>
-                    <FileUploadIcon />
-                  </ItemIconCus>
-                </ListItemButton>
-              </ListItem>
-            ) : null}
-            <ListItem>
-              <ListItemButton
-                sx={{
-                  borderRadius: '12px',
-                  padding: '12px 8px',
-                  '& .MuiListItemIcon-root': {
-                    display: 'flex',
-                  },
-                }}
-                aria-describedby={idAvatar}
-                onClick={handleClick}
-              >
-                <ListItemText primary={data?.name} />
-                <ItemIconCus>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
-                    badgeContent={
-                      <ChipStatus>{data?.isPro ? 'PRO' : 'FREE'}</ChipStatus>
-                    }
-                  >
-                    <Avatar alt={data?.name} src={data?.avatar} />
-                  </Badge>
+                  <MoreVertIcon />
                 </ItemIconCus>
               </ListItemButton>
               <Popover
-                id={idAvatar}
-                open={openAvatar}
-                anchorEl={anchorEl}
-                onClose={handleClose}
+                id={idItem}
+                open={openItem}
+                anchorEl={anchorElItem}
+                onClose={handleCloseItem}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
+                  vertical: 'bottom',
+                  horizontal: 'right',
                 }}
                 transformOrigin={{
                   vertical: 'bottom',
                   horizontal: 'left',
                 }}
                 sx={{
-                  '& .MuiPopover-root': {
-                    borderRadius: '32px',
+                  '& .MuiPopover-paper': {
+                    borderRadius: '16px',
+                    boxShadow: 'none',
                   },
                 }}
               >
                 <List
                   sx={{
-                    width: drawerWidth - 32,
+                    width: '200px',
                   }}
                 >
-                  {/* {!user?.dataUser?.isPro && (
+                  <ListItem
+                    sx={{
+                      padding: theme.palette.padding.list,
+                    }}
+                  >
+                    <ListItemButton
+                      sx={{
+                        borderRadius: '12px',
+                        padding: '4px 8px',
+                        '& .MuiListItemIcon-root': {
+                          display: 'flex',
+                        },
+                      }}
+                      onClick={handleArchive}
+                    >
+                      <ListItemText primary={'Lưu trữ'} />
+                      <ItemIconCus>
+                        <ArchiveIcon />
+                      </ItemIconCus>
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem
+                    sx={{
+                      padding: theme.palette.padding.list,
+                    }}
+                  >
+                    <ListItemButton
+                      sx={{
+                        borderRadius: '12px',
+                        padding: '4px 8px',
+                        '& .MuiListItemIcon-root': {
+                          display: 'flex',
+                        },
+                      }}
+                      onClick={handleDelete}
+                    >
+                      <ListItemText primary={'Xóa'} />
+                      <ItemIconCus>
+                        <DeleteIcon />
+                      </ItemIconCus>
+                    </ListItemButton>
+                  </ListItem>
+                </List>
+              </Popover>
+            </ListItem>
+          ))}
+        </List>
+        <Box
+          ref={heightRef}
+          sx={{
+            width: drawerWidth,
+            bottom: '0',
+            left: '0',
+            backgroundColor: theme.palette.background.secondary,
+          }}
+        >
+          <Stack spacing={1}>
+            <List>
+              <ListItem>
+                <ListItemButton
+                  sx={{
+                    borderRadius: '12px',
+                    padding: '4px 8px',
+                    backgroundColor: theme.palette.background.fpt,
+                    color: theme.palette.text.white,
+                    '& .MuiListItemIcon-root': {
+                      display: 'flex',
+                    },
+                    '&:hover': {
+                      backgroundColor: theme.palette.background.fptHover,
+                    },
+                  }}
+                  onClick={() => handleNavigate('/chat')}
+                >
+                  <ListItemText primary={'Cuộc trò chuyện mới'} />
+                  <ItemIconCus sx={{ color: theme.palette.text.white }}>
+                    <AddIcon />
+                  </ItemIconCus>
+                </ListItemButton>
+              </ListItem>
+              {!data?.isPro ? (
+                <ListItem>
+                  <ListItemButton
+                    sx={{
+                      borderRadius: '12px',
+                      padding: '4px 8px',
+                      '& .MuiListItemIcon-root': {
+                        display: 'flex',
+                      },
+                    }}
+                    onClick={() => handleNavigate('/plan')}
+                  >
+                    <ListItemText primary={'Nâng cấp PRO'} />
+                    <ItemIconCus>
+                      <FileUploadIcon />
+                    </ItemIconCus>
+                  </ListItemButton>
+                </ListItem>
+              ) : null}
+              <ListItem>
+                <ListItemButton
+                  sx={{
+                    borderRadius: '12px',
+                    padding: '12px 8px',
+                    '& .MuiListItemIcon-root': {
+                      display: 'flex',
+                    },
+                  }}
+                  aria-describedby={idAvatar}
+                  onClick={handleClick}
+                >
+                  <ListItemText primary={data?.name} />
+                  <ItemIconCus>
+                    <Badge
+                      overlap="circular"
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                      badgeContent={
+                        <ChipStatus>{data?.isPro ? 'PRO' : 'FREE'}</ChipStatus>
+                      }
+                    >
+                      <Avatar alt={data?.name} src={data?.avatar} />
+                    </Badge>
+                  </ItemIconCus>
+                </ListItemButton>
+                <Popover
+                  id={idAvatar}
+                  open={openAvatar}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  sx={{
+                    '& .MuiPopover-root': {
+                      borderRadius: '32px',
+                    },
+                  }}
+                >
+                  <List
+                    sx={{
+                      width: drawerWidth - 32,
+                    }}
+                  >
                     <ListItem
                       sx={{
                         padding: theme.palette.padding.list,
                       }}
-                      onClick={() => navigate('/plan')}
                     >
                       <ListItemButton
                         sx={{
@@ -469,61 +492,61 @@ const NavChat = ({ open, handleDrawerClose }) => {
                           },
                         }}
                       >
-                        <ListItemText primary={'Nâng cấp tài khoản'} />
+                        <ListItemText primary={'Tài khoản'} />
                         <ItemIconCus>
                           <PermIdentityIcon />
                         </ItemIconCus>
                       </ListItemButton>
                     </ListItem>
-                  )} */}
-                  <ListItem
-                    sx={{
-                      padding: theme.palette.padding.list,
-                    }}
-                  >
-                    <ListItemButton
+                    <ListItem
                       sx={{
-                        borderRadius: '12px',
-                        padding: '4px 8px',
-                        '& .MuiListItemIcon-root': {
-                          display: 'flex',
-                        },
+                        padding: theme.palette.padding.list,
                       }}
-                      onClick={() => handleDeleteAll()}
                     >
-                      <ListItemText primary={'Xóa hết'} />
-                      <ItemIconCus>
-                        <DeleteIcon />
-                      </ItemIconCus>
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem
-                    sx={{
-                      padding: theme.palette.padding.list,
-                    }}
-                  >
-                    <ListItemButton
+                      <ListItemButton
+                        sx={{
+                          borderRadius: '12px',
+                          padding: '4px 8px',
+                          '& .MuiListItemIcon-root': {
+                            display: 'flex',
+                          },
+                        }}
+                        onClick={() => handleDeleteAll()}
+                      >
+                        <ListItemText primary={'Xóa hết'} />
+                        <ItemIconCus>
+                          <DeleteIcon />
+                        </ItemIconCus>
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem
                       sx={{
-                        borderRadius: '12px',
-                        padding: '4px 8px',
-                        '& .MuiListItemIcon-root': {
-                          display: 'flex',
-                        },
+                        padding: theme.palette.padding.list,
                       }}
-                      onClick={() => handleLogout()}
                     >
-                      <ListItemText primary={'Đăng xuất'} />
-                      <ItemIconCus>
-                        <LogoutIcon />
-                      </ItemIconCus>
-                    </ListItemButton>
-                  </ListItem>
-                </List>
-              </Popover>
-            </ListItem>
-          </List>
-        </Stack>
-      </Box>
+                      <ListItemButton
+                        sx={{
+                          borderRadius: '12px',
+                          padding: '4px 8px',
+                          '& .MuiListItemIcon-root': {
+                            display: 'flex',
+                          },
+                        }}
+                        onClick={() => handleLogout()}
+                      >
+                        <ListItemText primary={'Đăng xuất'} />
+                        <ItemIconCus>
+                          <LogoutIcon />
+                        </ItemIconCus>
+                      </ListItemButton>
+                    </ListItem>
+                  </List>
+                </Popover>
+              </ListItem>
+            </List>
+          </Stack>
+        </Box>
+      </List>
     </Drawer>
   );
 };

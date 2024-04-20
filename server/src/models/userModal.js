@@ -29,6 +29,24 @@ const updateToken = async (idGit, token) => {
   }
 };
 
+const updateTokenGg = async (email, token) => {
+  try {
+    const db = await GET_DB();
+    const collection = db.collection('users');
+    const result = await collection.updateOne(
+      { email: email },
+      {
+        $set: {
+          curentToken: token,
+        },
+      }
+    );
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 const onceIdGit = async (idGit) => {
   try {
     const db = await GET_DB();
@@ -42,11 +60,34 @@ const onceIdGit = async (idGit) => {
   }
 };
 
+const onceEmail = async (email) => {
+  try {
+    const db = await GET_DB();
+    const collection = db.collection('users');
+    const existingUser = await collection.findOne({
+      email: email,
+    });
+    return existingUser;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 const getUser = async (idGit) => {
   try {
     const db = await GET_DB();
     const collection = db.collection('users');
     const dataUser = await collection.findOne({ idGit: idGit });
+    return dataUser;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+const getUserEmail = async (email) => {
+  try {
+    const db = await GET_DB();
+    const collection = db.collection('users');
+    const dataUser = await collection.findOne({ email: email });
     return dataUser;
   } catch (error) {
     throw new Error(error);
@@ -168,4 +209,7 @@ export const userModal = {
   getUserByIdCheckSecureHash,
   updateUserPro,
   updateUserUnPro,
+  onceEmail,
+  updateTokenGg,
+  getUserEmail,
 };
