@@ -375,7 +375,6 @@ const NavChat = ({ open, handleDrawerClose }) => {
           ))}
         </List>
         <Box
-          ref={heightRef}
           sx={{
             width: drawerWidth,
             bottom: '0',
@@ -384,7 +383,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
           }}
         >
           <Stack spacing={1}>
-            <List>
+            <List ref={heightRef}>
               <ListItem>
                 <ListItemButton
                   sx={{

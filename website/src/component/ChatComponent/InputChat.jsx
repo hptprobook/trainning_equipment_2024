@@ -12,7 +12,7 @@ import {
 import { AudioRecorder } from 'react-audio-voice-recorder';
 import MicIcon from '@mui/icons-material/Mic';
 import axios from 'axios';
-
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 const style = {
   position: 'absolute',
@@ -25,7 +25,7 @@ const style = {
   borderRadius: '24px',
 };
 
-const InputChat = ({ handleGetContent, handleGetVoice }) => {
+const InputChat = ({ handleGetContent, handleGetVoice, handleGetDocx}) => {
   const status = useSelector((state) => state.chat.status);
   const [dissable, setDissable] = React.useState(true);
   const [open, setOpen] = React.useState(false);
@@ -59,10 +59,16 @@ const InputChat = ({ handleGetContent, handleGetVoice }) => {
     }
   }, [status]);
   const addAudioElement = async (blob) => {
- 
     handleGetVoice(blob);
     handleClose();
   };
+  const handleFileInputClick = () => {
+    document.getElementById('file').click();
+  };
+  const handleUploadFile = async (e) => {
+    handleGetDocx(e.target.files[0]);
+  };
+
   return (
     <Box className="container-chat-input">
       <Modal
@@ -82,7 +88,6 @@ const InputChat = ({ handleGetContent, handleGetVoice }) => {
             downloadFileExtension="webm"
           />
         </Box>
-
       </Modal>
 
       <form onSubmit={handleForm}>
@@ -114,7 +119,15 @@ const InputChat = ({ handleGetContent, handleGetVoice }) => {
             dfValue={'gemini'}
           />
         </Stack>
+        <input type="file" style={{
+          display: 'none',
+        }} id="file" name="file" accept=".docx"
+        onChange={handleUploadFile}
+        />
         <div className="chat-input">
+          <IconButton onClick={handleFileInputClick}>
+            <AttachFileIcon />
+          </IconButton>
           <TextField
             id="input-chat"
             multiline

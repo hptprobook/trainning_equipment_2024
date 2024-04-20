@@ -18,6 +18,7 @@ const ChatDetail = () => {
   const lastScroll = React.useRef(null);
   const [listMessage, setListMessage] = React.useState([]);
   const [historyChat, setHistoryChat] = React.useState({});
+  const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const heightRef = React.useRef(null);
@@ -40,8 +41,8 @@ const ChatDetail = () => {
     if (dataMessage && status === 'success') {
       setListMessage(dataMessage.dataMess);
       setHistoryChat({
-        user: dataMessage.dataMess[dataMessage.dataMess.length - 2].content,
-        model: dataMessage.dataMess[dataMessage.dataMess.length - 1].content,
+        user: dataMessage.dataMess[dataMessage.dataMess.length - 2]?.content,
+        model: dataMessage.dataMess[dataMessage.dataMess.length - 1]?.content,
       });
       setTimeout(() => {
         handleScrollLast();
@@ -90,13 +91,14 @@ const ChatDetail = () => {
       dispatch(chatWithGemini({ data: dataSend }));
     }
   };
+  
   const handleGetVoice = async (blob) => {
+    setLoading(true);
     const file = new File([blob], 'recorded_audio.webm', {
       type: 'audio/webm;codecs=opus',
     });
     const formData = new FormData();
     formData.append('speech', file);
-
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_ROOT}/gpt/speech-to-text/${id}`,
@@ -108,10 +110,34 @@ const ChatDetail = () => {
         }
       );
       if (response) {
+        setLoading(false);
         dispatch(handleGetMessageByID({ id }));
       }
     } catch (error) {
-      handleToast('error', 'Hệ thống xảy ra lỗi');
+      handleToast('error', error.response.data.message || 'Hệ thống xảy ra lỗi');
+    }
+  };
+  const handleGetDocx = async (docx) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('docx', docx);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_ROOT}/gpt/docx-to-text/${id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      if (response) {
+        setLoading(false);
+        dispatch(handleGetMessageByID({ id }));
+      }
+    } catch (error) {
+      setLoading(false);
+      handleToast('error', error.response.data.message || 'Hệ thống xảy ra lỗi');
     }
   };
   const handleScrollLast = () => {
@@ -121,6 +147,7 @@ const ChatDetail = () => {
       inline: 'center',
     });
   };
+  
   return (
     <Grid
       container
@@ -162,7 +189,7 @@ const ChatDetail = () => {
                 answer={item.content}
               />
             ))}
-          {statusChat === 'loading' && <AnswerLoading />}
+          {statusChat === 'loading' || loading && <AnswerLoading />}
           <div ref={lastScroll}></div>
         </Grid>
       ) : (
@@ -173,6 +200,7 @@ const ChatDetail = () => {
         <InputChat
           handleGetContent={handleGetContent}
           handleGetVoice={handleGetVoice}
+          handleGetDocx={handleGetDocx}
         />
       </Grid>
     </Grid>

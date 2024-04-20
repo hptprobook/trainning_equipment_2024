@@ -60,12 +60,6 @@ const LoginView = () => {
       } else {
         navigate('/');
       }
-      // if(from) {
-      //   navigate(from.pathname);
-      // }
-      // else {
-      // navigate('/');
-      // }
     }
   }, [userGit, navigate, setLogin]);
   const token = localStorage.getItem('token');

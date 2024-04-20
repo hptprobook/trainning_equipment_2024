@@ -6,7 +6,10 @@ import GoogleIcon from '@mui/icons-material/Google';
 import AuthService from '../../services/auth.service';
 import { handleToast } from '../../config/toast';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '~/context/user.context';
+import { useContext } from 'react';
 const LoginGG = () => {
+  const { setLogin } = useContext(UserContext);
   const navigate = useNavigate();
   const handleLoginG = () => {
     const provider = new GoogleAuthProvider();
@@ -17,14 +20,20 @@ const LoginGG = () => {
           name: user.displayName,
           email: user.email,
           avatar:
-            user.photoURL == '[URL]'
-              ? 'https://i.pinimg.com/564x/ac/a3/27/aca3270e1bfcb034363463172320f63c.jpg'
-              : user.photoURL,
+						user.photoURL == '[URL]' ? 'https://i.pinimg.com/564x/ac/a3/27/aca3270e1bfcb034363463172320f63c.jpg' : user.photoURL,
         };
         const add = await AuthService.addUserGg(dataUser);
-        await localStorage.setItem('token', add.tokenUser);
+        localStorage.setItem('token', add.tokenUser);
+        setLogin(true);
+
         handleToast('success', 'Đăng nhập thành công!');
-        navigate('/');
+        const history = JSON.parse(localStorage.getItem('history'));
+        if (history) {
+          localStorage.removeItem('history');
+          navigate(history);
+        } else {
+          navigate('/');
+        }
       })
       .catch((error) => {
         handleToast('error', 'Đăng nhập thất bại');
@@ -47,7 +56,7 @@ const LoginGG = () => {
         },
       }}
     >
-      Đăng nhập với Google{' '}
+			Đăng nhập với Google{' '}
       <GoogleIcon
         sx={{
           marginLeft: '6px',
