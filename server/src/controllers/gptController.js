@@ -3,8 +3,9 @@ import fs from 'fs';
 import OpenAI from 'openai';
 import Configuration from 'openai';
 import { messagesService } from '~/services/messagesService';
-import { removeFile } from '~/utils/handleFile';
+import { removeFile, validateDOCX } from '~/utils/handleFile';
 import { conversationsModal } from '~/models/conversationModal';
+import mammoth from 'mammoth';
 const configuration = new Configuration({
   // organization: process.env.OPENAI_ORGANIZATION_ID,
   apiKey: process.env.OPENAI_API_KEY,
@@ -156,8 +157,72 @@ const gptSpeechToText = async (req, res) => {
 
   }
 };
+const docxToText = async (req, res) => {
+  const file = req.file;
+  const { id } = req.params;
+  if (!id) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: 'Invalid request content',
+    });
+  }
+  if (!file) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: 'Invalid request content',
+    });
+  }
+  validateDOCX(file.path).then((result) => {
+    if (!result) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'The file is not a valid DOCX file',
+      });
+    }
+  });
+  mammoth.extractRawText({ path: file.path })
+    .then(async function (result) {
+      const wordCount = result.value.split(' ').length;
+      if (wordCount > 200) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          success: false,
+          message: 'Word count exceeds the limit',
+        });
+      }
+      const text = result.value.split('\n').filter((item) => item !== '');
+      const prompt = text.join(' ');
+      removeFile(file.path);
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-3.5-turbo',
+      });
+      let dataUser = {
+        conversationId: id,
+        content: prompt,
+        isUserMessage: true,
+        userId: req.userId,
+      };
+      let dataModel = {
+        conversationId: id,
+        content: completion.choices[0].message.content,
+        isUserMessage: false,
+        type: 'chat4',
+      };
+      await messagesService.addMessages(dataUser);
+      await messagesService.addMessages(dataModel);
+      res.status(StatusCodes.OK).json({
+        success: true,
+        result: completion.choices[0].message.content,
+      });
+    })
+    .catch(function (error) {
+      throw error;
+    });
+
+};
 export const gptController = {
   gpt,
   gptResponse,
-  gptSpeechToText
+  gptSpeechToText,
+  docxToText
 };

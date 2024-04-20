@@ -35,6 +35,8 @@ export const ChatIndex = () => {
   });
   const [content, setContent] = React.useState(null);
   const [voice, setVoice] = React.useState(null);
+  const [docx, setDocx] = React.useState(null);
+
   const data = useSelector((state) => state.chat.data);
   const dataUser = useSelector((state) => state.auth.userGit);
   const statusGet = useSelector((state) => state.auth.status);
@@ -64,11 +66,35 @@ export const ChatIndex = () => {
           navigate(`/chat/${dataConversations.conversationId}`);
         }
       } catch (error) {
-        handleToast('error', 'Hệ thống xảy ra lỗi');
+        handleToast('error', error.response.data.message || 'Hệ thống xảy ra lỗi');
       }
     },
     [dispatch, dataConversations, navigate]
-  ); // Remove unnecessary dependencies from the dependency array
+  ); 
+  const handleSendDocx = React.useCallback(
+    async (file, id) => {
+      const formData = new FormData();
+      formData.append('docx', file);
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_ROOT}/gpt/docx-to-text/${id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        if (response) {
+          dispatch(resetState());
+          navigate(`/chat/${dataConversations.conversationId}`);
+        }
+      } catch (error) {
+        handleToast('error', error.response.data.message || 'Hệ thống xảy ra lỗi');
+      }
+    },
+    [dispatch, dataConversations, navigate]
+  ); 
   useEffect(() => {
     if (status === 'success') {
       dispatch(resetStateAction());
@@ -94,9 +120,11 @@ export const ChatIndex = () => {
         }
       } else if (voice !== null) {
         handleSendVoice(voice, dataConversations.conversationId);
+      } else if (docx !== null) {
+        handleSendDocx(docx, dataConversations.conversationId);
       }
     }
-  }, [status, dispatch, content, dataConversations, voice, handleSendVoice]);
+  }, [status, dispatch, content, dataConversations, voice, handleSendVoice, docx, handleSendDocx]);
   useEffect(() => {
     if (
       data != undefined &&
@@ -136,6 +164,18 @@ export const ChatIndex = () => {
     );
     setVoice(blob);
   };
+  const handleGetDocx = (file) => {
+    dispatch(
+      handleAddConversation({
+        data: {
+          title: 'Làm việc với file docx',
+          idGit: dataUser.dataUser._id,
+        },
+      })
+    );
+    setDocx(file);
+  };
+
   const { sourceCode } = location.state || {};
   useEffect(() => {
     if (heightRef.current) {
@@ -203,6 +243,7 @@ export const ChatIndex = () => {
         <InputChat
           handleGetContent={handleGetContent}
           handleGetVoice={handleGetVoice}
+          handleGetDocx={handleGetDocx}
         />
         {addPrompt ? (
           <InputChatWithPrompt

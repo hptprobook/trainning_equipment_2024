@@ -22,6 +22,7 @@
     "firebase": "^10.11.0",
     "ldrs": "^1.0.1",
     "localforage": "^1.10.0",
+    "mammoth": "^1.7.1",
     "match-sorter": "^6.3.4",
     "material-ui-confirm": "^3.0.11",
     "moment": "^2.30.1",
