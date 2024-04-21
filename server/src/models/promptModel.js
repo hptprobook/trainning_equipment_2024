@@ -1,5 +1,5 @@
-import { GET_DB } from '~/config/mongodb';
-import Joi from 'joi';
+import { GET_DB } from "~/config/mongodb";
+import Joi from "joi";
 
 const SAVE_PROMPT_SCHEMA = Joi.object({
   category: Joi.string().required(),
@@ -13,11 +13,22 @@ const SAVE_PROMPT_SCHEMA = Joi.object({
     Joi.array().items(Joi.string()),
     Joi.string()
   ),
+  author: Joi.string().optional(),
+  author_url: Joi.string().optional(),
 });
 
 const validateBeforeCreate = async (data) => {
-  if (typeof data !== 'object' || data === null) {
-    throw new Error('Data must be an object');
+  if (typeof data !== "object" || data === null) {
+    throw new Error("Data must be an object");
+  }
+
+  // Check for author and author_url before validation
+  if (!data.author) {
+    delete data.author;
+  }
+
+  if (!data.author_url) {
+    delete data.author_url;
   }
 
   return await SAVE_PROMPT_SCHEMA.validateAsync(data, { abortEarly: false });
@@ -26,12 +37,12 @@ const validateBeforeCreate = async (data) => {
 const addPromptModel = async (dataPrompt) => {
   // Check if dataPrompt is an array
   if (!Array.isArray(dataPrompt)) {
-    throw new Error('Data must be an array');
+    throw new Error("Data must be an array");
   }
 
   // Get a reference to the MongoDB database
   const db = GET_DB();
-  const promptsCollection = db.collection('prompts');
+  const promptsCollection = db.collection("prompts");
 
   // Validate each object in the array and save it to the database
   for (const item of dataPrompt) {
@@ -42,7 +53,7 @@ const addPromptModel = async (dataPrompt) => {
 };
 const getPromptsModel = async () => {
   const db = GET_DB();
-  const promptsCollection = db.collection('prompts');
+  const promptsCollection = db.collection("prompts");
   const prompts = await promptsCollection.find().toArray();
   return prompts;
 };
