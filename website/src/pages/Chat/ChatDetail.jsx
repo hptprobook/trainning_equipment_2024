@@ -10,14 +10,15 @@ import {
   handleGetMessageByID,
   resetMessages,
 } from '~/redux/slices/messagesSlice';
-import { chatWithGemini, resetState } from '~/redux/slices/chatSlice';
-import AnswerLoading from '~/component/Loading/AnswerLoading';
+import { chatWithGemini, chatWithGpt, resetState } from '~/redux/slices/chatSlice';
 import axios from 'axios';
+import LoadingNewChat from '~/component/ChatComponent/LoadingNewChat';
 const ChatDetail = () => {
   const { id } = useParams();
   const lastScroll = React.useRef(null);
   const [listMessage, setListMessage] = React.useState([]);
   const [historyChat, setHistoryChat] = React.useState({});
+  const [answer, setAnswer] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,11 +33,28 @@ const ChatDetail = () => {
   const status = useSelector((state) => state.messages.status);
   const user = useSelector((state) => state.auth.userGit);
   const statusChat = useSelector((state) => state.chat.status);
+  const chat = useSelector((state) => state.chat.data);
   useEffect(() => {
     if (id) {
       dispatch(handleGetMessageByID({ id }));
     }
   }, [id, dispatch]);
+  const handleSuccessChat = (data) => {
+    const userChat = {
+      _id: Math.random(),
+      isUserMessage: true,
+      content: data.content.user,
+      conversationId: data.conversationId,
+    };
+    const modelChat = {
+      _id: Math.random(),
+      isUserMessage: false,
+      content: data.content.model,
+      conversationId: data.conversationId,
+    };
+    setListMessage((prevListMessage) => [...prevListMessage, userChat, modelChat]);
+    handleScrollLast();
+  };
   useEffect(() => {
     if (dataMessage && status === 'success') {
       setListMessage(dataMessage.dataMess);
@@ -55,20 +73,40 @@ const ChatDetail = () => {
   }, [dataMessage, status, navigate, dispatch]);
   useEffect(() => {
     if (statusChat === 'success') {
-      dispatch(handleGetMessageByID({ id }));
+      const userChat = {
+        _id: Math.random(),
+        isUserMessage: true,
+        content: chat.content.user,
+        conversationId: chat.conversationId,
+      };
+      const modelChat = {
+        _id: Math.random(),
+        isUserMessage: false,
+        content: chat.content.model,
+        conversationId: chat.conversationId,
+      };
+      // const newMessage = [...listMessage, userChat, modelChat];
+      // setListMessage(newMessage);
+      setListMessage((prevListMessage) => [...prevListMessage, userChat, modelChat]);
+      // dispatch(handleGetMessageByID({ id }));
       dispatch(resetState());
     } else if (statusChat === 'failed') {
       handleToast('error', 'Hệ thống xảy ra lỗi');
       dispatch(resetState());
       navigate('/chat');
     } else if (statusChat === 'loading') {
-      handleScrollLast();
+      setTimeout(() => {
+        handleScrollLast();
+      }, 1000);
     }
-  }, [statusChat, dispatch, id, navigate]);
+  }, [statusChat, dispatch, id, navigate, chat, listMessage]);
   const mdReponsive = useResponsive('down', 'md');
   const handleGetContent = (content) => {
-    handleScrollLast();
-    if (content.model == 'gpt-4' || content.model == 'gpt-3.5-turbo') {
+    setTimeout(() => {
+      handleScrollLast();
+    }, 1000);
+    setAnswer(content.input);
+    if (content.model == 'gpt-4-turbo' || content.model == 'gpt-3.5-turbo') {
       let dataSend = {
         content: content.input,
         conversationId: listMessage[0].conversationId,
@@ -78,7 +116,7 @@ const ChatDetail = () => {
       if (Object.keys(historyChat).length !== 0) {
         dataSend.history = historyChat;
       }
-      dispatch(chatWithGemini({ data: dataSend }));
+      dispatch(chatWithGpt({ data: dataSend }));
     } else {
       let dataSend = {
         content: content.input,
@@ -91,9 +129,10 @@ const ChatDetail = () => {
       dispatch(chatWithGemini({ data: dataSend }));
     }
   };
-  
+
   const handleGetVoice = async (blob) => {
     setLoading(true);
+    handleScrollLast();
     const file = new File([blob], 'recorded_audio.webm', {
       type: 'audio/webm;codecs=opus',
     });
@@ -111,7 +150,8 @@ const ChatDetail = () => {
       );
       if (response) {
         setLoading(false);
-        dispatch(handleGetMessageByID({ id }));
+        handleSuccessChat(response.data);
+        // dispatch(handleGetMessageByID({ id }));
       }
     } catch (error) {
       handleToast('error', error.response.data.message || 'Hệ thống xảy ra lỗi');
@@ -119,6 +159,7 @@ const ChatDetail = () => {
   };
   const handleGetDocx = async (docx) => {
     setLoading(true);
+    handleScrollLast();
     const formData = new FormData();
     formData.append('docx', docx);
     try {
@@ -133,7 +174,8 @@ const ChatDetail = () => {
       );
       if (response) {
         setLoading(false);
-        dispatch(handleGetMessageByID({ id }));
+        handleSuccessChat(response.data);
+        // dispatch(handleGetMessageByID({ id }));
       }
     } catch (error) {
       setLoading(false);
@@ -147,7 +189,7 @@ const ChatDetail = () => {
       inline: 'center',
     });
   };
-  
+
   return (
     <Grid
       container
@@ -189,7 +231,11 @@ const ChatDetail = () => {
                 answer={item.content}
               />
             ))}
-          {statusChat === 'loading' || loading && <AnswerLoading />}
+          {statusChat === 'loading' || loading ?
+            <LoadingNewChat
+              name={user.dataUser.name}
+              avatar={user.dataUser.avatar}
+              answer={answer || 'Bạn đang gửi cái gì đó lên!'}/> : null}
           <div ref={lastScroll}></div>
         </Grid>
       ) : (

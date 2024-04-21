@@ -24,7 +24,7 @@ const AnswerLoading = React.forwardRef((props, ref) => {
             marginLeft: 1,
           }}
         >
-          FPT Chat
+         BEE AI
         </Typography>
       </Box>
       <Skeleton variant="text" sx={{ fontSize: '1rem' }} />

@@ -14,7 +14,7 @@ export default function ResponsiveBox() {
         },
       }}
     >
-      The application is not supported on tablets and mobile devices! <Link to={'/chat'}>Chat Box</Link>
+      Ứng dụng không được hỗ trợ trên máy tính bảng và thiết bị di động! <Link to={'/chat'}>BEE AI</Link>
     </Box>
   );
 }

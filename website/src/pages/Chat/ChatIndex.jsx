@@ -99,12 +99,13 @@ export const ChatIndex = () => {
     if (status === 'success') {
       dispatch(resetStateAction());
       if (content !== null) {
-        if (content.model == 'gpt') {
+        if (content.model == 'gpt-3.5-turbo' || content.model == 'gpt-4-turbo') {
           dispatch(
             chatWithGpt({
               data: {
                 content: content.input,
                 conversationId: dataConversations.conversationId,
+                model: content.model,
               },
             })
           );
