@@ -73,17 +73,20 @@ export default function CompilerHeader({ height, theme }) {
           display: 'flex',
         }}
       >
-        <Button
-          variant="outlined"
-          color="warning"
-          sx={{
-            color: '#f27220',
-            borderColor: '#f27220',
-          }}
-          endIcon={<ArrowRightAltIcon />}
-        >
-          {isAuth ? 'Bee Chat' : 'Login'}
-        </Button>
+        <Link to={'/chat'}>
+          <Button
+            variant="outlined"
+            color="warning"
+            sx={{
+              color: '#f27220',
+              borderColor: '#f27220',
+              mt: '2px',
+            }}
+            endIcon={<ArrowRightAltIcon />}
+          >
+            {isAuth ? 'Bee Chat' : 'Login'}
+          </Button>
+        </Link>
 
         <Box>
           <Tooltip title="Tài khoản">

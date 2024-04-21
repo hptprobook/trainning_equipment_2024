@@ -22,6 +22,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import CircularLoading from '~/component/Loading/CircularLoading';
 import useCompiler from '~/customHooks/useCompiler';
+import { Helmet } from 'react-helmet-async';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -116,6 +117,9 @@ const CompilerPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Online Compiler</title>
+      </Helmet>
       <ResponsiveBox />
       <Box
         sx={{
