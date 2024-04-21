@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleGetUser } from '~/redux/slices/authSlice';
 import { UserContext } from '~/context/user.context';
 
-const AuthLayout = () => {
+const AuthLayout = ({ children }) => {
   const { setLogin } = React.useContext(UserContext);
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.auth.user);
@@ -21,7 +21,7 @@ const AuthLayout = () => {
   const location = useLocation();
 
   if (status === 'success') {
-    return <Outlet />;
+    return children;
   }
   if (status === 'failed') {
     return <Navigate to="/" replace state={{ from: location }} />;
