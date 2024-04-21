@@ -1,6 +1,6 @@
-import { Button, Card } from '@mui/material';
+import { Button } from '@mui/material';
 import './style.css';
-import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../../firebase/FireBaseConfig';
 import GoogleIcon from '@mui/icons-material/Google';
 import AuthService from '../../services/auth.service';
@@ -20,7 +20,9 @@ const LoginGG = () => {
           name: user.displayName,
           email: user.email,
           avatar:
-						user.photoURL == '[URL]' ? 'https://i.pinimg.com/564x/ac/a3/27/aca3270e1bfcb034363463172320f63c.jpg' : user.photoURL,
+            user.photoURL == '[URL]'
+              ? 'https://i.pinimg.com/564x/ac/a3/27/aca3270e1bfcb034363463172320f63c.jpg'
+              : user.photoURL,
         };
         const add = await AuthService.addUserGg(dataUser);
         localStorage.setItem('token', add.tokenUser);
@@ -32,10 +34,10 @@ const LoginGG = () => {
           localStorage.removeItem('history');
           navigate(history);
         } else {
-          navigate('/');
+          navigate('/compiler');
         }
       })
-      .catch((error) => {
+      .catch(() => {
         handleToast('error', 'Đăng nhập thất bại');
       });
   };
@@ -56,7 +58,7 @@ const LoginGG = () => {
         },
       }}
     >
-			Đăng nhập với Google{' '}
+      Đăng nhập với Google{' '}
       <GoogleIcon
         sx={{
           marginLeft: '6px',

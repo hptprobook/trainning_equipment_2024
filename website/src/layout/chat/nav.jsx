@@ -167,7 +167,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
     localStorage.removeItem('git_token');
     handleToast('success', 'Đăng xuất thành công!');
     dispatch(resetStateAction());
-    navigate('/login');
+    navigate('/');
     setLogin(false);
   };
   const handleDelete = () => {
@@ -284,11 +284,9 @@ const NavChat = ({ open, handleDrawerClose }) => {
                   },
                   '&:hover': {
                     backgroundColor:
-
                       item._id == id
                         ? theme.palette.background.fptHover
                         : 'rgb(240, 241, 242)',
-
                   },
                 }}
                 onClick={() => navigate(`/chat/${item._id}`)}

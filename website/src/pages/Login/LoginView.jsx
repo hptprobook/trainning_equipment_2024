@@ -1,4 +1,4 @@
-import { Button, Card } from '@mui/material';
+import { Button } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import './style.css';
 import React, { useEffect } from 'react';
@@ -58,7 +58,7 @@ const LoginView = () => {
         localStorage.removeItem('history');
         navigate(history);
       } else {
-        navigate('/');
+        navigate('/compiler');
       }
     }
   }, [userGit, navigate, setLogin]);

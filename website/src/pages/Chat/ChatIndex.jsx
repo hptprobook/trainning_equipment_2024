@@ -205,7 +205,7 @@ export const ChatIndex = () => {
     if (sourceCode && dataUser && statusGet === 'success') {
       const title = 'Check code snippet';
       const content =
-        'Check my code and write any comments you have on it with output Vietnamese' +
+        'Check my code and write any comments you have on it. Please answer with Vietnamese' +
         '\n' +
         sourceCode;
       setUserInput(content);

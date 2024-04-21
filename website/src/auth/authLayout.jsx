@@ -9,6 +9,7 @@ const AuthLayout = () => {
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.auth.user);
   const status = useSelector((state) => state.auth.status);
+
   useMemo(() => {
     dispatch(handleGetUser());
   }, [dispatch]);
@@ -18,11 +19,12 @@ const AuthLayout = () => {
     }
   }, [status, userState, setLogin]);
   const location = useLocation();
+
   if (status === 'success') {
     return <Outlet />;
   }
   if (status === 'failed') {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+    return <Navigate to="/" replace state={{ from: location }} />;
   }
 };
 

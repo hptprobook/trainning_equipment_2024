@@ -48,7 +48,7 @@ export default function CompilerHeader({ height, theme }) {
     localStorage.removeItem('git_token');
     handleToast('success', 'Đăng xuất thành công!');
     dispatch(resetStateAction());
-    navigate('/login');
+    navigate('/');
     setLogin(false);
   };
 
