@@ -72,7 +72,11 @@ const gpt = async (req, res) => {
 
       res.status(StatusCodes.CREATED).json({
         success: true,
-        content: completion.choices[0].message.content,
+        conversationId: data.conversationId,
+        content: {
+          user: data.content,
+          model: completion.choices[0].message.content,
+        },
       });
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -144,8 +148,11 @@ const gptSpeechToText = async (req, res) => {
       await messagesService.addMessages(dataModel);
       res.status(StatusCodes.CREATED).json({
         success: true,
-        content: completion.choices[0].message.content,
-        text: transcription.text,
+        conversationId: id,
+        content: {
+          user: transcription.text,
+          model: completion.choices[0].message.content,
+        },
       });
     }
   }
@@ -212,7 +219,11 @@ const docxToText = async (req, res) => {
       await messagesService.addMessages(dataModel);
       res.status(StatusCodes.OK).json({
         success: true,
-        result: completion.choices[0].message.content,
+        conversationId: id,
+        content: {
+          user: prompt,
+          model: completion.choices[0].message.content,
+        },
       });
     })
     .catch(function (error) {
