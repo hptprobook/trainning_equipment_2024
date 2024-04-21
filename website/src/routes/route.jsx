@@ -65,7 +65,7 @@ const MainRoute = () => {
       element: <NotFoundPage />,
     },
     {
-      path: 'getPrompts',
+      // path: 'getPrompts',
       element: <Prompts />,
     },
   ]);
