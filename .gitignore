@@ -3,3 +3,5 @@ website/build
 .DS_Store
 server/yarn.lock
 admin/yarn.lock
+.vscode/settings.json
+website/yarn.lock
