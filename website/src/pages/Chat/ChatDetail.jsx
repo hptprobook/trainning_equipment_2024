@@ -11,13 +11,14 @@ import {
   resetMessages,
 } from '~/redux/slices/messagesSlice';
 import { chatWithGemini, resetState } from '~/redux/slices/chatSlice';
-import AnswerLoading from '~/component/Loading/AnswerLoading';
 import axios from 'axios';
+import LoadingNewChat from '~/component/ChatComponent/LoadingNewChat';
 const ChatDetail = () => {
   const { id } = useParams();
   const lastScroll = React.useRef(null);
   const [listMessage, setListMessage] = React.useState([]);
   const [historyChat, setHistoryChat] = React.useState({});
+  const [answer, setAnswer] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -62,12 +63,17 @@ const ChatDetail = () => {
       dispatch(resetState());
       navigate('/chat');
     } else if (statusChat === 'loading') {
-      handleScrollLast();
+      setTimeout(() => {
+        handleScrollLast();
+      }, 1000);
     }
   }, [statusChat, dispatch, id, navigate]);
   const mdReponsive = useResponsive('down', 'md');
   const handleGetContent = (content) => {
-    handleScrollLast();
+    setTimeout(() => {
+      handleScrollLast();
+    }, 1000);
+    setAnswer(content.input);
     if (content.model == 'gpt-4' || content.model == 'gpt-3.5-turbo') {
       let dataSend = {
         content: content.input,
@@ -91,7 +97,7 @@ const ChatDetail = () => {
       dispatch(chatWithGemini({ data: dataSend }));
     }
   };
-  
+
   const handleGetVoice = async (blob) => {
     setLoading(true);
     const file = new File([blob], 'recorded_audio.webm', {
@@ -147,7 +153,7 @@ const ChatDetail = () => {
       inline: 'center',
     });
   };
-  
+
   return (
     <Grid
       container
@@ -189,7 +195,11 @@ const ChatDetail = () => {
                 answer={item.content}
               />
             ))}
-          {statusChat === 'loading' || loading && <AnswerLoading />}
+          {statusChat === 'loading' || loading ?
+            <LoadingNewChat
+              name={user.dataUser.name}
+              avatar={user.dataUser.avatar}
+              answer={answer || ''}/> : null}
           <div ref={lastScroll}></div>
         </Grid>
       ) : (
