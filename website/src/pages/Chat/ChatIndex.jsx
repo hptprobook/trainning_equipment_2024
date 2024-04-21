@@ -66,11 +66,14 @@ export const ChatIndex = () => {
           navigate(`/chat/${dataConversations.conversationId}`);
         }
       } catch (error) {
-        handleToast('error', error.response.data.message || 'Hệ thống xảy ra lỗi');
+        handleToast(
+          'error',
+          error.response.data.message || 'Hệ thống xảy ra lỗi'
+        );
       }
     },
     [dispatch, dataConversations, navigate]
-  ); 
+  );
   const handleSendDocx = React.useCallback(
     async (file, id) => {
       const formData = new FormData();
@@ -90,16 +93,22 @@ export const ChatIndex = () => {
           navigate(`/chat/${dataConversations.conversationId}`);
         }
       } catch (error) {
-        handleToast('error', error.response.data.message || 'Hệ thống xảy ra lỗi');
+        handleToast(
+          'error',
+          error.response.data.message || 'Hệ thống xảy ra lỗi'
+        );
       }
     },
     [dispatch, dataConversations, navigate]
-  ); 
+  );
   useEffect(() => {
     if (status === 'success') {
       dispatch(resetStateAction());
       if (content !== null) {
-        if (content.model == 'gpt-3.5-turbo' || content.model == 'gpt-4-turbo') {
+        if (
+          content.model == 'gpt-3.5-turbo' ||
+          content.model == 'gpt-4-turbo'
+        ) {
           dispatch(
             chatWithGpt({
               data: {
@@ -125,7 +134,16 @@ export const ChatIndex = () => {
         handleSendDocx(docx, dataConversations.conversationId);
       }
     }
-  }, [status, dispatch, content, dataConversations, voice, handleSendVoice, docx, handleSendDocx]);
+  }, [
+    status,
+    dispatch,
+    content,
+    dataConversations,
+    voice,
+    handleSendVoice,
+    docx,
+    handleSendDocx,
+  ]);
   useEffect(() => {
     if (
       data != undefined &&
@@ -187,7 +205,7 @@ export const ChatIndex = () => {
     if (sourceCode && dataUser && statusGet === 'success') {
       const title = 'Check code snippet';
       const content =
-        'Check my code and write any comments you have on it' +
+        'Check my code and write any comments you have on it with output Vietnamese' +
         '\n' +
         sourceCode;
       setUserInput(content);
