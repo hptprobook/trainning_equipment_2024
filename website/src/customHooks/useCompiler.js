@@ -43,6 +43,7 @@ const useCompiler = () => {
           nextStepAfterRun({
             condition: 'error',
             code: sourceCode,
+            language: selectedLanguage,
           })
         ).unwrap();
         setGptResponseError(JSON.parse(gptRes.content));
@@ -85,7 +86,7 @@ const useCompiler = () => {
 
       setGptResponseRefactor(parsedResponse);
     } catch (error) {
-      toast.error('Đã xảy ra lỗi, vui lòng thử lại.');
+      toast.info('Vui lòng thử lại!');
     }
   };
 

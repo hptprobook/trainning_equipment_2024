@@ -46,7 +46,7 @@ const compilerCode = async (req, res) => {
 };
 
 const chatResponse = async (req, res) => {
-  const { condition, code } = req.body;
+  const { condition, code, language = '' } = req.body;
 
   if (!code)
     return res
@@ -56,7 +56,7 @@ const chatResponse = async (req, res) => {
   const requestContent =
     condition === 'error'
       ? `Detected an error in the following code snippet, suggest solutions for fixing the error: \\n${code}\\n. Return in JSON format {"errors": [{"line": _, "error": ""}], "recommends": "", "correctCode": ""}, with values in Vietnamese. In 'errors', clearly specify what the error is and on which line it occurs in Vietnamese. In 'recommends', specify what needs to be done on which line in Vietnamese. In 'correctCode', return the corrected code and add error-fixing comments above the erroneous line in Vietnamese. Do not use backticks in the returned results. Output should be in JSON format.`
-      : `Suggest some ways to refactor the following code snippet: \\n${code}\\n. Return in JSON format {"refactors": [{"direction": "", "code": ""}, (other refactor)]}, with values in Vietnamese (keys are in English). Do not return text. Add comments to changed code. If the code has been optimized, return direction is {["direction": "Đoạn mã đã tối ưu", "code": ""]}.Return content within the JSON should be in Vietnamese. Output should be in JSON format.`;
+      : `Suggest some ways to refactor the following code snippet: \\n${code}\\n and language is ${language}. Return in JSON format {"refactors": [{"direction": "", "code": ""}, (other refactor)]}, with values in Vietnamese (keys are in English). Do not return text. Add comments to changed code.Return content within the JSON should be in Vietnamese. Output should be in JSON format.`;
 
   try {
     const response = await gptController.gptResponse(requestContent);
