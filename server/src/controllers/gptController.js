@@ -49,7 +49,7 @@ const gpt = async (req, res) => {
         systemHistory = [
           ...dataMess.map((item) => {
             return {
-              role: item.isUserMessage ? 'user' : 'model',
+              role: item.isUserMessage ? 'user' : 'assistant',
               content: item.content,
             }}),
           { role: 'user', content: data.content },
@@ -57,7 +57,6 @@ const gpt = async (req, res) => {
       } else {
         systemHistory = [{ role: 'user', content: data.content }];
       }
-      console.log(systemHistory); 
       const completion = await openai.chat.completions.create({
         messages: systemHistory,
         model: data.model,
@@ -131,8 +130,22 @@ const gptSpeechToText = async (req, res) => {
       });
     }
     else {
+      let systemHistory = []
+      const dataMess = await messageModal.getMessageLastNumberConversation(id, 10);
+      if (dataMess && dataMess.length > 0) {
+        systemHistory = [
+          ...dataMess.map((item) => {
+            return {
+              role: item.isUserMessage ? 'user' : 'assistant',
+              content: item.content,
+            }}),
+          { role: 'user', content: transcription.text },
+        ];
+      } else {
+        systemHistory = [{ role: 'user', content: transcription.text }];
+      }
       const completion = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: transcription.text }],
+        messages: systemHistory,
         model: 'gpt-3.5-turbo',
       });
       let dataUser = {

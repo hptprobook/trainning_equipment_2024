@@ -71,10 +71,9 @@ const getMessageLastNumberConversation = async (conversationId, limit=10) => {
     const collection = db.collection('messages');
     const result = await collection
       .find({ conversationId: new ObjectId(conversationId) })
-      .sort({ createdAt: -1 }) 
+      // .sort({ createdAt: -1 }) 
       .limit(limit)
       .toArray();
-
     return result;
   } catch (error) {
     throw new Error(error.message)
