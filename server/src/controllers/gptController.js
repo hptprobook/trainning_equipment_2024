@@ -6,6 +6,8 @@ import { messagesService } from '~/services/messagesService';
 import { removeFile, validateDOCX } from '~/utils/handleFile';
 import { conversationsModal } from '~/models/conversationModal';
 import mammoth from 'mammoth';
+import { messageModal } from '~/models/messagesModel';
+
 const configuration = new Configuration({
   // organization: process.env.OPENAI_ORGANIZATION_ID,
   apiKey: process.env.OPENAI_API_KEY,
@@ -39,19 +41,17 @@ const gpt = async (req, res) => {
       type: 'chat4',
       userId: req.userId,
     };
-    const history = data?.history || {};
+    // const history = data?.history || {};
     try {
       let systemHistory = [];
-      if (Object.keys(history).length > 0) {
+      const dataMess = await messageModal.getMessageLastNumberConversation(data.conversationId, 10);
+      if (dataMess && dataMess.length > 0) {
         systemHistory = [
-          {
-            role: 'user',
-            content: history.user,
-          },
-          {
-            role: 'assistant',
-            content: history.model,
-          },
+          ...dataMess.map((item) => {
+            return {
+              role: item.isUserMessage ? 'user' : 'assistant',
+              content: item.content,
+            }}),
           { role: 'user', content: data.content },
         ];
       } else {
@@ -67,6 +67,7 @@ const gpt = async (req, res) => {
         content: completion.choices[0].message.content,
         isUserMessage: false,
       };
+      console.log(systemHistory);
       await messagesService.addMessages(dataUser);
       await messagesService.addMessages(dataModel);
 
@@ -79,6 +80,7 @@ const gpt = async (req, res) => {
         },
       });
     } catch (error) {
+      console.log(error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         messsage: 'Failed to call the API',
@@ -128,8 +130,22 @@ const gptSpeechToText = async (req, res) => {
       });
     }
     else {
+      let systemHistory = []
+      const dataMess = await messageModal.getMessageLastNumberConversation(id, 10);
+      if (dataMess && dataMess.length > 0) {
+        systemHistory = [
+          ...dataMess.map((item) => {
+            return {
+              role: item.isUserMessage ? 'user' : 'assistant',
+              content: item.content,
+            }}),
+          { role: 'user', content: transcription.text },
+        ];
+      } else {
+        systemHistory = [{ role: 'user', content: transcription.text }];
+      }
       const completion = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: transcription.text }],
+        messages: systemHistory,
         model: 'gpt-3.5-turbo',
       });
       let dataUser = {
