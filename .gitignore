@@ -1,0 +1,8 @@
+*.code-workspace
+website/build
+.DS_Store
+server/yarn.lock
+server/upload
+admin/yarn.lock
+.vscode/settings.json
+website/yarn.lock

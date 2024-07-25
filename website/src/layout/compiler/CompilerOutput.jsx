@@ -50,7 +50,9 @@ const CompilerOutput = ({
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { isNextStepLoading } = useSelector((state) => state.compiler);
+  const { isNextStepLoading, isRunCodeLoading } = useSelector(
+    (state) => state.compiler
+  );
   const [copiedRefactor, setCopiedRefactor] = useState(
     gptResponseRefactor
       ? Array(gptResponseRefactor.refactors.length).fill(false)
@@ -161,7 +163,11 @@ const CompilerOutput = ({
           }}
         >
           <Tooltip title="Làm mới đầu ra">
-            <IconButton onClick={handleClearOutput} className="jr-sixth-step">
+            <IconButton
+              onClick={handleClearOutput}
+              className="jr-sixth-step"
+              disabled={isNextStepLoading || isRunCodeLoading}
+            >
               <NotInterestedIcon color="primary" />
             </IconButton>
           </Tooltip>
@@ -169,6 +175,7 @@ const CompilerOutput = ({
             <IconButton
               onClick={() => handleCheckAI('')}
               className="jr-seventh-step"
+              disabled={isNextStepLoading || isRunCodeLoading}
             >
               <AssistantIcon color="primary" />
             </IconButton>

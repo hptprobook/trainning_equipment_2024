@@ -80,13 +80,18 @@ const gemini = async (req, res) => {
       try {
         dataModel.content = response.text();
       } catch (error) {
-        dataModel.content = "Sorry, I can't anwser this question.";
+        dataModel.content = 'Xin lỗi, tôi không hiểu câu hỏi của bạn.';
       }
       await messagesService.addMessages(dataUser);
       await messagesService.addMessages(dataModel);
 
       res.status(StatusCodes.CREATED).json({
         success: true,
+        conversationId: data.conversationId,
+        content: {
+          user: dataUser.content,
+          model: dataModel.content,
+        },
       });
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

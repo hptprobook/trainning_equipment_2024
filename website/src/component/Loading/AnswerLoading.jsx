@@ -13,8 +13,8 @@ const AnswerLoading = React.forwardRef((props, ref) => {
         }}
       >
         <Avatar
-          alt="FPT Chat"
-          src={'https://www.w3schools.com/howto/img_avatar.png'}
+          alt="BEE AI"
+          src={'/logo/white.png'}
           sx={{ width: 24, height: 24 }}
         />
         <Typography
@@ -24,7 +24,7 @@ const AnswerLoading = React.forwardRef((props, ref) => {
             marginLeft: 1,
           }}
         >
-          FPT Chat
+         BEE AI
         </Typography>
       </Box>
       <Skeleton variant="text" sx={{ fontSize: '1rem' }} />

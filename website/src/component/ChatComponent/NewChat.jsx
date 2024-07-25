@@ -4,6 +4,8 @@ import { Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPrompts } from '~/redux/slices/promptsSlice';
 import OptionSelect from './../Select/OptionSelect';
+
+
 const NewChat = ({ handleAddPrompt }) => {
   const dispatch = useDispatch();
   const [prompts, setPrompts] = useState([]);
@@ -42,6 +44,7 @@ const NewChat = ({ handleAddPrompt }) => {
     const newPompts = data.prompts.filter((item) => item.category === content);
     setPrompts(newPompts);
   };
+
   return (
     <div>
       <h1>Xin chào!</h1>

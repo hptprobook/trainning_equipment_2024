@@ -5,9 +5,9 @@ import verifyToken from '../middlewares/verifyToken';
 const Router = express.Router();
 
 Router.get('/codesSaved', verifyToken, compilerController.listCodeSaved)
-  .post('/run', compilerController.compilerCode)
+  .post('/run', verifyToken, compilerController.compilerCode)
   .post('/save', verifyToken, compilerController.saveCode)
-  .post('/nextStep', compilerController.chatResponse);
+  .post('/nextStep', verifyToken, compilerController.chatResponse);
 
 Router.route('/:id')
   .get(verifyToken, compilerController.getDetails)

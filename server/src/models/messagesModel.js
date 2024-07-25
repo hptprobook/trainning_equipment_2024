@@ -65,6 +65,21 @@ const getMessagesbyidConver = async (conversationId) => {
   }
 };
 
+const getMessageLastNumberConversation = async (conversationId, limit=10) => {
+  try {
+    const db = await GET_DB()
+    const collection = db.collection('messages');
+    const result = await collection
+      .find({ conversationId: new ObjectId(conversationId) })
+      // .sort({ createdAt: -1 }) 
+      .limit(limit)
+      .toArray();
+    return result;
+  } catch (error) {
+    throw new Error(error.message)
+  }
+};
+
 const getMessagesTodayByType = async (userId, type) => {
   try {
     const db = await GET_DB();
@@ -108,4 +123,5 @@ export const messageModal = {
   getMessagesbyidConver,
   delbyidConver,
   getMessagesTodayByType,
+  getMessageLastNumberConversation
 };

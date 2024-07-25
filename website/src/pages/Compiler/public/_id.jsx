@@ -28,6 +28,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import CircularLoading from '~/component/Loading/CircularLoading';
 import useCompiler from '~/customHooks/useCompiler';
+import { Helmet } from 'react-helmet-async';
 
 const HEADER_HEIGHT = '56px';
 const CONTAINER_HEIGHT = `calc(100% - ${HEADER_HEIGHT})`;
@@ -64,8 +65,6 @@ export default function CompilerPublicDetailPage() {
     setGptResponseError,
     gptResponseRefactor,
     setGptResponseRefactor,
-    handleCopyCode,
-    handleShowRefactor,
   } = useCompiler();
 
   const handleCheckAI = () => {
@@ -153,6 +152,35 @@ export default function CompilerPublicDetailPage() {
     }
   };
 
+  const handleCopyCode = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(sourceCode)
+        .then(() => {
+          toast.success('Đã sao chép!', {
+            autoClose: 500,
+          });
+        })
+        .catch(() => {
+          toast.error('Lỗi khi sao chép mã, vui lòng thử lại!');
+        });
+    } else {
+      toast.warning('Bộ nhớ tạm chưa sẵn sàng, vui lòng thử lại.');
+    }
+  };
+
+  const handleShowRefactor = async () => {
+    setGptResponseRefactor(null);
+    const gptRes = await dispatch(
+      nextStepAfterRun({
+        condition: 'refactor',
+        code: sourceCode,
+      })
+    ).unwrap();
+
+    setGptResponseRefactor(JSON.parse(gptRes.content));
+  };
+
   const handleSaveCode = () => {
     setTitle(title);
     if (!isAuth) {
@@ -187,6 +215,9 @@ export default function CompilerPublicDetailPage() {
 
   return (
     <>
+      <Helmet>
+        <title>Online Compiler</title>
+      </Helmet>
       <ResponsiveBox />
       <Box
         sx={{

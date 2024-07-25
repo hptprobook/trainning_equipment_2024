@@ -10,11 +10,12 @@
 .container-chat-with-prompt{
     z-index: 100;
     background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     padding: 16px;
     position: absolute;
     border-radius: 16px;
     bottom: 0;
-    width: 100%;
+    width: calc(100% - 16px);
 }
 .chat-input .btn-submit {
     display: flex;

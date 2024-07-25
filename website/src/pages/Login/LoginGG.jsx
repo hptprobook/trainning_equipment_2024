@@ -1,12 +1,15 @@
-import { Button, Card } from '@mui/material';
+import { Button } from '@mui/material';
 import './style.css';
-import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../../firebase/FireBaseConfig';
 import GoogleIcon from '@mui/icons-material/Google';
 import AuthService from '../../services/auth.service';
 import { handleToast } from '../../config/toast';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '~/context/user.context';
+import { useContext } from 'react';
 const LoginGG = () => {
+  const { setLogin } = useContext(UserContext);
   const navigate = useNavigate();
   const handleLoginG = () => {
     const provider = new GoogleAuthProvider();
@@ -22,12 +25,19 @@ const LoginGG = () => {
               : user.photoURL,
         };
         const add = await AuthService.addUserGg(dataUser);
-        await localStorage.setItem('token', add.tokenUser);
+        localStorage.setItem('token', add.tokenUser);
+        setLogin(true);
+
         handleToast('success', 'Đăng nhập thành công!');
-        navigate('/chat');
+        const history = JSON.parse(localStorage.getItem('history'));
+        if (history) {
+          localStorage.removeItem('history');
+          navigate(history);
+        } else {
+          navigate('/compiler');
+        }
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         handleToast('error', 'Đăng nhập thất bại');
       });
   };
@@ -35,12 +45,12 @@ const LoginGG = () => {
     <Button
       onClick={handleLoginG}
       sx={{
-        width: 'fit-content',
         fontSize: '1rem',
         fontWeight: '500',
         backgroundColor: 'rgb(31, 179, 74)',
         color: 'rgba(255,255,255,1)',
-        padding: '8px 24px',
+        padding: '10px 24px',
+        width: '300px',
         marginTop: '8px',
         borderRadius: '8px',
         '&:hover': {

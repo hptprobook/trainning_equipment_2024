@@ -115,8 +115,8 @@ const NavChat = ({ open, handleDrawerClose }) => {
   useEffect(() => {
     if (statusDeleteAll === 'success') {
       handleToast('success', 'Xóa tất cả cuộc trò chuyện thành công!');
-      dispatch(handleGetAllConversations());
       navigate('/chat');
+      dispatch(handleGetAllConversations());
     }
   }, [statusDeleteAll, dispatch, navigate]);
   useEffect(() => {
@@ -167,7 +167,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
     localStorage.removeItem('git_token');
     handleToast('success', 'Đăng xuất thành công!');
     dispatch(resetStateAction());
-    navigate('/login');
+    navigate('/');
     setLogin(false);
   };
   const handleDelete = () => {
@@ -284,11 +284,9 @@ const NavChat = ({ open, handleDrawerClose }) => {
                   },
                   '&:hover': {
                     backgroundColor:
-
                       item._id == id
                         ? theme.palette.background.fptHover
                         : 'rgb(240, 241, 242)',
-
                   },
                 }}
                 onClick={() => navigate(`/chat/${item._id}`)}
@@ -375,7 +373,6 @@ const NavChat = ({ open, handleDrawerClose }) => {
           ))}
         </List>
         <Box
-          ref={heightRef}
           sx={{
             width: drawerWidth,
             bottom: '0',
@@ -384,7 +381,7 @@ const NavChat = ({ open, handleDrawerClose }) => {
           }}
         >
           <Stack spacing={1}>
-            <List>
+            <List ref={heightRef}>
               <ListItem>
                 <ListItemButton
                   sx={{

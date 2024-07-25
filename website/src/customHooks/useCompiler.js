@@ -43,6 +43,7 @@ const useCompiler = () => {
           nextStepAfterRun({
             condition: 'error',
             code: sourceCode,
+            language: selectedLanguage,
           })
         ).unwrap();
         setGptResponseError(JSON.parse(gptRes.content));
@@ -73,14 +74,20 @@ const useCompiler = () => {
 
   const handleShowRefactor = async () => {
     setGptResponseRefactor(null);
-    const gptRes = await dispatch(
-      nextStepAfterRun({
-        condition: 'refactor',
-        code: sourceCode,
-      })
-    ).unwrap();
+    try {
+      const gptRes = await dispatch(
+        nextStepAfterRun({
+          condition: 'refactor',
+          code: sourceCode,
+        })
+      ).unwrap();
 
-    setGptResponseRefactor(JSON.parse(gptRes.content));
+      const parsedResponse = JSON.parse(gptRes.content);
+
+      setGptResponseRefactor(parsedResponse);
+    } catch (error) {
+      toast.info('Vui lòng thử lại!');
+    }
   };
 
   return {

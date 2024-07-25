@@ -3,8 +3,11 @@ import fs from 'fs';
 import OpenAI from 'openai';
 import Configuration from 'openai';
 import { messagesService } from '~/services/messagesService';
-import { removeFile } from '~/utils/handleFile';
+import { removeFile, validateDOCX } from '~/utils/handleFile';
 import { conversationsModal } from '~/models/conversationModal';
+import mammoth from 'mammoth';
+import { messageModal } from '~/models/messagesModel';
+
 const configuration = new Configuration({
   // organization: process.env.OPENAI_ORGANIZATION_ID,
   apiKey: process.env.OPENAI_API_KEY,
@@ -38,19 +41,17 @@ const gpt = async (req, res) => {
       type: 'chat4',
       userId: req.userId,
     };
-    const history = data?.history || {};
+    // const history = data?.history || {};
     try {
       let systemHistory = [];
-      if (Object.keys(history).length > 0) {
+      const dataMess = await messageModal.getMessageLastNumberConversation(data.conversationId, 10);
+      if (dataMess && dataMess.length > 0) {
         systemHistory = [
-          {
-            role: 'user',
-            content: history.user,
-          },
-          {
-            role: 'assistant',
-            content: history.model,
-          },
+          ...dataMess.map((item) => {
+            return {
+              role: item.isUserMessage ? 'user' : 'assistant',
+              content: item.content,
+            }}),
           { role: 'user', content: data.content },
         ];
       } else {
@@ -66,14 +67,20 @@ const gpt = async (req, res) => {
         content: completion.choices[0].message.content,
         isUserMessage: false,
       };
+      console.log(systemHistory);
       await messagesService.addMessages(dataUser);
       await messagesService.addMessages(dataModel);
 
       res.status(StatusCodes.CREATED).json({
         success: true,
-        content: completion.choices[0].message.content,
+        conversationId: data.conversationId,
+        content: {
+          user: data.content,
+          model: completion.choices[0].message.content,
+        },
       });
     } catch (error) {
+      console.log(error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         messsage: 'Failed to call the API',
@@ -123,8 +130,22 @@ const gptSpeechToText = async (req, res) => {
       });
     }
     else {
+      let systemHistory = []
+      const dataMess = await messageModal.getMessageLastNumberConversation(id, 10);
+      if (dataMess && dataMess.length > 0) {
+        systemHistory = [
+          ...dataMess.map((item) => {
+            return {
+              role: item.isUserMessage ? 'user' : 'assistant',
+              content: item.content,
+            }}),
+          { role: 'user', content: transcription.text },
+        ];
+      } else {
+        systemHistory = [{ role: 'user', content: transcription.text }];
+      }
       const completion = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: transcription.text }],
+        messages: systemHistory,
         model: 'gpt-3.5-turbo',
       });
       let dataUser = {
@@ -143,8 +164,11 @@ const gptSpeechToText = async (req, res) => {
       await messagesService.addMessages(dataModel);
       res.status(StatusCodes.CREATED).json({
         success: true,
-        content: completion.choices[0].message.content,
-        text: transcription.text,
+        conversationId: id,
+        content: {
+          user: transcription.text,
+          model: completion.choices[0].message.content,
+        },
       });
     }
   }
@@ -156,8 +180,76 @@ const gptSpeechToText = async (req, res) => {
 
   }
 };
+const docxToText = async (req, res) => {
+  const file = req.file;
+  const { id } = req.params;
+  if (!id) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: 'Invalid request content',
+    });
+  }
+  if (!file) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: 'Invalid request content',
+    });
+  }
+  validateDOCX(file.path).then((result) => {
+    if (!result) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'The file is not a valid DOCX file',
+      });
+    }
+  });
+  mammoth.extractRawText({ path: file.path })
+    .then(async function (result) {
+      const wordCount = result.value.split(' ').length;
+      if (wordCount > 200) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          success: false,
+          message: 'Word count exceeds the limit',
+        });
+      }
+      const text = result.value.split('\n').filter((item) => item !== '');
+      const prompt = text.join(' ');
+      removeFile(file.path);
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-3.5-turbo',
+      });
+      let dataUser = {
+        conversationId: id,
+        content: prompt,
+        isUserMessage: true,
+        userId: req.userId,
+      };
+      let dataModel = {
+        conversationId: id,
+        content: completion.choices[0].message.content,
+        isUserMessage: false,
+        type: 'chat4',
+      };
+      await messagesService.addMessages(dataUser);
+      await messagesService.addMessages(dataModel);
+      res.status(StatusCodes.OK).json({
+        success: true,
+        conversationId: id,
+        content: {
+          user: prompt,
+          model: completion.choices[0].message.content,
+        },
+      });
+    })
+    .catch(function (error) {
+      throw error;
+    });
+
+};
 export const gptController = {
   gpt,
   gptResponse,
-  gptSpeechToText
+  gptSpeechToText,
+  docxToText
 };
