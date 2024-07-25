@@ -71,7 +71,7 @@ const MainRoute = () => {
       element: <PlanPage />,
     },
     {
-      path: 'getPrompts',
+      // path: 'getPrompts',
       element: <Prompts />,
     },
     {
