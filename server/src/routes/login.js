@@ -12,5 +12,6 @@ Router.get('/getUser', verifyToken, (req, res) =>
 Router.post('/updateUserUnPro', verifyToken, (req, res) =>
   userController.updateUserUnPro(req, res)
 );
+Router.post('/addUserGg', (req, res) => userController.addUserFromGG(req, res));
 
 export const APILogins = Router;
